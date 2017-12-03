@@ -1,7 +1,12 @@
 package pkg;
 
+import java.beans.Statement;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -29,7 +34,7 @@ public class Hello extends HttpServlet {
 		// TODO Auto-generated method stub
 	
 		PrintWriter msj=response.getWriter();
-		msj.print("Hello");
+		msj.print("Hello bb");
 	}
 
 	/**
@@ -38,6 +43,8 @@ public class Hello extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		doGet(request, response);
+	
 	}
-
 }
+
+
