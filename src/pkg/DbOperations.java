@@ -34,10 +34,10 @@ public class DbOperations {
 		try {
 
 			if (conn != null) {
-				rs=conn.createStatement().executeQuery("SELECT * FROM Specializare");
+				rs=conn.createStatement().executeQuery("SELECT * FROM Specialitate");
 
 				while (rs.next()) {
-					String denumire = rs.getString("Specializare_denumire");
+					String denumire = rs.getString("Specialitate_denumire");
 					specializari.add(denumire);
 				}
 			}
@@ -50,6 +50,28 @@ public class DbOperations {
 		return specializari;
 	}
 	
+	public static boolean isAccountInDB(String email,String password) {
+		Connection conn = getConnection();
+		Statement stmt = null;
+		ResultSet rs = null;
+		
+		try {
+
+			if (conn != null) {
+				rs=conn.createStatement().executeQuery("SELECT * FROM cont where cont_email= "+email+" and cont_parola= "+password);
+				if (rs.next()) 
+					return true;
+					
+				
+			}
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+		} finally {
+			CloseResources(conn, rs, stmt);
+		}
+		return false;
+	}
 public static void CloseResources(Connection conn,ResultSet rs,Statement stm) {
 	try {
 		if (rs != null)

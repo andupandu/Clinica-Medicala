@@ -1,12 +1,7 @@
 package pkg;
 
-import java.beans.Statement;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -14,15 +9,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Servlet implementation class Hello
+ * Servlet implementation class Login
  */
-public class Hello extends HttpServlet {
+public class Login extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public Hello() {
+    public Login() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -32,9 +27,15 @@ public class Hello extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-	
 		PrintWriter msj=response.getWriter();
-		msj.print("Hello guest");
+		String email=request.getParameter("email");
+		String password=request.getParameter("password");
+		if(DbOperations.isAccountInDB(email, password)) {
+		
+			msj.print("V ati inregistrat cu succes");
+		}
+		else request.setAttribute("err","Nu s a gasit userul in db");
+		response.sendRedirect("WebContent/Login.jsp");
 	}
 
 	/**
@@ -43,8 +44,6 @@ public class Hello extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		doGet(request, response);
-	
 	}
+
 }
-
-

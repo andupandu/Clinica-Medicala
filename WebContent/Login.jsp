@@ -6,6 +6,8 @@
 <link rel="stylesheet" type="text/css" href="Styles/Style.css">
 <title>Clinica medicala</title>
 </head>
+
+
 <body>
 	<h1>Clinica Medicala!</h1>
 	<ul>
@@ -28,12 +30,15 @@
    
   
   </li>
-  
-  
 </ul>
-	
-	<form action="Hello">
-		<input type="submit" value="Press">
+
+	<form action="Login">
+	Email:<input type="email" name="email"><br>
+	Password:<input type="password" name="password"><br>
+	<input type="submit" value="Log in">
 	</form>
+	<%String err=(String)request.getAttribute("err");
+if(err!=null && err!="null")%>
+<p><%=err %></p>
 </body>
 </html>
