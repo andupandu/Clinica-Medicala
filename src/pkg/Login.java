@@ -32,10 +32,11 @@ public class Login extends HttpServlet {
 		String password=request.getParameter("password");
 		if(DbOperations.isAccountInDB(email, password)) {
 		
-			msj.print("V ati inregistrat cu succes");
+			request.setAttribute("msg","V ati inregistrat cu succes");
+			request.getSession().putValue("persoanaLogata",DbOperations.getNumePrenume(email));
 		}
-		else request.setAttribute("err","Nu s a gasit userul in db");
-		response.sendRedirect("WebContent/Login.jsp");
+		else request.setAttribute("msg","Nu s a gasit userul in db");
+		 request.getRequestDispatcher("Login.jsp").forward(request,response);
 	}
 
 	/**

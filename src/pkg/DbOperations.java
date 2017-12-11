@@ -2,11 +2,8 @@ package pkg;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.beans.Statement;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
+
 
 public class DbOperations {
 	public static Connection getConnection() {
@@ -28,13 +25,16 @@ public class DbOperations {
 
 	public static List<String> getSpecializari() {
 		Connection conn = getConnection();
-		Statement stmt = null;
+		PreparedStatement stmt = null;
 		ResultSet rs = null;
 		List<String> specializari = new ArrayList<String>();
+		String query="SELECT * FROM Specialitate";
 		try {
 
 			if (conn != null) {
-				rs=conn.createStatement().executeQuery("SELECT * FROM Specialitate");
+				
+				stmt=conn.prepareStatement(query);
+						rs=stmt.executeQuery();
 
 				while (rs.next()) {
 					String denumire = rs.getString("Specialitate_denumire");
@@ -50,16 +50,51 @@ public class DbOperations {
 		return specializari;
 	}
 	
-	public static boolean isAccountInDB(String email,String password) {
+	public static Persoana getNumePrenume(String email) {
 		Connection conn = getConnection();
-		Statement stmt = null;
+		PreparedStatement stmt = null;
 		ResultSet rs = null;
 		
+		Persoana persoanaLogata=new Persoana();
+		String query="SELECT * FROM Pacient where pacient_email= ?";
 		try {
 
 			if (conn != null) {
-				rs=conn.createStatement().executeQuery("SELECT * FROM cont where cont_email= "+email+" and cont_parola= "+password);
-				if (rs.next()) 
+				
+				stmt=conn.prepareStatement(query);
+				stmt.setString(1, email);
+						rs=stmt.executeQuery();
+
+				while (rs.next()) {
+					String nume = rs.getString("pacient_nume");
+					String prenume=rs.getString("pacient_prenume");
+					persoanaLogata.setNume(nume);
+					persoanaLogata.setPrenume(prenume);
+				
+				}
+			}
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+		} finally {
+			CloseResources(conn, rs, stmt);
+		}
+		return persoanaLogata;
+	}
+	public static boolean isAccountInDB(String email,String password) {
+		Connection conn = getConnection();
+		 PreparedStatement stmt = null;
+		ResultSet rs = null;
+		String query="SELECT * FROM cont WHERE cont_email= ? AND cont_parola= ?";
+		try {
+
+			if (conn != null) {
+			
+				stmt=conn.prepareStatement(query);
+				stmt.setString(1,email);
+				stmt.setString(2,password);
+				rs=stmt.executeQuery();
+				if(rs.next()) 
 					return true;
 					
 				
@@ -72,7 +107,7 @@ public class DbOperations {
 		}
 		return false;
 	}
-public static void CloseResources(Connection conn,ResultSet rs,Statement stm) {
+public static void CloseResources(Connection conn,ResultSet rs,PreparedStatement stm) {
 	try {
 		if (rs != null)
 			rs.close();
@@ -81,7 +116,7 @@ public static void CloseResources(Connection conn,ResultSet rs,Statement stm) {
 	}
 	try {
 		if (stm != null)
-			 ((Connection) stm).close();
+			 stm.close();
 	} catch (SQLException e) {
 		e.printStackTrace();
 	}
