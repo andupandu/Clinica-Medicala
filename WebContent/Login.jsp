@@ -1,5 +1,6 @@
 <%@page import="pkg.DbOperations"%>
 <%@page import="java.util.List"%>
+<%@page import="pkg.Persoana"%>
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
@@ -10,6 +11,11 @@
 
 <body>
 	<h1>Clinica Medicala!</h1>
+<%Persoana persoanaLogata=(Persoana)session.getAttribute("persoanaLogata");
+if(persoanaLogata!=null){
+%><div style=text-align:right;"><%=persoanaLogata.getNume()+" "+persoanaLogata.getPrenume() %></div>
+<%} %>
+
 	<ul>
  
   <li class="dropdown">
@@ -37,8 +43,9 @@
 	Password:<input type="password" name="password"><br>
 	<input type="submit" value="Log in">
 	</form>
-	<%String err=(String)request.getAttribute("err");
-if(err!=null && err!="null")%>
-<p><%=err %></p>
+	<%String msg=(String)request.getAttribute("msg");
+if(msg!=null && msg!="null"){%>
+<p><%=msg %></p>
+<% }%>
 </body>
 </html>
