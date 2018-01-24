@@ -1,13 +1,21 @@
 <%@page import="pkg.DbOperations"%>
 <%@page import="java.util.List"%>
+<%@page import="pkg.Persoana"%>
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <link rel="stylesheet" type="text/css" href="Styles/Style.css">
 <title>Clinica medicala</title>
 </head>
+
+
 <body>
 	<h1>Clinica Medicala!</h1>
+<%Persoana persoanaLogata=(Persoana)session.getAttribute("persoanaLogata");
+if(persoanaLogata!=null){
+%><div style=text-align:right;"><%=persoanaLogata.getNume()+" "+persoanaLogata.getPrenume() %></div>
+<%} %>
+
 	<ul>
  
   <li class="dropdown">
@@ -22,18 +30,26 @@
   <li class="dropdown">
    <a href="#">Contul meu</a>
    <div class="dropdown-content">
-   <a href="ContNou.jsp">Cont nou</a>
+   <a href="#">Cont nou</a>
    <a href="Login.jsp">Log in</a>
    </div>
    
   
   </li>
-  
-  
 </ul>
-	
-	<form action="Hello">
-		<input type="submit" value="Press">
+
+	<form action="ContNou">
+	Nume:<input type="text" name="nume"><br>
+	Prenume:<input type="text" name="prenume"><br>
+	Cnp:<input type="text" name="cnp"><br>
+	Data nastere:<input type="date" name="dataNasterii"><br>
+	Telefon:<input type="number" name="telefon"><br>
+	Email:<input type="email" name="email"><br>
+	<input type="submit" value="Log in">
 	</form>
+	<%String msg=(String)request.getAttribute("msg");
+if(msg!=null && msg!="null"){%>
+<p><%=msg %></p>
+<% }%>
 </body>
 </html>

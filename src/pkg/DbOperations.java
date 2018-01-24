@@ -50,7 +50,7 @@ public class DbOperations {
 		return specializari;
 	}
 	
-	public static Persoana getNumePrenume(String email) {
+	public static Persoana getNumePrenumePacient(String email) {
 		Connection conn = getConnection();
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
@@ -81,9 +81,40 @@ public class DbOperations {
 		}
 		return persoanaLogata;
 	}
-	public static boolean isAccountInDB(String email,String password) {
+	public static Persoana getNumePrenumeMedic(String email) {
 		Connection conn = getConnection();
-		 PreparedStatement stmt = null;
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		
+		Persoana persoanaLogata=new Persoana();
+		String query="SELECT * FROM Medic where medic_email= ?";
+		try {
+
+			if (conn != null) {
+				
+				stmt=conn.prepareStatement(query);
+				stmt.setString(1, email);
+						rs=stmt.executeQuery();
+
+				while (rs.next()) {
+					String nume = rs.getString("medic_nume");
+					String prenume=rs.getString("medic_prenume");
+					persoanaLogata.setNume(nume);
+					persoanaLogata.setPrenume(prenume);
+				
+				}
+			}
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+		} finally {
+			CloseResources(conn, rs, stmt);
+		}
+		return persoanaLogata;
+	}
+	public static String isAccountInDB(String email,String password) {
+		Connection conn = getConnection();
+		PreparedStatement stmt = null;
 		ResultSet rs = null;
 		String query="SELECT * FROM cont WHERE cont_email= ? AND cont_parola= ?";
 		try {
@@ -95,7 +126,13 @@ public class DbOperations {
 				stmt.setString(2,password);
 				rs=stmt.executeQuery();
 				if(rs.next()) 
-					return true;
+					if(rs.getString("cont_pacient_cod")!=null)
+						return "pacient";
+				if(rs.getString("cont_medic_cod")!=null)
+					return "medic";
+				if(rs.getString("cont_pacient_cod")==null && rs.getString("cont_medic_cod")==null)
+					return "admin";
+					
 					
 				
 			}
@@ -105,7 +142,7 @@ public class DbOperations {
 		} finally {
 			CloseResources(conn, rs, stmt);
 		}
-		return false;
+		return null;
 	}
 public static void CloseResources(Connection conn,ResultSet rs,PreparedStatement stm) {
 	try {

@@ -30,7 +30,7 @@ if(persoanaLogata!=null){
   <li class="dropdown">
    <a href="#">Contul meu</a>
    <div class="dropdown-content">
-   <a href="#">Cont nou</a>
+   <a href="ContNou.jsp">Cont nou</a>
    <a href="Login.jsp">Log in</a>
    </div>
    

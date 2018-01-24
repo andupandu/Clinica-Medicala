@@ -27,16 +27,32 @@ public class Login extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		PrintWriter msj=response.getWriter();
+		//PrintWriter msj=response.getWriter();
 		String email=request.getParameter("email");
 		String password=request.getParameter("password");
-		if(DbOperations.isAccountInDB(email, password)) {
+		if(DbOperations.isAccountInDB(email, password)!=null) {
+		if(DbOperations.isAccountInDB(email, password).equals("pacient")) {
 		
-			request.setAttribute("msg","V ati inregistrat cu succes");
-			request.getSession().putValue("persoanaLogata",DbOperations.getNumePrenume(email));
+			request.getSession().putValue("persoanaLogata",DbOperations.getNumePrenumePacient(email));
+			request.getRequestDispatcher("Login.jsp").forward(request,response);
 		}
-		else request.setAttribute("msg","Nu s a gasit userul in db");
-		 request.getRequestDispatcher("Login.jsp").forward(request,response);
+		if(DbOperations.isAccountInDB(email, password).equals("medic")) {
+			
+			request.getSession().putValue("persoanaLogata",DbOperations.getNumePrenumeMedic(email));
+			request.getRequestDispatcher("Login.jsp").forward(request,response);
+		}
+		if(DbOperations.isAccountInDB(email, password).equals("admin")) {
+			
+			//request.getSession().putValue("persoanaLogata",DbOperations.getNumePrenumePacient(email));
+			 request.getRequestDispatcher("indexAdmin.jsp").forward(request,response);
+		}
+		}
+		else { 
+		request.setAttribute("msg","Nu s a gasit userul in db");
+		request.getRequestDispatcher("Login.jsp").forward(request,response);
+		}
+		
+		
 	}
 
 	/**

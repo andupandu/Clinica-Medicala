@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+	<mesaj>
+	<nume>BunVenit</nume>
+	<continut>>Buna ziua,
+	Multumim ca v ati inregistrat pe site ul nostru.\n
+	Datele dumneavoastra de logare sunt urmatoarele:\n
+	Username: %s
+	Parola: %s </continut>
+	</mesaj>
