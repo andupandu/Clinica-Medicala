@@ -1,7 +1,8 @@
-package pkg;
+package pkg.Servlets;
 
+import pkg.Utils.*;
 import java.io.IOException;
-import java.io.PrintWriter;
+
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -30,18 +31,18 @@ public class Login extends HttpServlet {
 		//PrintWriter msj=response.getWriter();
 		String email=request.getParameter("email");
 		String password=request.getParameter("password");
-		if(DbOperations.isAccountInDB(email, password)!=null) {
-		if(DbOperations.isAccountInDB(email, password).equals("pacient")) {
+		if(DbOperations.isAccountInDB(email)!=null) {
+		if(DbOperations.isAccountInDB(email).equals("pacient")) {
 		
-			request.getSession().putValue("persoanaLogata",DbOperations.getNumePrenumePacient(email));
+			request.getSession().putValue("persoanaLogata",DbOperations.getPacient(email));
 			request.getRequestDispatcher("Login.jsp").forward(request,response);
 		}
-		if(DbOperations.isAccountInDB(email, password).equals("medic")) {
+		if(DbOperations.isAccountInDB(email).equals("medic")) {
 			
-			request.getSession().putValue("persoanaLogata",DbOperations.getNumePrenumeMedic(email));
+			request.getSession().putValue("persoanaLogata",DbOperations.getMedic(email));
 			request.getRequestDispatcher("Login.jsp").forward(request,response);
 		}
-		if(DbOperations.isAccountInDB(email, password).equals("admin")) {
+		if(DbOperations.isAccountInDB(email).equals("admin")) {
 			
 			//request.getSession().putValue("persoanaLogata",DbOperations.getNumePrenumePacient(email));
 			 request.getRequestDispatcher("indexAdmin.jsp").forward(request,response);

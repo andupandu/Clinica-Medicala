@@ -1,4 +1,4 @@
-package pkg;
+package pkg.Servlets;
 
 import java.beans.Statement;
 import java.io.IOException;

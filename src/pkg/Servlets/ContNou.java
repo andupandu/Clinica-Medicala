@@ -1,6 +1,9 @@
-package pkg;
-
+package pkg.Servlets;
+import pkg.Entities.*;
 import java.io.IOException;
+import java.sql.Date;
+import java.text.ParseException;
+import pkg.Utils.*;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -32,8 +35,27 @@ public class ContNou extends HttpServlet {
 		String cnp=request.getParameter("cnp");
 		String dataNasterii=request.getParameter("dataNasterii");
 		String parola=SMTPHelper.generatePassword();
+		Persoana pacient=new Persoana();
+		pacient.setNume(nume);
+		pacient.setPrenume(prenume);
+		pacient.setCnp(cnp);
 		try {
+			pacient.setData_nastere(DateUtil.getDateFromString(dataNasterii));
+		} catch (ParseException e1) {
+			System.out.println(e1.getMessage());
+			e1.printStackTrace();
+		}
+		pacient.setEmail(email);
+		pacient.setTelefon(telefon);
+		
+		try { if(DbOperations.isAccountInDB(email)!=null)
+			request.setAttribute("msg", "Exista deja un cont cu acest email");
+		else {
+			DbOperations.insertPacient(pacient);
+			DbOperations.insertUser(email, parola,DbOperations.getPacient(email).getId().intValue());
+			DbOperations.insertCodContIntoPacient(email, Long.valueOf(DbOperations.getCodContPacient(email)));
 			SMTPHelper.SendEmail(email,parola);
+		}
 		} catch (JAXBException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

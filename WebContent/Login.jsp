@@ -1,51 +1,94 @@
-<%@page import="pkg.DbOperations"%>
+<%@page import="pkg.Utils.DbOperations"%>
 <%@page import="java.util.List"%>
-<%@page import="pkg.Persoana"%>
+<%@page import="pkg.Entities.Persoana"%>
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<link rel="stylesheet" type="text/css" href="Styles/Style.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<link rel="stylesheet" type="text/css" href="Styles/bootstrap.min.css">
+<script src="Styles/bootstrap.min.js"></script>
+
 <title>Clinica medicala</title>
 </head>
 
 
 <body>
-	<h1>Clinica Medicala!</h1>
-<%Persoana persoanaLogata=(Persoana)session.getAttribute("persoanaLogata");
-if(persoanaLogata!=null){
-%><div style=text-align:right;"><%=persoanaLogata.getNume()+" "+persoanaLogata.getPrenume() %></div>
-<%} %>
 
-	<ul>
+<%Persoana persoanaLogata=(Persoana)session.getAttribute("persoanaLogata"); %>
+
+
+
+<nav class="navbar navbar-toggleable-md navbar-light bg-faded">
+  <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <a class="navbar-brand" href="#">Clinica medicala</a>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
  
-  <li class="dropdown">
-    <a href="javascript:void(0)" class="dropbtn">Specializari</a>
-    <div class="dropdown-content">
-    <%List<String> specializari=DbOperations.getSpecializari(); 
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Specializari
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+        
+            <%List<String> specializari=DbOperations.getSpecializari(); 
     for(String spec:specializari){%>
-      <a href="#"><%=spec %></a>
+    
+      <a href="#" class="dropdown-item"><%=spec %></a>
 <%} %>
-    </div>
-  </li>
-  <li class="dropdown">
-   <a href="#">Contul meu</a>
-   <div class="dropdown-content">
-   <a href="ContNou.jsp">Cont nou</a>
-   <a href="Login.jsp">Log in</a>
-   </div>
-   
+        </div>
+      </li>
   
-  </li>
-</ul>
+   
 
-	<form action="Login">
-	Email:<input type="email" name="email"><br>
-	Password:<input type="password" name="password"><br>
-	<input type="submit" value="Log in">
-	</form>
-	<%String msg=(String)request.getAttribute("msg");
-if(msg!=null && msg!="null"){%>
-<p><%=msg %></p>
+      
+   </ul>
+<% if(persoanaLogata==null){%>
+<ul class="navbar-nav ml-auto">
+				<li class="nav-item dropdown"><a
+					class="nav-link dropdown-toggle" href="#"
+					id="navbarDropdownMenuLink" data-toggle="dropdown"
+					aria-haspopup="true" aria-expanded="false"> Log in </a>
+					<div class="dropdown-menu dropdown-menu-right">
+						<form class="px-4 py-3" action="Login" method="post">
+							<div class="form-group">
+								<label for="exampleDropdownFormEmail1">Email address</label> <input
+									type="email" name="email" class="form-control"
+									id="exampleDropdownFormEmail1" placeholder="email@example.com">
+							</div>
+							<div class="form-group">
+								<label for="exampleDropdownFormPassword1">Password</label> <input
+									type="password" name="password" class="form-control"
+									id="exampleDropdownFormPassword1" placeholder="Password">
+							</div>
+							<button type="submit" class="btn btn-primary">Sign in</button>
+						</form>
+						<div class="dropdown-divider"></div>
+						<a class="dropdown-item" href="ContNou.jsp">New around here?
+							Sign up</a> <a class="dropdown-item" href="#">Forgot password?</a>
+					</div></li>
+			</ul>
+			<%}else{%>
+				<a class="navbar-nav ml-auto"><%=persoanaLogata.getNume()+" "+persoanaLogata.getPrenume() %></a>
+				 <input type="button" class="btn btn-sm btn-outline-secondary" value="Delogare" onclick="reloadPage();">
+				
+			<% }%>
+  </div>
+</nav>
+
+	<%
+		String msg = (String) request.getAttribute("msg");
+		if (msg != null && msg != "null") {
+	%>
+	<p><%=msg %></p>
 <% }%>
 </body>
+<script type="text/javascript">
+function reloadPage(){
+	<%request.getSession().removeAttribute("persoanaLogata");%>
+location.reload();
+}
+</script>
 </html>

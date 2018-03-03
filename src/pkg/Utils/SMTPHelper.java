@@ -1,4 +1,4 @@
-package pkg;
+package pkg.Utils;
 
 import java.security.SecureRandom;
 import java.util.Properties;
@@ -11,6 +11,8 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import javax.xml.bind.JAXBException;
+
+import pkg.Entities.Mesaj;
 
 public class SMTPHelper {
 	public static void SendEmail(String email,String parola) throws JAXBException {
@@ -27,7 +29,7 @@ public class SMTPHelper {
          new javax.mail.Authenticator() {
             protected PasswordAuthentication getPasswordAuthentication() {
                return new PasswordAuthentication(
-            		   "TrySomething", "TrySomething");
+            		   "andreea.limba96@gmail.com", "andutupandutud");
             }
          });
 
@@ -36,8 +38,8 @@ public class SMTPHelper {
 			Message message = new MimeMessage(session);
 			message.setFrom(new InternetAddress("clinicaMedicala@yahoo.com"));
 			message.setRecipients(Message.RecipientType.TO,
-					InternetAddress.parse("clinicaMedicala@yahoo.com"));
-			message.setSubject("Testing Subject");
+					InternetAddress.parse(email));
+			message.setSubject("Bun venit");
 			Mesaj m = new Mesaj();
 			//message.setText(String.format(m.IncarcaMesaje(), "username",  "parola"));
 			message.setText("Buna ziua,\n" + 

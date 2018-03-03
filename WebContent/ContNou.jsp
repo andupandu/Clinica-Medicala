@@ -1,6 +1,6 @@
-<%@page import="pkg.DbOperations"%>
+<%@page import="pkg.Utils.DbOperations"%>
 <%@page import="java.util.List"%>
-<%@page import="pkg.Persoana"%>
+<%@page import="pkg.Entities.Persoana"%>
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">

@@ -1,4 +1,4 @@
-package pkg;
+package pkg.Entities;
 
 import java.io.File;
 import java.util.HashMap;

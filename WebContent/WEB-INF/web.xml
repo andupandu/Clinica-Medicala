@@ -13,7 +13,7 @@
     <description></description>
     <display-name>Hello</display-name>
     <servlet-name>Hello</servlet-name>
-    <servlet-class>pkg.Hello</servlet-class>
+    <servlet-class>pkg.Servlets.Hello</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>Hello</servlet-name>
@@ -23,7 +23,7 @@
     <description></description>
     <display-name>Login</display-name>
     <servlet-name>Login</servlet-name>
-    <servlet-class>pkg.Login</servlet-class>
+    <servlet-class>pkg.Servlets.Login</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>Login</servlet-name>
@@ -33,10 +33,20 @@
     <description></description>
     <display-name>ContNou</display-name>
     <servlet-name>ContNou</servlet-name>
-    <servlet-class>pkg.ContNou</servlet-class>
+    <servlet-class>pkg.Servlets.ContNou</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>ContNou</servlet-name>
     <url-pattern>/ContNou</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>ModificaMedic</display-name>
+    <servlet-name>ModificaMedic</servlet-name>
+    <servlet-class>pkg.Servlets.ModificaMedic</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ModificaMedic</servlet-name>
+    <url-pattern>/ModificaMedic</url-pattern>
   </servlet-mapping>
 </web-app>

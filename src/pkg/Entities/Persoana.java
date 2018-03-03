@@ -1,6 +1,6 @@
-package pkg;
+package pkg.Entities;
 
-import java.util.Date;
+import java.sql.Date;
 
 public class Persoana {
 	Long id;

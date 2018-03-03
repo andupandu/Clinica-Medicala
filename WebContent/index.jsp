@@ -1,4 +1,4 @@
-<%@page import="pkg.DbOperations"%>
+<%@page import="pkg.Utils.DbOperations"%>
 <%@page import="java.util.List"%>
 <html>
 <head>
