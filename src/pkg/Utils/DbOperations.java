@@ -8,6 +8,8 @@ import java.sql.*;
 
 
 public class DbOperations {
+	private static Connection conn = getConnection();
+	
 	public static Connection getConnection() {
 		String connectionUrl = "jdbc:mysql://localhost:3306/clinicamedicala";
 		String connectionUser = "root";
@@ -25,8 +27,19 @@ public class DbOperations {
 		}
 	}
 
+	public static Long getCodSpecFromDenSpec(String denumire) throws SQLException {
+		Long cod=null;
+		String query="SELECT specialitate_cod FROM Specialitate where specialitate_denumire=? ";
+		ResultSet rs =getQueryResults(query, Arrays.asList(denumire));
+		while (rs.next()) {
+			cod = rs.getLong("Specialitate_cod");	
+		}
+		CloseResources(conn, rs, null);
+		return cod;
+	
+	}
 	public static ResultSet getQueryResults(String query, List<Object> params) {
-		Connection conn = getConnection();
+		conn = getConnection();
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
 		try {
@@ -53,7 +66,6 @@ public class DbOperations {
 	}
 		
 	public static void deleteMedic(String id) {
-		Connection conn = getConnection();
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
 		String query="Delete FROM medic where medic_cod= ?";
@@ -80,10 +92,10 @@ public class DbOperations {
 		ResultSet rs =getQueryResults(query, null);
 		List<String> specializari = new ArrayList<String>();
 		while (rs.next()) {
-			String denumire = rs.getString("Specialitate_denumire");
+			String denumire = rs.getString("specialitate_denumire");
 			specializari.add(denumire);
 		}
-		
+		CloseResources(conn, rs, null);
 		return specializari;
 	}
 	
@@ -94,6 +106,7 @@ public class DbOperations {
 		while (rs.next()) {
 			specializare = rs.getString("Specialitate_denumire");									
 		}
+		CloseResources(conn, rs, null);
 		return specializare==null?"-":specializare;
 	}
 	
@@ -129,6 +142,30 @@ public class DbOperations {
 		}
 		return persoanaLogata;
 	}
+	public static void modifyMedic(Medic medic) {
+		Connection conn = getConnection();
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		String query="update  Medic set medic_nume=?,medic_prenume=?,medic_email=?,specialitate_cod=?,medic_telefon=? where medic_cod= ?";
+		try {
+			if (conn != null) {			
+				stmt=conn.prepareStatement(query);
+				stmt.setString(1, medic.getNume());
+				stmt.setString(2, medic.getPrenume());
+				stmt.setString(3, medic.getEmail());
+				stmt.setLong(4, medic.getCodSpec());
+				stmt.setString(5, medic.getTelefon());
+				stmt.setLong(6, medic.getId());
+						stmt.executeUpdate();
+			}
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+		} finally {
+			CloseResources(conn, rs, stmt);
+		}
+	}
+	
 	public static Persoana getMedic(String email) {
 		Connection conn = getConnection();
 		PreparedStatement stmt = null;
@@ -182,6 +219,8 @@ public class DbOperations {
 					medic.setNume(rs.getString("medic_nume"));
 					medic.setPrenume(rs.getString("medic_prenume"));
 					medic.setCodSpec(rs.getLong("specialitate_cod"));
+					medic.setEmail(rs.getString("medic_email"));
+					medic.setTelefon(rs.getString("medic_telefon"));
 					medici.add(medic);
 					
 				}

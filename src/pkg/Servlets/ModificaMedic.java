@@ -2,12 +2,14 @@ package pkg.Servlets;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.SQLException;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import pkg.Entities.Medic;
 import pkg.Utils.DbOperations;
 
 /**
@@ -33,12 +35,27 @@ public class ModificaMedic extends HttpServlet {
 		 response.setContentType("text/plain");
 		System.out.println(request.getParameter("nume"));
 		System.out.println(request.getParameter("prenume"));
-		System.out.println(request.getParameter("medicId"));
+		System.out.println(request.getParameter("telefon"));
+		System.out.println(request.getParameter("email"));
+		System.out.println((String)request.getParameter("medicId"));
+		System.out.println(request.getParameter("spec"));
+		
 		if(request.getParameter("verif").equals("delete")){
-		DbOperations.deleteMedic(request.getParameter("medicId"));
+			DbOperations.deleteMedic((String)request.getParameter("medicId"));
 		}
 		else if(request.getParameter("verif").equals("modif")) {
-			System.out.println("modificaaaa");
+			Medic medic=new Medic();
+			medic.setNume(request.getParameter("nume"));
+			medic.setPrenume(request.getParameter("prenume"));
+			medic.setTelefon(request.getParameter("telefon"));
+			medic.setEmail(request.getParameter("email"));
+			medic.setId(Long.valueOf(request.getParameter("medicId")));
+			try {
+				medic.setCodSpec(DbOperations.getCodSpecFromDenSpec(request.getParameter("spec")));
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			DbOperations.modifyMedic(medic);
 		}
 		request.getRequestDispatcher("InformatiiMedic.jsp").forward(request,response);
 	out.close();
