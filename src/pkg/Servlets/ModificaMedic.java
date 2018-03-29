@@ -33,13 +33,6 @@ public class ModificaMedic extends HttpServlet {
 		// TODO Auto-generated method stub
 		PrintWriter out = response.getWriter();
 		 response.setContentType("text/plain");
-		System.out.println(request.getParameter("nume"));
-		System.out.println(request.getParameter("prenume"));
-		System.out.println(request.getParameter("telefon"));
-		System.out.println(request.getParameter("email"));
-		System.out.println((String)request.getParameter("medicId"));
-		System.out.println(request.getParameter("spec"));
-		
 		if(request.getParameter("verif").equals("delete")){
 			DbOperations.deleteMedic((String)request.getParameter("medicId"));
 		}

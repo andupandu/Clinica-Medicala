@@ -49,4 +49,34 @@
     <servlet-name>ModificaMedic</servlet-name>
     <url-pattern>/ModificaMedic</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>EditeazaSpecialitati</display-name>
+    <servlet-name>EditeazaSpecialitati</servlet-name>
+    <servlet-class>pkg.Servlets.EditeazaSpecialitati</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>EditeazaSpecialitati</servlet-name>
+    <url-pattern>/EditeazaSpecialitati</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>ProgramariAnalize</display-name>
+    <servlet-name>ProgramariAnalize</servlet-name>
+    <servlet-class>pkg.Servlets.ProgramariAnalize</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ProgramariAnalize</servlet-name>
+    <url-pattern>/ProgramariAnalize</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>ProgramariConsultatie</display-name>
+    <servlet-name>ProgramariConsultatie</servlet-name>
+    <servlet-class>pkg.Servlets.ProgramariConsultatie</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ProgramariConsultatie</servlet-name>
+    <url-pattern>/ProgramariConsultatie</url-pattern>
+  </servlet-mapping>
 </web-app>

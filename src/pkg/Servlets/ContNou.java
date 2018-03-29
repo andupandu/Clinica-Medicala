@@ -55,11 +55,13 @@ public class ContNou extends HttpServlet {
 			DbOperations.insertUser(email, parola,DbOperations.getPacient(email).getId().intValue());
 			DbOperations.insertCodContIntoPacient(email, Long.valueOf(DbOperations.getCodContPacient(email)));
 			SMTPHelper.SendEmail(email,parola);
+			request.setAttribute("msg", "Contul s a creat cu succes");
 		}
 		} catch (JAXBException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		request.getRequestDispatcher("ContNou.jsp").forward(request,response);
 	}
 
 	/**

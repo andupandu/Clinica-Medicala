@@ -1,5 +1,6 @@
 <%@page import="pkg.Utils.DbOperations"%>
 <%@page import="java.util.List"%>
+<%@page import="pkg.Entities.*"%>
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
@@ -13,9 +14,9 @@
   <li class="dropdown">
     <a href="javascript:void(0)" class="dropbtn">Specializari</a>
     <div class="dropdown-content">
-    <%List<String> specializari=DbOperations.getSpecializari(); 
-    for(String spec:specializari){%>
-      <a href="#"><%=spec %></a>
+    <%List<Specialitate> specializari=DbOperations.getSpecializari(); 
+    for(Specialitate spec:specializari){%>
+      <a href="#"><%=spec.getDenumire() %></a>
 <%} %>
     </div>
   </li>

@@ -1,6 +1,6 @@
 <%@page import="pkg.Utils.DbOperations"%>
 <%@page import="java.util.List"%>
-<%@page import="pkg.Entities.Persoana"%>
+<%@page import="pkg.Entities.*"%>
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
@@ -33,10 +33,10 @@
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
         
-            <%List<String> specializari=DbOperations.getSpecializari(); 
-    for(String spec:specializari){%>
+            <%List<Specialitate> specializari=DbOperations.getSpecializari(); 
+    for(Specialitate spec:specializari){%>
     
-      <a href="#" class="dropdown-item"><%=spec %></a>
+      <a href="#" class="dropdown-item"><%=spec.getDenumire() %></a>
 <%} %>
         </div>
       </li>
