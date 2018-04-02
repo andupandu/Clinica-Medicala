@@ -48,3 +48,14 @@ li.dropdown {
 .dropdown:hover .dropdown-content {
     display: block;
 }
+
+.green{
+	background-color:green;
+	color:white;
+	}
+	
+.red {
+	background-color:red;
+	font-color:white;
+}
+}

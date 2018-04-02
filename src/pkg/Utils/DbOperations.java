@@ -209,7 +209,17 @@ public class DbOperations {
 		CloseResources(conn, rs, null);
 		return servicii;
 	}	
-	
+	public static Long getTimpServiciu(Long codMedic,Long codServiciu) throws SQLException{
+		String query="Select ofera_timp from ofera where medic_cod=? and serviciu_cod=?";
+		ResultSet rs=getQueryResults(query, Arrays.asList(codMedic,codServiciu));
+		Long minute=null;
+		while(rs.next()) {
+			minute=rs.getLong("ofera_timp");
+		}
+		CloseResources(conn, rs, null);
+		return minute;
+		
+	}
 	public static List<Persoana> getPacienti() throws SQLException{
 		String query="Select * from pacient";
 		ResultSet rs=getQueryResults(query,  null);
@@ -599,7 +609,46 @@ public class DbOperations {
 			CloseResources(conn, rs, stmt);
 		}
 	}
-	
+	public static void setCompatibility() {
+		Connection conn = getConnection();
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		String query="set @@global.show_compatibility_56=ON;";
+		try {
+			if (conn != null) {
+				stmt=conn.prepareStatement(query);
+				stmt.executeUpdate();
+	}
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+		} finally {
+			CloseResources(conn, rs, stmt);
+		}
+	}
+	public static Long GetDayFromDate(Date data) {
+		Connection conn = getConnection();
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		String query="select zi_id from clinicamedicala.zi where zi_denumire=clinicamedicala.ro_dayname(?)";
+		Long zi=null;
+		try {
+
+			if (conn != null) {
+				stmt=conn.prepareStatement(query);
+				stmt.setDate(1,data);
+				rs=stmt.executeQuery();
+				if(rs.next()) 
+				 zi=rs.getLong("zi_id");
+	}
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+		} finally {
+			CloseResources(conn, rs, stmt);
+		}
+		return zi;
+	}
 public static void CloseResources(Connection conn,ResultSet rs,PreparedStatement stm) {
 	try {
 		if (rs != null)

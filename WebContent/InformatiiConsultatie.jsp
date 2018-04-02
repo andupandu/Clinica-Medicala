@@ -9,7 +9,12 @@
 <head>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <link rel="stylesheet" type="text/css" href="Styles/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" href="Styles/Style.css">
 <script src="Styles/bootstrap.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/css/bootstrap-datepicker.css">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/js/bootstrap-datepicker.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/locales/bootstrap-datepicker.ro.min.js"></script>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Pagina administrator</title>
 </head>
@@ -17,7 +22,7 @@
 <body>
 <h1>Cere o programare</h1>
 <center>
-<form name="consultatie" action="ContinuaConsultatie" method="post">
+<form name="consultatie" action="ProgramariConsultatie" method="post">
 <table>
  <tr>
  <td>
@@ -55,6 +60,12 @@
 </select></td>
 </tr>
 <tr>
+<td>
+	Data:<input class="data"  data-date="" data-date-format="dd/mm/yyyy hh:ii"  data-link-format="yyyy-mm-dd hh:ii">
+      </td>      			
+</tr>
+
+<tr>
 <td>Motiv Consultatie:<br><select id="serviciu" name="serviciu" class="custom-select">
 </select></td>
 </tr>
@@ -70,6 +81,7 @@
 </body>
 </html>
 <script>
+
 
 function fillMedicSelect(){
 	var spec=document.getElementById("spec").value;
@@ -105,6 +117,7 @@ function searchPacient(){
 	}
 	$.post("ProgramariConsultatie",
 	        {
+			  metoda:"detalii",
 	          cnp:cnp.value
 	        },
 	        function(data,status){
@@ -130,4 +143,33 @@ function searchPacient(){
 	        	}
 	        });
 }
+$('.data').datepicker({
+
+	startDate: "today",
+    changeyear:false,
+	daysOfWeekDisabled: "0,6",
+	format:"dd/mm/yyyy",
+	 beforeShowDay: function (date){
+		 var response;
+		 $.ajax({
+		        type: "POST",
+		        url: "ProgramariConsultatie",
+		        data:{
+		        	metoda:"data",
+		        	data: date
+		        },
+		        async: false,
+		        success: function(results) {
+		        	response=JSON.parse(results);
+		        	
+		        }
+		    });
+		 console.log(response);
+		 	return{
+	        	classes:response.color,
+	        	enabled:response.valid
+	        }
+       }
+});
+$('#datepicker').datepicker( $.datepicker.regional[ "ro" ] );
 </script>
