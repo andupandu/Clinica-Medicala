@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import pkg.Utils.DateUtil;
 import pkg.Utils.DbOperations;
 
 /**
@@ -28,7 +29,11 @@ public class ProgramariConsultatie extends HttpServlet {
         System.out.println(cal.getTime());
 		if(data.before(new Date())||data.after(cal.getTime()))
 			return "{\"valid\":false,\"color\":\"\"}";
-			else return "{\"valid\":true,\"color\":\"green\"}";
+			else 
+				if(DbOperations.hasProgramInThatDay(DateUtil.getSqlDateFromUtilDate(data), Long.valueOf(4)))
+					return "{\"valid\":true,\"color\":\"green\"}";
+				else
+					return "{\"valid\":false,\"color\":\"\"}";
 		
 	}
     public ProgramariConsultatie() {

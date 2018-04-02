@@ -11,5 +11,10 @@ public class DateUtil {
 	        java.sql.Date sql = new java.sql.Date(parsed.getTime());
 	        return sql;
 	}
+	
+	public static java.sql.Date getSqlDateFromUtilDate(Date data){
+	    java.sql.Date sqlDate = new java.sql.Date(data.getTime());
+	    return sqlDate;
+	}
 
 }

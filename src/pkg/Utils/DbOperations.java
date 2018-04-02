@@ -649,6 +649,31 @@ public class DbOperations {
 		}
 		return zi;
 	}
+	
+	public static boolean  hasProgramInThatDay(Date data,Long codMedic) {
+		Connection conn = getConnection();
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		String query=" select areprogram_zi_id from clinicamedicala.areprogram where (select zi_id from clinicamedicala.zi where zi_denumire=clinicamedicala.ro_dayname(?))=areprogram_zi_id and areprogram_medic_cod=?";
+		Boolean hasProgram=false;
+		try {
+
+			if (conn != null) {
+				stmt=conn.prepareStatement(query);
+				stmt.setDate(1,data);
+				stmt.setLong(2, codMedic);
+				rs=stmt.executeQuery();
+				while(rs.next()) 
+				hasProgram=true;
+	}
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+		} finally {
+			CloseResources(conn, rs, stmt);
+		}
+		return hasProgram;
+	}
 public static void CloseResources(Connection conn,ResultSet rs,PreparedStatement stm) {
 	try {
 		if (rs != null)
