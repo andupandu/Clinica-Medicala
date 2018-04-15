@@ -56,22 +56,28 @@
 
 </tr>
 <tr>
-<td>Medic:<br><select id="medic" name="medic" class="custom-select" onchange="fillMotivCons()">
+<td>Medic:<br><select id="medic" name="medic" class="custom-select" onchange="onChangeMedic()">
+</select></td>
+</tr>
+
+
+<tr>
+<td>Motiv Consultatie:<br><select id="serviciu" name="serviciu" class="custom-select" onchange="ReinitializeDatePicker()">
 </select></td>
 </tr>
 <tr>
 <td>
-	Data:<input class="data"  data-date="" data-date-format="dd/mm/yyyy hh:ii"  data-link-format="yyyy-mm-dd hh:ii">
+	Data:<br><input id="data" name="data" class="data"  data-date="" data-date-format="dd/mm/yyyy hh:ii"  data-link-format="yyyy-mm-dd hh:ii" onchange="getOreDisponibile()">
       </td>      			
 </tr>
-
 <tr>
-<td>Motiv Consultatie:<br><select id="serviciu" name="serviciu" class="custom-select">
+<td>Ora:<br><select id="ora" name="ora" class="custom-select">
 </select></td>
 </tr>
 <tr>
 <td>Detalii Consultatie:<br><textarea id="detalii" name="detalii" class="form-control"></textarea></td>
 </tr>
+
 <tr>
 <td><br><input type="submit" class="btn btn-outline-secondary" id="continua" name="continua" value="Continua"></td>
 </tr>
@@ -143,33 +149,76 @@ function searchPacient(){
 	        	}
 	        });
 }
+function InitializeDatepicker(){
 $('.data').datepicker({
-
 	startDate: "today",
+	endDate: '+1m',
     changeyear:false,
 	daysOfWeekDisabled: "0,6",
 	format:"dd/mm/yyyy",
 	 beforeShowDay: function (date){
 		 var response;
+		 var medic=document.getElementById("medic").value;
+		 var serviciu=document.getElementById("serviciu").value;
 		 $.ajax({
 		        type: "POST",
 		        url: "ProgramariConsultatie",
 		        data:{
 		        	metoda:"data",
-		        	data: date
+		        	data: date,
+		        	codMedic:medic,
+		        	serviciu:serviciu
 		        },
 		        async: false,
 		        success: function(results) {
 		        	response=JSON.parse(results);
-		        	
 		        }
+		        
 		    });
-		 console.log(response);
+		
 		 	return{
 	        	classes:response.color,
 	        	enabled:response.valid
 	        }
        }
 });
-$('#datepicker').datepicker( $.datepicker.regional[ "ro" ] );
+
+}
+
+function getOreDisponibile(){
+	var data=$('.data').datepicker( "getDate" );
+	 var medic=document.getElementById("medic").value;
+	 var serviciu=document.getElementById("serviciu").value;
+	//if(cnp.value==""){
+	//	alert("Introduceti CNP-UL!!");
+	//	return;
+	//}
+	$.post("ProgramariConsultatie",
+	        {
+			  metoda:"ora",
+	          data:data,
+	          codMedic:medic,
+	          serviciu:serviciu
+	        },
+	        function(data,status){
+	        	var response = JSON.parse(data);
+	        	var selectOra=document.getElementById("ora");
+					selectOra.innerHTML="";
+        	response.forEach(ora=>
+        		selectOra.innerHTML+="<option value="+ora+">"+ora+"</option>"	
+	        );
+	        })
+}
+
+function ReinitializeDatePicker(){
+	$('.data').datepicker('update');
+}
+function onChangeMedic(){
+	fillMotivCons();
+	ReinitializeDatePicker();
+}
+if(document.getElementById("serviciu").value != null)
+	InitializeDatepicker();
+	
+$('.data').datepicker( "refresh" );
 </script>

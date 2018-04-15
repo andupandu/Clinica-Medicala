@@ -55,10 +55,7 @@ li.dropdown {
 	}
 	
 .red {
+	background:"currentColor";
 	background-color:red;
 	color:white;
 }
-
-
-.ui-datepicker td.ui-state-disabled>span{background:#c30;}
-.ui-datepicker td.ui-state-disabled{opacity:100;}

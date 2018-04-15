@@ -1,5 +1,6 @@
 package pkg.Utils;
 import pkg.Entities.Analiza;
+import pkg.Entities.Interval;
 import pkg.Entities.Medic;
 import pkg.Entities.Persoana;
 import pkg.Entities.Serviciu;
@@ -209,12 +210,12 @@ public class DbOperations {
 		CloseResources(conn, rs, null);
 		return servicii;
 	}	
-	public static Long getTimpServiciu(Long codMedic,Long codServiciu) throws SQLException{
+	public static String getTimpServiciu(Long codMedic,Long codServiciu) throws SQLException{
 		String query="Select ofera_timp from ofera where medic_cod=? and serviciu_cod=?";
 		ResultSet rs=getQueryResults(query, Arrays.asList(codMedic,codServiciu));
-		Long minute=null;
+		String minute=null;
 		while(rs.next()) {
-			minute=rs.getLong("ofera_timp");
+			minute=rs.getString("ofera_timp");
 		}
 		CloseResources(conn, rs, null);
 		return minute;
@@ -654,6 +655,7 @@ public class DbOperations {
 		Connection conn = getConnection();
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
+		setCompatibility();
 		String query=" select areprogram_zi_id from clinicamedicala.areprogram where (select zi_id from clinicamedicala.zi where zi_denumire=clinicamedicala.ro_dayname(?))=areprogram_zi_id and areprogram_medic_cod=?";
 		Boolean hasProgram=false;
 		try {
@@ -673,6 +675,97 @@ public class DbOperations {
 			CloseResources(conn, rs, stmt);
 		}
 		return hasProgram;
+	}
+	public static List<String> getPogramMedic(Long codMedic,Date data) {
+		Connection conn = getConnection();
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		System.out.println(data);
+		String query=" select str_to_date(areprogram_ora_inceput,\"%H:%i\") orainceput,str_to_date(areprogram_ora_sfarsit,\"%H:%i\") orasfarsit from "
+				+ "clinicamedicala.areprogram where areprogram_medic_cod=? and areprogram_zi_id=(select zi_id from clinicamedicala.zi where zi_denumire=clinicamedicala.ro_dayname(?));"; 
+		 List<String> oreProgram=new ArrayList<String>();
+		try {
+
+			if (conn != null) {
+				stmt=conn.prepareStatement(query);
+				stmt.setLong(1, codMedic);
+				stmt.setDate(2, data);
+				rs=stmt.executeQuery();
+				if(rs.next()) {
+					//System.out.println(rs.getString("orainceput")+"-----"+rs.getString("orasfarsit"));
+					oreProgram.add(rs.getString("orainceput"));
+					oreProgram.add(rs.getString("orasfarsit"));
+				}
+				
+	}
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+		} finally {
+			CloseResources(conn, rs, stmt);
+		}
+	return oreProgram;
+	}
+	public static List<Interval>  getFreeHoursConsultatie(Date data,Long codMedic) {
+		Connection conn = getConnection();
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		//System.out.println("DATA"+data);
+		String query=" select programareconsultatie_ora_consultatie,ADDTIME(programareconsultatie_ora_consultatie,ofera_timp) ora" + 
+				"	 from clinicamedicala.areprogram ,clinicamedicala.programareconsultatie,clinicamedicala.ofera  where areprogram_medic_cod=programareconsultatie_medic_cod and areprogram_zi_id= (select zi_id from clinicamedicala.zi where zi_denumire=clinicamedicala.ro_dayname(programareconsultatie_data_consultatie)) and programareconsultatie_tip_consultatie=serviciu_cod and programareconsultatie_data_consultatie=? and areprogram_medic_cod=? order by ora"; 
+		List<Interval> ore=new ArrayList<Interval>();
+		try {
+
+			if (conn != null) {
+				stmt=conn.prepareStatement(query);
+				stmt.setDate(1,data);
+				
+				stmt.setLong(2, codMedic);
+				rs=stmt.executeQuery();
+				while(rs.next()) {
+					Interval interval=new Interval();
+					interval.setInceput(rs.getString("programareconsultatie_ora_consultatie"));
+					interval.setSfarsit(rs.getString("ora"));
+					//System.out.println("Ore-"+rs.getString("ora"));
+					ore.add(interval);
+				}
+					
+				
+	}
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+		} finally {
+			CloseResources(conn, rs, stmt);
+		}
+	return ore;
+	}
+	
+	public static void insertConsultatie(String detalii,String status,String codServiciu,String oraCons,Date data,String medicCod,String codPacient) {
+		Connection conn = getConnection();
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		String query="insert into programareconsultatie values(?,?,?,?,?,?,?)";
+		try {
+
+			if (conn != null) {
+				
+				stmt=conn.prepareStatement(query);
+				stmt.setString(1, detalii);
+				stmt.setString(2, status);
+				stmt.setLong(3, Long.valueOf(codServiciu));
+				stmt.setString(4, oraCons);
+				stmt.setDate(5,data);
+				stmt.setLong(6, Long.valueOf(medicCod));
+				stmt.setLong(7, Long.valueOf(codPacient));
+						stmt.executeUpdate();
+			}
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+		} finally {
+			CloseResources(conn, rs, stmt);
+		}
 	}
 public static void CloseResources(Connection conn,ResultSet rs,PreparedStatement stm) {
 	try {
