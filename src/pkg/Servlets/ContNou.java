@@ -52,7 +52,7 @@ public class ContNou extends HttpServlet {
 			request.setAttribute("msg", "Exista deja un cont cu acest email");
 		else {
 			DbOperations.insertPacient(pacient);
-			DbOperations.insertUser(email, parola,DbOperations.getPacient(email).getId().intValue());
+			DbOperations.insertPacientUser(email, parola,DbOperations.getPacient(email).getId().intValue());
 			DbOperations.insertCodContIntoPacient(email, Long.valueOf(DbOperations.getCodContPacient(email)));
 			SMTPHelper.SendEmail(email,parola);
 			request.setAttribute("msg", "Contul s a creat cu succes");

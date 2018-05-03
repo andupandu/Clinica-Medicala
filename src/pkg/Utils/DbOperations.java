@@ -1,5 +1,6 @@
 package pkg.Utils;
 import pkg.Entities.Analiza;
+import pkg.Entities.Consultatie;
 import pkg.Entities.Interval;
 import pkg.Entities.Medic;
 import pkg.Entities.Persoana;
@@ -10,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.sql.*;
+import java.text.ParseException;
 
 
 public class DbOperations {
@@ -73,7 +75,30 @@ public class DbOperations {
 	public static void deleteMedic(String id) {
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
-		String query="Delete FROM medic where medic_cod= ?";
+		String query="update medic set medic_valid =0 where medic_cod= ?";
+		conn = getConnection();
+		try {
+
+			if (conn != null) {
+				
+				stmt=conn.prepareStatement(query);
+				stmt.setLong(1, Long.valueOf(id));
+						stmt.executeUpdate();
+				
+			}
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+		} finally {
+			CloseResources(conn, rs, stmt);
+		}
+		
+	}
+	
+	public static void deletePacient(String id) {
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		String query="update pacient set pacient_valid =0 where pacient_cod= ?";
 		conn = getConnection();
 		try {
 
@@ -96,7 +121,7 @@ public class DbOperations {
 	public static void deleteSpecialitate(String codSpec) {
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
-		String query="Delete FROM specialitate where specialitate_cod= ?";
+		String query="update specialitate set specialitate_valid=0 where specialitate_cod=?";
 		conn = getConnection();
 		try {
 
@@ -119,7 +144,7 @@ public class DbOperations {
 		Connection conn = getConnection();
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
-		String query="insert into specialitate(specialitate_denumire) values(?)";
+		String query="insert into specialitate(specialitate_denumire,specialitate_valid) values(?,1)";
 		try {
 
 			if (conn != null) {
@@ -161,7 +186,7 @@ public class DbOperations {
 		}
 	}
 	public static List<Specialitate> getSpecializari() throws SQLException {
-		String query="SELECT * FROM Specialitate";
+		String query="SELECT * FROM Specialitate where specialitate_valid=1";
 		ResultSet rs =getQueryResults(query, null);
 		List<Specialitate> specializari = new ArrayList<Specialitate>();
 		while (rs.next()) {
@@ -174,7 +199,7 @@ public class DbOperations {
 		return specializari;
 	}
 	public static List<Medic> getMedicFromCodSpec(Long codSpec) throws SQLException{
-		String query="Select medic_cod,medic_nume,medic_prenume from medic where specialitate_cod=?";
+		String query="Select * from medic where specialitate_cod=? and medic_valid=1";
 		ResultSet rs=getQueryResults(query,  Arrays.asList(codSpec));
 		List<Medic> medici=new ArrayList<Medic>();
 		while(rs.next()) {
@@ -182,6 +207,9 @@ public class DbOperations {
 			medic.setId(rs.getLong("medic_cod"));
 			medic.setNume(rs.getString("medic_nume"));
 			medic.setPrenume(rs.getString("medic_prenume"));
+			medic.setTelefon(rs.getString("medic_telefon"));
+			medic.setEmail(rs.getString("medic_email"));
+			medic.setCodSpec(rs.getLong("specialitate_cod"));
 			medici.add(medic);
 		}
 		CloseResources(conn, rs, null);
@@ -222,7 +250,7 @@ public class DbOperations {
 		
 	}
 	public static List<Persoana> getPacienti() throws SQLException{
-		String query="Select * from pacient";
+		String query="Select * from pacient where pacient_valid=1";
 		ResultSet rs=getQueryResults(query,  null);
 		List<Persoana> pacienti=new ArrayList<Persoana>();
 		while(rs.next()) {
@@ -230,6 +258,10 @@ public class DbOperations {
 			pacient.setNume(rs.getString("pacient_nume"));
 			pacient.setPrenume(rs.getString("pacient_prenume"));
 			pacient.setId(rs.getLong("pacient_cod"));
+			pacient.setCnp(rs.getString("pacient_cnp"));
+			pacient.setEmail(rs.getString("pacient_email"));
+			pacient.setTelefon(rs.getString("pacient_telefon"));
+			pacient.setData_nastere(rs.getDate("pacient_data_nastere"));
 			pacienti.add(pacient);
 		}
 		CloseResources(conn, rs, null);
@@ -262,7 +294,7 @@ public class DbOperations {
 		return codServicii;
 	}
 	public static String getSpecializari(long cod) throws SQLException {
-		String query="SELECT * FROM Specialitate where specialitate_cod=?";
+		String query="SELECT * FROM Specialitate where specialitate_cod=? and specialitate_valid=1";
 		ResultSet rs =getQueryResults(query, Arrays.asList(cod));
 		String specializare=null;
 		while (rs.next()) {
@@ -327,7 +359,29 @@ public class DbOperations {
 			CloseResources(conn, rs, stmt);
 		}
 	}
-	
+	public static void modifyPacient(Persoana pacient) {
+		Connection conn = getConnection();
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		String query="update pacient set pacient_nume=?,pacient_prenume=?,pacient_email=?,pacient_data_nastere=?,pacient_telefon=? where pacient_cod= ?";
+		try {
+			if (conn != null) {			
+				stmt=conn.prepareStatement(query);
+				stmt.setString(1, pacient.getNume());
+				stmt.setString(2, pacient.getPrenume());
+				stmt.setString(3, pacient.getEmail());
+				stmt.setDate(4, pacient.getData_nastere());
+				stmt.setString(5, pacient.getTelefon());
+				stmt.setLong(6, pacient.getId());
+						stmt.executeUpdate();
+			}
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+		} finally {
+			CloseResources(conn, rs, stmt);
+		}
+	}
 	
 	public static void modifySpecialitate(Specialitate spec) {
 		Connection conn = getConnection();
@@ -355,7 +409,7 @@ public class DbOperations {
 		ResultSet rs = null;
 		
 		Persoana persoanaLogata=new Persoana();
-		String query="SELECT * FROM Medic where medic_email= ?";
+		String query="SELECT * FROM Medic where medic_email= ? and medic_valid=1";
 		try {
 
 			if (conn != null) {
@@ -388,7 +442,7 @@ public class DbOperations {
 		ResultSet rs = null;
 		List<Medic> medici=new ArrayList<Medic>();
 		
-		String query="SELECT * FROM Medic";
+		String query="SELECT * FROM Medic where medic_valid=1";
 		try {
 
 			if (conn != null) {
@@ -473,7 +527,8 @@ public class DbOperations {
 					pacient.setPrenume(rs.getString("pacient_prenume"));
 					pacient.setEmail(rs.getString("pacient_email"));
 					pacient.setTelefon(rs.getString("pacient_telefon"));
-					
+					pacient.setCnp(rs.getString("pacient_cnp"));
+					pacient.setData_nastere(rs.getDate("pacient_data_nastere"));
 				}
 			}
 		} catch (SQLException e) {
@@ -542,6 +597,32 @@ public class DbOperations {
 		}
 	}
 	
+	public static void insertMedicNou(Medic medic) {
+		Connection conn = getConnection();
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		String query="INSERT INTO Medic(medic_nume,medic_prenume,medic_email,medic_telefon,medic_data_nastere,specialitate_cod,medic_valid) values(?,?,?,?,?,?,1)";
+		try {
+
+			if (conn != null) {
+			
+				stmt=conn.prepareStatement(query);
+				stmt.setString(1,medic.getNume());
+				stmt.setString(2,medic.getPrenume());
+				stmt.setString(3,medic.getEmail());
+				stmt.setString(4,medic.getTelefon());
+				stmt.setDate(5,medic.getData_nastere());
+				stmt.setLong(5,medic.getCodSpec());
+				stmt.executeUpdate();
+	}
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+		} finally {
+			CloseResources(conn, rs, stmt);
+		}
+	}
+	
 	public static int getCodContPacient(String email) {
 		Connection conn = getConnection();
 		PreparedStatement stmt = null;
@@ -588,7 +669,7 @@ public class DbOperations {
 			CloseResources(conn, rs, stmt);
 		}
 	}
-	public static void insertUser(String email,String parola,int id) {
+	public static void insertPacientUser(String email,String parola,int id) {
 		Connection conn = getConnection();
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
@@ -706,7 +787,91 @@ public class DbOperations {
 		}
 	return oreProgram;
 	}
-	public static List<Interval>  getFreeHoursConsultatie(Date data,Long codMedic) {
+	
+	public static List<Consultatie> getConsultatii(String medic,String data) {
+		Connection conn = getConnection();
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		System.out.println(data);
+		String query="select programareconsultatie_ora_consultatie,programareconsultatie_data_consultatie,CONCAT(pacient_nume, ' ', pacient_prenume) pacient,CONCAT(medic_nume, ' ', medic_prenume) medic,serviciu_denumire " + 
+				"from programareconsultatie,pacient,medic,serviciu " + 
+				"where programareconsultatie_tip_consultatie=serviciu_cod" + 
+				" and programareconsultatie_status='in curs'" + 
+				" and programareconsultatie_medic_cod=medic_cod" + 
+				" and programareconsultatie_pacient_cod=pacient_cod" + 
+				" and programareconsultatie_data_consultatie=?" + 
+				" and CONCAT(medic_nume, ' ', medic_prenume) like ?";
+		
+		List<Consultatie> consultatii=new ArrayList<Consultatie>();
+		try {
+
+			if (conn != null) {
+				stmt=conn.prepareStatement(query);
+				stmt.setString(1, data);
+				stmt.setString(2, medic+"%");
+				rs=stmt.executeQuery();
+				while(rs.next()) {
+					Consultatie consultatie=new Consultatie();
+					consultatie.setOraInceput(rs.getString("programareconsultatie_ora_consultatie"));
+					consultatie.setPacient(rs.getString("pacient"));
+					consultatie.setTipConsutatie(rs.getString("serviciu_denumire"));
+					consultatie.setData(rs.getDate("programareconsultatie_data_consultatie"));
+					consultatie.setMedic(rs.getString("medic"));
+					consultatii.add(consultatie);
+
+				}
+
+			}
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+		} finally {
+			CloseResources(conn, rs, stmt);
+		}
+		return consultatii;
+	}
+	public static void anuleazaConsultatie( String pacient,String medic,Date data) {
+		Connection conn = getConnection();
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		String query="Update programareconsultatie set programareconsultatie_status='anulat' where programareconsultatie_pacient_cod=? and programareconsultatie_data_consultatie=? and programareconsultatie_medic_cod=?";
+		try {
+
+			if (conn != null) {
+			
+				stmt=conn.prepareStatement(query);
+				stmt.setString(1,pacient);
+				stmt.setDate(2,data);
+				stmt.setString(3,medic);
+				stmt.executeUpdate();
+	}
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+		} finally {
+			CloseResources(conn, rs, stmt);
+		}
+	}
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+	}
+	public static List<Interval>  getBusyHoursConsultatie(Date data,Long codMedic) {
 		Connection conn = getConnection();
 		PreparedStatement stmt = null;
 		ResultSet rs = null;

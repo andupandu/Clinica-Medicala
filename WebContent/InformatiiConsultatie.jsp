@@ -12,7 +12,6 @@
 <link rel="stylesheet" type="text/css" href="Styles/Style.css">
 <script src="Styles/bootstrap.min.js"></script>
 <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/css/bootstrap-datepicker.css">
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/js/bootstrap-datepicker.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/locales/bootstrap-datepicker.ro.min.js"></script>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
@@ -20,6 +19,8 @@
 </head>
 
 <body>
+<jsp:include page="indexAdmin.jsp" />
+	<div id="right">
 <h1>Cere o programare</h1>
 <center>
 <form name="consultatie" action="ProgramariConsultatie" method="post">
@@ -84,6 +85,7 @@
 </table>
 </form>
 </center>
+</div>
 </body>
 </html>
 <script>
@@ -186,6 +188,8 @@ $('.data').datepicker({
 }
 
 function getOreDisponibile(){
+	$('.data').datepicker( "destroy" );
+	$('.data').datepicker( "refresh" );
 	var data=$('.data').datepicker( "getDate" );
 	 var medic=document.getElementById("medic").value;
 	 var serviciu=document.getElementById("serviciu").value;
@@ -208,6 +212,7 @@ function getOreDisponibile(){
         		selectOra.innerHTML+="<option value="+ora+">"+ora+"</option>"	
 	        );
 	        })
+	        $('.data').datepicker( "refresh" );
 }
 
 function ReinitializeDatePicker(){
@@ -215,7 +220,7 @@ function ReinitializeDatePicker(){
 }
 function onChangeMedic(){
 	fillMotivCons();
-	ReinitializeDatePicker();
+	
 }
 if(document.getElementById("serviciu").value != null)
 	InitializeDatepicker();

@@ -46,10 +46,15 @@ public class EditeazaSpecialitati extends HttpServlet {
 		}
 
 		//request.getRequestDispatcher("InformatiiSpecialitati.jsp").forward(request,response);
+		if(!operation.equals("add")) {
 		response.getWriter().write(msg);
 		response.getWriter().flush();
 		response.getWriter().close();
-		response.sendRedirect("InformatiiSpecialitati.jsp");
+		response.sendRedirect("InformatiiSpecialitati.jsp");}
+		else {
+			request.setAttribute("msjInserareSpecialitate", msg);
+			request.getRequestDispatcher("InformatiiSpecialitati.jsp").forward(request,response);
+		}
 	}
 
 	/**

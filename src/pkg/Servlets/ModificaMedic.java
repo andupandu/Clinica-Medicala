@@ -3,6 +3,7 @@ package pkg.Servlets;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
+import java.util.Arrays;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -30,30 +31,55 @@ public class ModificaMedic extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
+
 		PrintWriter out = response.getWriter();
-		 response.setContentType("text/plain");
-		if(request.getParameter("verif").equals("delete")){
-			DbOperations.deleteMedic((String)request.getParameter("medicId"));
-		}
-		else if(request.getParameter("verif").equals("modif")) {
-			Medic medic=new Medic();
-			medic.setNume(request.getParameter("nume"));
-			medic.setPrenume(request.getParameter("prenume"));
-			medic.setTelefon(request.getParameter("telefon"));
-			medic.setEmail(request.getParameter("email"));
-			medic.setId(Long.valueOf(request.getParameter("medicId")));
-			try {
-				medic.setCodSpec(DbOperations.getCodSpecFromDenSpec(request.getParameter("spec")));
-			} catch (SQLException e) {
-				e.printStackTrace();
+		response.setContentType("text/plain");
+		String metoda=request.getParameter("verif");
+		Medic medic=new Medic();
+		if(metoda!=null) {
+			switch(metoda) {
+			case "delete":
+				DbOperations.deleteMedic((String)request.getParameter("medicId"));
+				break;
+			case "modif":
+			{
+				
+				medic.setNume(request.getParameter("nume"));
+				medic.setPrenume(request.getParameter("prenume"));
+				medic.setTelefon(request.getParameter("telefon"));
+				medic.setEmail(request.getParameter("email"));
+				medic.setId(Long.valueOf(request.getParameter("medicId")));
+				try {
+					medic.setCodSpec(DbOperations.getCodSpecFromDenSpec(request.getParameter("spec")));
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+				DbOperations.modifyMedic(medic);
+				break;
 			}
-			DbOperations.modifyMedic(medic);
+			}
+		}else {
+			String spec=request.getParameter("specialitateIntrodusa");
+			System.out.println("aaaaaaaaaaaaaaaaaa"+request.getParameter("specialitateIntrodusa"));
+			Long specialitateDeCautat=spec==null?0:Long.valueOf(spec);
+			if(specialitateDeCautat==0) {
+				request.setAttribute("medici", DbOperations.getListaMedici());
+			}
+			else {
+				try {
+					request.setAttribute("medici",DbOperations.getMedicFromCodSpec(specialitateDeCautat));
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
 		}
+
+
+
 		request.getRequestDispatcher("InformatiiMedic.jsp").forward(request,response);
-	out.close();
-		}
-	
+		out.close();
+	}
+
 	
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)

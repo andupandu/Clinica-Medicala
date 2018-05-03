@@ -22,6 +22,10 @@ public class DateUtil {
         Date parsed = format.parse(date);
         return parsed;
 	}
+	public static String changeDateFormat(Date data) {
+		 return new SimpleDateFormat("dd/MM/yyyy").format(data);
+
+	}
 	public static String addMinutesToHours(String hour,String minutes) throws ParseException {
 		Date date=getDateHourFromString(hour);
 		Calendar cal = Calendar.getInstance();

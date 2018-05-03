@@ -79,4 +79,24 @@
     <servlet-name>ProgramariConsultatie</servlet-name>
     <url-pattern>/ProgramariConsultatie</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>ModificaPacient</display-name>
+    <servlet-name>ModificaPacient</servlet-name>
+    <servlet-class>pkg.Servlets.ModificaPacient</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ModificaPacient</servlet-name>
+    <url-pattern>/ModificaPacient</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>AnuleazaProgramare</display-name>
+    <servlet-name>AnuleazaProgramare</servlet-name>
+    <servlet-class>pkg.Servlets.AnuleazaProgramare</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>AnuleazaProgramare</servlet-name>
+    <url-pattern>/AnuleazaProgramare</url-pattern>
+  </servlet-mapping>
 </web-app>

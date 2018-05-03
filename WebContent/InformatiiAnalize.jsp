@@ -16,6 +16,8 @@
 </head>
 <body>
 <body>
+<jsp:include page="indexAdmin.jsp" />
+	<div id="right">
 <h1>Cere o programare pentru analize</h1>
 <center>
 <form name="analize" action="ProgramariAnalize" method="post">
@@ -52,14 +54,14 @@
 </tr>
 
 <tr>
-<td>Data:<input type="text" name="data" id="data" class=" datepicker"></td>
+<td>Data:<br><input type="text" name="data" id="data" class=" datepicker form-control"></td>
 </tr>
 <tr>
 <td>Ora:<input type="time" min="07:00:00" max="10:00:00" name="ora" id="ora" class=" form-control" /></td>
 </tr>
 <br>
 <tr>
-<td>Analize:<br><select id="analize" name="analize" class="custom-select" multiple="multiple"  style="height: 50pt"><%for(Analiza analiza :DbOperations.getAnalize()){ %>
+<td>Analize:<br><select id="analize" name="analize" class="custom-select" multiple style="height: 50pt"><%for(Analiza analiza :DbOperations.getAnalize()){ %>
 <option value="<%=analiza.getCod()%>"><%=analiza.getDenumire() %></option>
 <%} %></select></td>
 </tr>
@@ -70,6 +72,7 @@
 </table>
 </form>
 </center>
+</div>
 </body>
 <script>
 function searchPacient(){
@@ -80,6 +83,7 @@ function searchPacient(){
 	}
 	$.post("ProgramariConsultatie",
 	        {
+			metoda:"detalii",
 	          cnp:cnp.value
 	        },
 	        function(data,status){

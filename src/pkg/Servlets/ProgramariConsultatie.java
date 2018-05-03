@@ -50,6 +50,16 @@ public class ProgramariConsultatie extends HttpServlet {
 
 	}
 	
+	public String getStartingHour(String inceput,List<Interval> consultatii) throws ParseException {
+		int i=0;
+		
+		while(i<consultatii.size() && DateUtil.getDateHourFromString(inceput).equals(DateUtil.getDateHourFromString(consultatii.get(i).getInceput()))){
+			inceput=consultatii.get(i).getSfarsit();
+			i++;
+			
+		}
+		return inceput;
+	}
 	public List<String> getOreDisp(String codMedic,String data,String codServiciu) throws Exception{
 		List<String> oreDisp=new ArrayList<String>();
 		for(Interval ora:getListaIntervalePosibile(codMedic, data))
@@ -65,9 +75,9 @@ public class ProgramariConsultatie extends HttpServlet {
 		String sfarsit=oreLucruMedic.get(1).substring(0, oreLucruMedic.get(1).length() - 3);
 
 		try {
-			if(!DbOperations.getFreeHoursConsultatie(DateUtil.getSqlDateFromUtilDate(new Date(data)), Long.valueOf(codMedic)).isEmpty()) {
-				for(Interval ora:DbOperations.getFreeHoursConsultatie(DateUtil.getSqlDateFromUtilDate(new Date(data)), Long.valueOf(codMedic)))
-				{
+			if(!DbOperations.getBusyHoursConsultatie(DateUtil.getSqlDateFromUtilDate(new Date(data)), Long.valueOf(codMedic)).isEmpty()) {
+				for(Interval ora:DbOperations.getBusyHoursConsultatie(DateUtil.getSqlDateFromUtilDate(new Date(data)), Long.valueOf(codMedic)))
+				{ System.out.println("OREEEEE"+DateUtil.getDateHourFromString(inceput)+DateUtil.getDateHourFromString(ora.getInceput()));
 					if(DateUtil.getDateHourFromString(inceput).before(DateUtil.getDateHourFromString(ora.getInceput()))) {
 						Interval interval=new Interval();
 						interval.setInceput(inceput);
@@ -75,6 +85,9 @@ public class ProgramariConsultatie extends HttpServlet {
 						interval.setSfarsit(ora.getInceput());
 						intervalePosibile.add(interval);
 						inceput=ora.getSfarsit();
+					}
+					else {
+						inceput=getStartingHour(inceput,DbOperations.getBusyHoursConsultatie(DateUtil.getSqlDateFromUtilDate(new Date(data)), Long.valueOf(codMedic)));
 					}
 				}
 			}
