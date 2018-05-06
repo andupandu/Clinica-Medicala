@@ -17,7 +17,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Pagina administrator</title>
 </head>
-
+<%String msg=(String)request.getAttribute("msg");%>
 <body>
 <jsp:include page="indexAdmin.jsp" />
 	<div id="right">
@@ -27,7 +27,7 @@
 <table>
  <tr>
  <td>
- Cauta pacient:<input type="text" name="cnp" id="cnp" class=" form-control"  placeholder="Insereaza CNP-ul pacientului">
+ Cauta pacient:<input type="text" name="cnpcautat" id="cnpcautat" class=" form-control"  placeholder="Insereaza CNP-ul pacientului">
  <input type="button" onclick="searchPacient();" value="Cauta" class="btn btn-outline-secondary">
  </td>
  </tr>
@@ -43,6 +43,13 @@
 <tr style="display:none" id="trtelefon">
 <td>Telefon:<input type="text" name="telefon" id="telefon" class=" form-control"></td>
 </tr>
+<tr style="display:none" id="trcnp">
+<td>Cnp:<input type="text" name="cnp" id="cnp" class=" form-control"></td>
+</tr>
+<tr style="display:none" id="trdatanasterii">
+<td>Data Nasterii:<input type="text" name="dataNasterii" id="dataNasterii" class=" datepicker form-control">
+</td>
+</tr>
 <tr style="display:none" id="trpacient">
 <td>Pacient:<input type="text" name="pacient" id="pacient" class=" form-control" readonly></td>
 </tr>
@@ -50,7 +57,7 @@
 <td><input type="text" name="pacientcod" id="pacientcod" class=" form-control"></td>
 </tr>
 <tr>
-<td>Specialitate:<br><select id="spec" name="spec" class="custom-select" onchange="fillMedicSelect()">
+<td>Specialitate:<br><select id="spec" name="spec" class="custom-select" onchange="fillMedicSelect();ReinitializeDatePicker()">
 <% for(Specialitate spec:DbOperations.getSpecializari()){%>
 <option value="<%=spec.getDenumire()%>"><%=spec.getDenumire() %></option>
 <%} %></select></td>
@@ -63,7 +70,7 @@
 
 
 <tr>
-<td>Motiv Consultatie:<br><select id="serviciu" name="serviciu" class="custom-select" onchange="ReinitializeDatePicker()">
+<td>Motiv Consultatie:<br><select id="serviciu" name="serviciu" class="custom-select" onchange="ReinitializeDatePicker();getOreDisponibile()">
 </select></td>
 </tr>
 <tr>
@@ -80,7 +87,7 @@
 </tr>
 
 <tr>
-<td><br><input type="submit" class="btn btn-outline-secondary" id="continua" name="continua" value="Continua"></td>
+<td><br><input type="submit" class="btn btn-outline-secondary" id="continua" name="continua" value="Programeaza"></td>
 </tr>
 </table>
 </form>
@@ -96,7 +103,7 @@ function fillMedicSelect(){
 	var selectMedic=document.getElementById("medic");
 	<%for(Specialitate specialitate:DbOperations.getSpecializari()){%>
 	if("<%=specialitate.getDenumire()%>"==spec){
-		selectMedic.innerHTML="<%for(Medic m:DbOperations.getMedicFromCodSpec(DbOperations.getCodSpecFromDenSpec(specialitate.getDenumire()))){%><option value='<%=m.getId()%>'><%=m.getNume()+" "+m.getPrenume()%></option><%}%>";
+		selectMedic.innerHTML="<%for(Medic m:DbOperations.getMediciPentruConsultatii(specialitate.getCod())){%><option value='<%=m.getId()%>'><%=m.getNume()+" "+m.getPrenume()%></option><%}%>";
 	}
 		<%}%>
 		
@@ -118,7 +125,7 @@ function fillMotivCons(){
 fillMotivCons();
 
 function searchPacient(){
-	var cnp=document.getElementById("cnp");
+	var cnp=document.getElementById("cnpcautat");
 	if(cnp.value==""){
 		alert("Introduceti CNP-UL!!");
 		return;
@@ -139,6 +146,8 @@ function searchPacient(){
 	        		document.getElementById("trprenume").style.display="none";
 	        		document.getElementById("trtelefon").style.display="none";
 	        		document.getElementById("tremail").style.display="none";
+	        		document.getElementById("trdatanasterii").style.display="none";
+	        		document.getElementById("trcnp").style.display="none";
 	        	}
 	        	else{
 	        		alert(response.valid);
@@ -146,6 +155,8 @@ function searchPacient(){
 	        		document.getElementById("trprenume").style.display="block";
 	        		document.getElementById("trtelefon").style.display="block";
 	        		document.getElementById("tremail").style.display="block";
+	        		document.getElementById("trdatanasterii").style.display="block";
+	        		document.getElementById("trcnp").style.display="block";
 	        		document.getElementById("trpacient").style.display="none";
 
 	        	}
@@ -188,8 +199,6 @@ $('.data').datepicker({
 }
 
 function getOreDisponibile(){
-	$('.data').datepicker( "destroy" );
-	$('.data').datepicker( "refresh" );
 	var data=$('.data').datepicker( "getDate" );
 	 var medic=document.getElementById("medic").value;
 	 var serviciu=document.getElementById("serviciu").value;
@@ -212,7 +221,6 @@ function getOreDisponibile(){
         		selectOra.innerHTML+="<option value="+ora+">"+ora+"</option>"	
 	        );
 	        })
-	        $('.data').datepicker( "refresh" );
 }
 
 function ReinitializeDatePicker(){
@@ -220,10 +228,17 @@ function ReinitializeDatePicker(){
 }
 function onChangeMedic(){
 	fillMotivCons();
-	
+	ReinitializeDatePicker();
+	getOreDisponibile();
 }
 if(document.getElementById("serviciu").value != null)
 	InitializeDatepicker();
 	
-$('.data').datepicker( "refresh" );
+
+var msj="<%=msg%>";
+if(msj!="null")
+	alert(msj);
+$( function() {
+    $( '#dataNasterii' ).datepicker();})
+  
 </script>

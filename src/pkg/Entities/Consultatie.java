@@ -9,6 +9,7 @@ public class Consultatie {
 	String pacient;
 	String tipConsutatie;
 	Date data;
+	String status;
 	public String getOraInceput() {
 		return oraInceput;
 	}
@@ -38,6 +39,12 @@ public class Consultatie {
 	}
 	public void setData(Date data) {
 		this.data = data;
+	}
+	public String getStatus() {
+		return status;
+	}
+	public void setStatus(String status) {
+		this.status = status;
 	}
 	
 	

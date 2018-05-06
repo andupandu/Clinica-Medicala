@@ -1,6 +1,7 @@
 package pkg.Servlets;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -16,8 +17,10 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.gson.Gson;
 
 import pkg.Entities.Interval;
+import pkg.Entities.Persoana;
 import pkg.Utils.DateUtil;
 import pkg.Utils.DbOperations;
+import pkg.Utils.SMTPHelper;
 
 /**
  * Servlet implementation class ProgramariConsultatie
@@ -144,15 +147,16 @@ public class ProgramariConsultatie extends HttpServlet {
 			}
 			break;
 		case "detalii":
-			String cnp=request.getParameter("cnp");
-			if(DbOperations.cautaPacientDupaCNP(cnp)==null){
+			String cnpCautat=request.getParameter("cnp");
+			System.out.println(cnpCautat);
+			if(DbOperations.cautaPacientDupaCNP(cnpCautat).getId()==null){
 				response.getWriter().append("{\"valid\":\"false\"}");
 			} 
 			else {
 				response.getWriter().append("{\"valid\":true,"
-						+ "\"nume\":\"" + DbOperations.cautaPacientDupaCNP(cnp).getNume() +"\""
-						+ ",\"prenume\":\"" + DbOperations.cautaPacientDupaCNP(cnp).getPrenume() +"\""
-						+ ",\"id\":\"" + DbOperations.cautaPacientDupaCNP(cnp).getId() +"\""
+						+ "\"nume\":\"" + DbOperations.cautaPacientDupaCNP(cnpCautat).getNume() +"\""
+						+ ",\"prenume\":\"" + DbOperations.cautaPacientDupaCNP(cnpCautat).getPrenume() +"\""
+						+ ",\"id\":\"" + DbOperations.cautaPacientDupaCNP(cnpCautat).getId() +"\""
 						+ "}");
 			}
 			break;
@@ -180,15 +184,38 @@ public class ProgramariConsultatie extends HttpServlet {
 		String detalii=request.getParameter("detalii");
 		//SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
         Date parsed;
+        System.out.println("data11111"+request.getParameter("dataNasterii"));
 		try {
 			parsed = new SimpleDateFormat("dd/MM/yyyy").parse(dataCons);
+			if(pacient=="") {
+				Persoana pacientNou=new Persoana();
+				pacientNou.setCnp(request.getParameter("cnp"));
+				pacientNou.setEmail(request.getParameter("email"));
+				pacientNou.setNume(request.getParameter("nume"));
+				pacientNou.setPrenume(request.getParameter("prenume"));
+				pacientNou.setTelefon(request.getParameter("telefon"));
+				pacientNou.setData_nastere( DateUtil.getSqlDateFromUtilDate(new Date(request.getParameter("dataNasterii"))));
+				
+					DbOperations.insertPacient(pacientNou);
+					DbOperations.insertPacientUser(pacientNou.getEmail(), SMTPHelper.generatePassword(),DbOperations.getPacient(pacientNou.getEmail()).getId().intValue());
+					DbOperations.insertCodContIntoPacient(pacientNou.getEmail(), Long.valueOf(DbOperations.getCodCont(pacientNou.getEmail())));
+					DbOperations.insertConsultatie(detalii, "in curs",serviciu, ora,new java.sql.Date(parsed.getTime()), medic, String.valueOf(DbOperations.getPacient(pacientNou.getEmail()).getId()));
+					request.setAttribute("msg", "Programarea a fost adaugata");
+			}else {
+			if(!DbOperations.checkIfConsultatieExists(medic, pacient)) {
 			DbOperations.insertConsultatie(detalii, "in curs",serviciu, ora,new java.sql.Date(parsed.getTime()), medic, pacient);
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
+			request.setAttribute("msg", "Programarea a fost adaugata");
+			}
+			else {
+				request.setAttribute("msg", "Pacientul are deja o programare in curs la medicul ales");
+			}
+		} 
+		}catch (ParseException | SQLException e) {
+			request.setAttribute("msg", "Cnp deja existent");
 			e.printStackTrace();
 		}
 		
-		response.sendRedirect("InformatiiConsultatie.jsp");
+		request.getRequestDispatcher("InformatiiConsultatie.jsp").forward(request,response);
 		}
 	}
 

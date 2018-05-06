@@ -29,6 +29,8 @@
   <a href="InformatiiPacient.jsp"  class="list-group-item list-group-item-action">Pacienti</a>
   
   <a class="list-group-item list-group-item-action"  href="AnulareProgramari.jsp"> Anulare programari</a>
+ 
+         
 </div>
 </body>
 </html>

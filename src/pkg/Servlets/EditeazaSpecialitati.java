@@ -32,17 +32,17 @@ public class EditeazaSpecialitati extends HttpServlet {
 		String msg=null;
 		if(operation.equals("add")) {
 			DbOperations.insertNewSpecializare(request.getParameter("specNoua"));
-			msg="Specialitatea s a adaugat cu succes!";
+			msg="Specialitatea s-a adaugat cu succes!";
 		}else if(operation.equals("delete")) {
 			DbOperations.deleteSpecialitate(request.getParameter("specId"));
-			msg="Specialitatea s a sters cu succes!";
+			msg="Specialitatea s-a sters cu succes!";
 		}
 		else {
 			Specialitate spec=new Specialitate();
 			spec.setCod(Long.valueOf(request.getParameter("specId")));
 			spec.setDenumire(request.getParameter("spec"));
 			DbOperations.modifySpecialitate(spec);
-			msg="Specialitatea s a modificat cu succes!";
+			msg="Specialitatea s-a modificat cu succes!";
 		}
 
 		//request.getRequestDispatcher("InformatiiSpecialitati.jsp").forward(request,response);
@@ -50,7 +50,8 @@ public class EditeazaSpecialitati extends HttpServlet {
 		response.getWriter().write(msg);
 		response.getWriter().flush();
 		response.getWriter().close();
-		response.sendRedirect("InformatiiSpecialitati.jsp");}
+		response.sendRedirect("InformatiiSpecialitati.jsp");
+		}
 		else {
 			request.setAttribute("msjInserareSpecialitate", msg);
 			request.getRequestDispatcher("InformatiiSpecialitati.jsp").forward(request,response);

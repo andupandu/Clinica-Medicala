@@ -18,7 +18,7 @@
 <body>
 	<jsp:include page="indexAdmin.jsp" />
 	<div id="right">
-		<form method="post" action="ModificaPacient">
+		<form method="post" action="ModificaPacient" style="text-align:center">
 			<center>
 				Cauta pacient dupa CNP: <input type="text" name="cnpintrodus"
 					id="cnpintrodus" class=" form-control" style="width: auto">
@@ -28,9 +28,11 @@
 		<%
 			List<Persoana> pacienti = (List<Persoana>) request.getAttribute("pacienti");
 
-			if (pacienti != null) {
+			if (pacienti != null) 
+			if(pacienti.get(0).getId()!=null){
+				
 		%>
-		<table class="table" style="width: auto">
+		<table class="table" style="width: auto" align="center">
 			<tr>
 				<th>Nume</th>
 				<th>Prenume</th>
@@ -43,13 +45,14 @@
 
 			<%
 				int i = 0;
-					for (Persoana p : pacienti) {
+					for (Persoana p : pacienti)
+					{
 			%>
 
 			<tr id="pacient<%=i%>">
-				<input type="hidden" id="pacientId" name="pacientId"
+					<td><input type="hidden" id="pacientId" name="pacientId"
 					value="<%=p.getId()%>">
-				<td><input type="text" name="nume" id="nume"
+				<input type="text" name="nume" id="nume"
 					class=" form-control" value="<%=p.getNume()%>" disabled></td>
 				<td><input type="text" name="prenume" id="prenume"
 					class=" form-control" value="<%=p.getPrenume()%>" disabled></td>
@@ -75,7 +78,10 @@
 			%>
 		</table>
 		<%
-			}
+			}else{%>
+				<div class="p-3 mb-2 bg-light text-dark" style="text-align:center">Nu s-a gasit niciun pacient cu acest cnp</div>
+			<%}
+		
 		%>
 	</div>
 </body>

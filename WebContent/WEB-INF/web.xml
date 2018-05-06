@@ -99,4 +99,24 @@
     <servlet-name>AnuleazaProgramare</servlet-name>
     <url-pattern>/AnuleazaProgramare</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>ContPacient</display-name>
+    <servlet-name>ContPacient</servlet-name>
+    <servlet-class>pkg.Servlets.ContPacient</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ContPacient</servlet-name>
+    <url-pattern>/ContPacient</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>ContMedic</display-name>
+    <servlet-name>ContMedic</servlet-name>
+    <servlet-class>pkg.Servlets.ContMedic</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ContMedic</servlet-name>
+    <url-pattern>/ContMedic</url-pattern>
+  </servlet-mapping>
 </web-app>

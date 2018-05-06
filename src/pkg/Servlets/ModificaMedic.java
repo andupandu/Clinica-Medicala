@@ -36,10 +36,12 @@ public class ModificaMedic extends HttpServlet {
 		response.setContentType("text/plain");
 		String metoda=request.getParameter("verif");
 		Medic medic=new Medic();
+		String msg=null;
 		if(metoda!=null) {
 			switch(metoda) {
 			case "delete":
 				DbOperations.deleteMedic((String)request.getParameter("medicId"));
+				msg="Operatiune reusita! Medicul selectat nu mai este disponibil";
 				break;
 			case "modif":
 			{
@@ -55,9 +57,15 @@ public class ModificaMedic extends HttpServlet {
 					e.printStackTrace();
 				}
 				DbOperations.modifyMedic(medic);
+				msg="Datele au fost modificate";
 				break;
 			}
 			}
+			
+			response.getWriter().write(msg);
+			response.getWriter().flush();
+			response.getWriter().close();
+			response.sendRedirect("InformatiiMedic.jsp");
 		}else {
 			String spec=request.getParameter("specialitateIntrodusa");
 			System.out.println("aaaaaaaaaaaaaaaaaa"+request.getParameter("specialitateIntrodusa"));
@@ -72,11 +80,12 @@ public class ModificaMedic extends HttpServlet {
 					e.printStackTrace();
 				}
 			}
+			request.getRequestDispatcher("InformatiiMedic.jsp").forward(request,response);
 		}
 
 
 
-		request.getRequestDispatcher("InformatiiMedic.jsp").forward(request,response);
+		
 		out.close();
 	}
 

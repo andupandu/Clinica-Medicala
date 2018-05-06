@@ -38,11 +38,13 @@ public class ModificaPacient extends HttpServlet {
 		PrintWriter out = response.getWriter();
 		response.setContentType("text/plain");
 		String metoda=request.getParameter("verif");
+		String msg=null;
 		if(metoda!=null) {
 			switch (metoda) {
 			case "delete":
 
 				DbOperations.deletePacient((String)request.getParameter("pacientId"));
+				msg="Pacientul a fost sters cu succes";
 				break;
 			case "modif": 
 				Persoana pacient=new Persoana();
@@ -59,8 +61,13 @@ public class ModificaPacient extends HttpServlet {
 					e.printStackTrace();
 				}
 				DbOperations.modifyPacient(pacient);
+				msg="Datele au fost modificate";
 				break;
 			}
+			response.getWriter().write(msg);
+			response.getWriter().flush();
+			response.getWriter().close();
+			response.sendRedirect("InformatiiPacient.jsp");
 		}
 			else {
 				String cnpDeCautat=request.getParameter("cnpintrodus");
@@ -76,9 +83,9 @@ public class ModificaPacient extends HttpServlet {
 				else {
 					request.setAttribute("pacienti", Arrays.asList(DbOperations.cautaPacientDupaCNP(cnpDeCautat)));
 				}
+				request.getRequestDispatcher("InformatiiPacient.jsp").forward(request,response);
 			}
 		
-		request.getRequestDispatcher("InformatiiPacient.jsp").forward(request,response);
 		out.close();
 	}
 

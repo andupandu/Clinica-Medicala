@@ -1,13 +1,13 @@
 <%@page import="pkg.Utils.DbOperations"%>
 <%@page import="java.util.List"%>
-<%@page import="pkg.Entities.*"%><%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+<%@page import="pkg.Entities.*"%>
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-
 <link rel="stylesheet" type="text/css" href="Styles/bootstrap.min.css">
 <script src="Styles/bootstrap.min.js"></script>
  <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"/>
@@ -15,7 +15,7 @@
 <title>Pagina administrator</title>
 </head>
 <body>
-<body>
+<%String msg=(String)request.getAttribute("msg"); %>
 <jsp:include page="indexAdmin.jsp" />
 	<div id="right">
 <h1>Cere o programare pentru analize</h1>
@@ -44,17 +44,19 @@
 <td>CNP:<input type="text" name="cnpNou" id="cnpNou" class=" form-control"></td>
 </tr>
 <tr style="display:none" id="trdataNasterii">
-<td>Data nasterii:<input type="date" name="dataNasterii" id="dataNasterii" class=" form-control"></td>
+<td>Data nasterii:<input type="text" name="dataNasterii" id="dataNasterii" class=" datepicker form-control">
+<input type="hidden" name="data1" id="data1"></td>
 </tr>
 <tr style="display:none" id="trpacient">
-<td>Pacient:<input type="text" name="pacient" id="pacient" class=" form-control" readonly></td>
+<td>Pacient:<input type="text" name="pacient" id="pacient" class="form-control" readonly></td>
 </tr>
 <tr style="display:none">
 <td><input type="text" name="pacientcod" id="pacientcod" class=" form-control"></td>
 </tr>
 
 <tr>
-<td>Data:<br><input type="text" name="data" id="data" class=" datepicker form-control"></td>
+<td>Data:<br><input type="text" name="data" id="data" class=" datepicker form-control">
+<input type="hidden" name="dataprog" id="dataprog"></td>
 </tr>
 <tr>
 <td>Ora:<input type="time" min="07:00:00" max="10:00:00" name="ora" id="ora" class=" form-control" /></td>
@@ -74,6 +76,7 @@
 </center>
 </div>
 </body>
+</html>
 <script>
 function searchPacient(){
 	var cnp=document.getElementById("cnp");
@@ -81,15 +84,16 @@ function searchPacient(){
 		alert("Introduceti CNP-UL!!");
 		return;
 	}
-	$.post("ProgramariConsultatie",
+	$.post("ProgramariAnalize",
 	        {
 			metoda:"detalii",
 	          cnp:cnp.value
 	        },
 	        function(data,status){
+	        	alert(data)
 	        	var response = JSON.parse(data)
 	        	if(response.valid==true){
-	        	
+	        		alert(response.valid);
 	        		document.getElementById("pacient").value=response.nume+' '+response.prenume;
 	        		document.getElementById("pacientcod").value=response.id;
 	        		document.getElementById("trpacient").style.display="block";
@@ -117,9 +121,22 @@ function Disable() {
 	   var day=date.getTime();
 	return day;
 	}
-	  
+var msj="<%=msg%>";
+if(msj!="null")
+	alert(msj);
+	
 	 $(function() {
 	 $( "#data" ).datepicker({
 	 minDate: 0
 	 });
-	 });</script>
+	 });
+	 
+	 $(function() {
+		 $( "#dataNasterii" ).datepicker();
+		 });
+	 $('#data').datepicker({ dateFormat: 'dd/mm/yy',
+		   altField: "#dataprog",
+		      altFormat: "yy-mm-dd"})
+	 $('#dataNasterii').datepicker({ dateFormat: 'dd/mm/yy',
+		   altField: "#data1",
+		      altFormat: "yy-mm-dd"})</script>

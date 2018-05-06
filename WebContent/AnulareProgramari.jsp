@@ -15,14 +15,15 @@
 <script src="Styles/bootstrap.min.js"></script>
  <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"/>
 </head>
-<%List<Consultatie> consultatii=(List<Consultatie>)request.getAttribute("consultatii"); %>
+<%List<Consultatie> consultatii=(List<Consultatie>)request.getAttribute("consultatii");
+String msg=(String)request.getAttribute("msg");%>
 <body>
 <jsp:include page="indexAdmin.jsp" />
 <div id="right">
 <table align="center">
 <tr>
 <td>
-<form method="post" action="AnuleazaProgramare">
+<form method="post" action="AnuleazaProgramare" onsubmit="return Verif()">
 Cauta medic:<input type="text" id="medic" name="medic" class=" form-control"><br>
 Data:<input type="text" name="data" id="data" class="datepicker form-control"><br>
 <input type="hidden" name="data1" id="data1" ><br>
@@ -30,16 +31,18 @@ Data:<input type="text" name="data" id="data" class="datepicker form-control"><b
 </form>
 </td>
 </tr>
-<% if(consultatii!=null){%>
+<% if(consultatii!=null)
+if(!consultatii.isEmpty()){%>
 <table class="table" style="width: auto" align="center">
 			<tr>
 				<th>Data</th>
 				<th>Ora</th>
 				<th>Pacient</th>
 				<th>Tip Consultatie</th>
+				<th>Status</th>
 				<th><input type="button" class="btn btn-outline-secondary"
 						id="anuleaza" name="anuleaza" value="Anuleaza toate programarile"
-						onclick="anuleazaProg('', 'anulare')"></th>
+						onclick="anuleazaProg('1', 'anularetotala')"></th>
 				
 			</tr>
 
@@ -60,10 +63,10 @@ Data:<input type="text" name="data" id="data" class="datepicker form-control"><b
 				<td><input type="text" name="pacient" id="pacient"
 					class=" form-control" value="<%=cons.getPacient()%>" disabled></td>
 				<td><input type="text" id="tipCons" name="tipCons"
-					class=" form-control"  size="50" value="<%=cons.getTipConsutatie()%>" disabled></td>
-				
-
-				<td> <input
+					class=" form-control"  size="40" value="<%=cons.getTipConsutatie()%>" disabled></td>
+				<td><input type="text" id="status" name="status"
+					class=" form-control"  size="10" value="<%=cons.getStatus()%>" disabled></td>
+		<td> <input
 					type="button" class="btn btn-outline-secondary" id="anuleaza"
 					name="anuleaza" value="Anuleaza"
 					onclick="anuleazaProg(<%=i%>, 'anulare')"></td>
@@ -84,11 +87,9 @@ $( function() {
    $('#data').datepicker({ dateFormat: 'dd/mm/yy',
 	   altField: "#data1",
 	      altFormat: "yy-mm-dd"})
-  </script>
-</html>
-<script>
-
- function anuleazaProg(i, verify){
+	      
+	      
+	      function anuleazaProg(i, verify){
  	var element = document.getElementById("consultatie"+i);
  	var pacient = element.querySelector("#pacient");
 	var medic=element.querySelector("#medic");
@@ -106,5 +107,16 @@ $( function() {
  		        	location.reload(true);
  		        });
  	}
- 
- </script>
+function Verif(){
+	if(document.getElementById("medic").value==''||document.getElementById("data").value==''){
+	alert("Introduceti medicul si data");
+	return false;
+	}else
+		return true;
+	
+}
+ var msj="<%=msg%>";
+ if(msj!="null")
+ 	alert(msj);
+  </script>
+</html>

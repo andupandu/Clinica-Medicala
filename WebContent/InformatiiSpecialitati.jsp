@@ -58,12 +58,24 @@ i++;
 <script>
 
 function readyToModify(i, verify){
-	
+	var accept=false;
 	var element = document.getElementById("spec"+i);
 	var specId = element.querySelector("#specId");
 	var spec = element.querySelector("#spec");
+	if(verify=="modify"){
 	spec.disabled = !spec.disabled;
+	if(spec.disabled){
+		if (confirm('Sunteti sigur ca doriti sa modificati specialitatea?')){
+			accept = true;
+		}
+	}
+	}else{
+		if(verify=="delete")
+			 if (confirm('Sunteti sigur ca doriti sa stergeti specialitatea?'))
+				accept = true;
+			}
 	
+	if(accept){
 	if(spec.disabled ||verify=="delete"){
 			$.post("EditeazaSpecialitati",
 			        {
@@ -77,16 +89,19 @@ function readyToModify(i, verify){
 			        });}
 		
 	}
-	
+}
 function Verif(){
 	document.getElementById("verif").value="add";
 	if(document.getElementById("specNoua").value==''){
-	alert("Introduce o denumire pentru specialitate");
-	return false;
-	}else
-		return true;
-	
-}
+		alert("Introduce o denumire pentru specialitate");
+			return false;
+	}else{
+		if(confirm("Introduceti specialitatea?"))
+			
+			return true;
+				return false;
+		}
+	}
 var msjInsert="<%=msg%>";
 if(msjInsert!="null")
 	alert(msjInsert);

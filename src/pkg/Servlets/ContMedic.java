@@ -1,26 +1,29 @@
 package pkg.Servlets;
-import pkg.Entities.*;
+
 import java.io.IOException;
-import java.sql.Date;
-import java.sql.SQLException;
 import java.text.ParseException;
-import pkg.Utils.*;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.xml.bind.JAXBException;
+
+import pkg.Entities.Medic;
+import pkg.Entities.Persoana;
+import pkg.Utils.DateUtil;
+import pkg.Utils.DbOperations;
+import pkg.Utils.SMTPHelper;
 
 /**
- * Servlet implementation class ContNou
+ * Servlet implementation class ContMedic
  */
-public class ContNou extends HttpServlet {
+public class ContMedic extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public ContNou() {
+    public ContMedic() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -33,43 +36,35 @@ public class ContNou extends HttpServlet {
 		String nume=request.getParameter("nume");
 		String prenume=request.getParameter("prenume");
 		String telefon=request.getParameter("telefon");
-		String cnp=request.getParameter("cnp");
-		String dataNasterii=request.getParameter("dataNasterii");
+		String dataNasterii=request.getParameter("data1");
+		String codSpec=request.getParameter("spec");
 		String parola=SMTPHelper.generatePassword();
-		Persoana pacient=new Persoana();
-		pacient.setNume(nume);
-		pacient.setPrenume(prenume);
-		pacient.setCnp(cnp);
+		Medic medic=new Medic();
+		medic.setNume(nume);
+		medic.setPrenume(prenume);
+		medic.setEmail(email);
+		medic.setTelefon(telefon);
+		medic.setCodSpec(Long.valueOf(codSpec));
 		try {
-			pacient.setData_nastere(DateUtil.getDateFromString(dataNasterii));
+			medic.setData_nastere(DateUtil.getDateFromString(dataNasterii));
 		} catch (ParseException e1) {
 			System.out.println(e1.getMessage());
 			e1.printStackTrace();
 		}
-		pacient.setEmail(email);
-		pacient.setTelefon(telefon);
-		
-		try { if(DbOperations.isAccountInDB(email)!=null)
+		if(nume=="" ||prenume==""||telefon==""||email==""||dataNasterii=="") {
+			request.setAttribute("msg", "Toate campurile sunt obligatorii");
+		}else {
+		if(DbOperations.isAccountInDB(email)!=null)
 			request.setAttribute("msg", "Exista deja un cont cu acest email");
 		else {
-			try {
-				DbOperations.insertPacient(pacient);
-			} catch (SQLException e) {
-				request.setAttribute("msg", "Cnp deja existent");
-				e.printStackTrace();
-			}
-			DbOperations.insertPacientUser(email, parola,DbOperations.getPacient(email).getId().intValue());
-			DbOperations.insertCodContIntoPacient(email, Long.valueOf(DbOperations.getCodCont(email)));
-			SMTPHelper.SendEmail(email,parola);
-			request.setAttribute("msg", "Contul s a creat cu succes");
+			DbOperations.insertMedicNou(medic);
+			DbOperations.insertMedicUser(email, parola,DbOperations.getMedic(email).getId().intValue());
+			DbOperations.insertCodContIntoMedic(email, Long.valueOf(DbOperations.getCodCont(email)));
+			request.setAttribute("msg", "Contul s-a creat cu succes");
 		}
-		} catch (JAXBException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
-		request.getRequestDispatcher("ContNou.jsp").forward(request,response);
+		request.getRequestDispatcher("ContPacient.jsp").forward(request,response);
 	}
-
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */

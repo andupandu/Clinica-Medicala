@@ -17,8 +17,8 @@
 <body>
 	<jsp:include page="indexAdmin.jsp" />
 	<div id="right">
-	<form method="post" action="ModificaMedic">
-		<center>
+	<form method="post" action="ModificaMedic" style="text-align:center">
+		
 			Cauta medic dupa Specialitate:<br> <select
 				id="specialitateIntrodusa" name="specialitateIntrodusa"
 				class="custom-select">
@@ -31,13 +31,11 @@
 					}
 				%>
 			</select> <input type="submit" value="Cauta" class="btn btn-outline-secondary">
-		</center>
+		
 	</form>
-	<form method="post" action="ModificaMedic">
-		<center>
+	<form method="post" action="ModificaMedic" style="text-align:center">
 			Afiseaza toti medicii:<br> <input type="submit" value="Cauta"
 				class="btn btn-outline-secondary">
-		</center>
 	</form>
 	<%
 		List<Medic> medici = (List<Medic>) request.getAttribute("medici");
@@ -59,9 +57,9 @@
 		%>
 
 		<tr id="medic<%=i%>">
-			<input type="hidden" id="medicId" name="medicId"
+			<td><input type="hidden" id="medicId" name="medicId"
 				value="<%=p.getId()%>">
-			<td><input type="text" name="nume" id="nume"
+			<input type="text" name="nume" id="nume"
 				class=" form-control" size="<%=p.getNume().length()%>"
 				value="<%=p.getNume()%>" disabled></td>
 			<td><input type="text" name="prenume" id="prenume"
@@ -104,6 +102,7 @@
 <script>
 
 function readyToModify(i, verify){
+	var accept = false;
 	var element = document.getElementById("medic"+i);
 	var nume = element.querySelector("#nume");
 	var prenume = element.querySelector("#prenume");
@@ -112,19 +111,30 @@ function readyToModify(i, verify){
 	var spec = element.querySelector("#spec");
 	var telefon=element.querySelector("#telefon");
 	var email=element.querySelector("#email");
-	
-	nume.disabled = !nume.disabled;
-	prenume.disabled = !prenume.disabled;
-	codspec.disabled = !codspec.disabled;
-	telefon.disabled=!telefon.disabled;
-	email.disabled=!email.disabled;
-	
-	if(spec.style.display == "none"){
-		spec.style.display = "block";
-		codspec.style.display = "none";
-	} 
-	
-	if(nume.disabled ||verify=="delete"){
+	if(verify=="modif"){
+		nume.disabled = !nume.disabled;
+		prenume.disabled = !prenume.disabled;
+		codspec.disabled = !codspec.disabled;
+		telefon.disabled=!telefon.disabled;
+		email.disabled=!email.disabled;
+		
+		if(spec.style.display == "none"){
+			spec.style.display = "block";
+			codspec.style.display = "none";
+		} 
+		if(nume.disabled){
+			if (confirm('Sunteti sigur ca doriti sa modificati medicul?')){
+				accept = true;
+			}
+		}
+	}else{
+	if(verify=="delete")
+	 if (confirm('Sunteti sigur ca doriti sa stergeti medicul?'))
+		accept = true;
+	}
+	if(accept){
+		if(nume.disabled ||verify=="delete")
+		{
 		$.post("ModificaMedic",
 		        {
 		          nume:nume.value,
@@ -140,7 +150,10 @@ function readyToModify(i, verify){
 		        	alert(data);
 		        	location.reload(true);
 		        });
+		}
 	}
+		 
+
 }
 function Verif(){
 	document.getElementById("verif").value="add";
@@ -153,4 +166,5 @@ function Verif(){
 		return true;
 	
 }
+
 </script>

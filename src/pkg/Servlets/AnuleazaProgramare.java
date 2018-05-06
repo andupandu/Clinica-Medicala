@@ -30,10 +30,43 @@ public class AnuleazaProgramare extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		String metoda=request.getParameter("verif");
+		System.out.println(metoda);
+		String pacient=request.getParameter("pacient");
 		String medic=request.getParameter("medic");
-		String data=request.getParameter("data1");
-		request.setAttribute("consultatii", DbOperations.getConsultatii(medic, data));
-		request.getRequestDispatcher("AnulareProgramari.jsp").forward(request,response);
+		String msg=null;
+		if(metoda!=null) {
+			java.sql.Date data = null;
+			System.out.println("dataaa"+request.getParameter("data"));
+			try {
+				data = DateUtil.getDateFromString(request.getParameter("data"));
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			switch(metoda) {
+			case "anulare":
+				
+				DbOperations.anuleazaConsultatie(pacient, medic, data);
+				 msg="Programarea a fost anulata";
+				//request.setAttribute("msg", msg);
+				break;
+			case "anularetotala":
+				DbOperations.anuleazaToateConsultatiileDinZi(medic, data);
+				 msg="Programarile au fost anulate";
+			}
+			
+		}
+		String dataFormatata=request.getParameter("data1");
+		request.setAttribute("consultatii", DbOperations.getConsultatii(medic, dataFormatata));
+		if(metoda!=null) {
+		response.getWriter().write(msg);
+		response.getWriter().flush();
+		response.getWriter().close();
+		response.sendRedirect("AnulareProgramari.jsp");
+		}else {
+			request.getRequestDispatcher("AnulareProgramari.jsp").forward(request,response);
+		}
 	}
 
 	/**
