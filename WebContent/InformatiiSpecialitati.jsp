@@ -30,9 +30,11 @@
   
 for(Specialitate spec : DbOperations.getSpecializari()){ %>
 <tr id="spec<%=i%>">
-<input type="hidden" id="specId" name="specId" value="<%=spec.getCod()%>">
 
-<td><input type="text" name="spec" id="spec" class=" form-control" value="<%=spec.getDenumire() %>" disabled></td>
+
+<td>
+<input type="hidden" id="specId" name="specId" value="<%=spec.getCod()%>">
+<input type="text" name="spec" id="spec" class=" form-control" value="<%=spec.getDenumire() %>" disabled></td>
 <td>
 <input type="submit" class="btn btn-outline-danger" id="sterge" name="sterge" value="Sterge" onclick="readyToModify(<%=i%>, 'delete')">
 <input type="button" class="btn btn-outline-secondary" id="modifica" name="modifica" value="Modifica" onclick="readyToModify(<%=i%>, 'modify')">
@@ -68,6 +70,9 @@ function readyToModify(i, verify){
 		if (confirm('Sunteti sigur ca doriti sa modificati specialitatea?')){
 			accept = true;
 		}
+		else{
+			window.location.href = "InformatiiSpecialitati.jsp";
+		}
 	}
 	}else{
 		if(verify=="delete")
@@ -85,7 +90,7 @@ function readyToModify(i, verify){
 			        },
 			        function(data,status){
 			        	alert(data);
-			        	location.reload(true);
+			        	window.location.href = "InformatiiSpecialitati.jsp";
 			        });}
 		
 	}

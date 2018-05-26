@@ -50,7 +50,6 @@ public class EditeazaSpecialitati extends HttpServlet {
 		response.getWriter().write(msg);
 		response.getWriter().flush();
 		response.getWriter().close();
-		response.sendRedirect("InformatiiSpecialitati.jsp");
 		}
 		else {
 			request.setAttribute("msjInserareSpecialitate", msg);

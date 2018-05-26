@@ -89,6 +89,7 @@
 <script>
 
  function readyToModify(i, verify){
+	var accept=false;
  	var element = document.getElementById("pacient"+i);
  	var nume = element.querySelector("#nume");
  	var prenume = element.querySelector("#prenume");
@@ -97,16 +98,26 @@
  	var datanasterii = element.querySelector("#dataNasterii");
  	var telefon=element.querySelector("#telefon");
  	var email=element.querySelector("#email");
-	
- 	nume.disabled = !nume.disabled;
- 	prenume.disabled = !prenume.disabled;
- 	cnp.disabled = !cnp.disabled;
+ 	if(verify=="modif"){
  	telefon.disabled=!telefon.disabled;
  	email.disabled=!email.disabled;
-	dataNasterii.disabled=!dataNasterii.disabled;
 
+	if(telefon.disabled){
+		if (confirm('Sunteti sigur ca doriti sa modificati pacientul?')){
+			accept = true;
+		}
+		else{
+			window.location.href = "InformatiiPacient.jsp";
+		}
+	}
+	}else{
+		if(verify=="delete")
+			 if (confirm('Sunteti sigur ca doriti sa stergeti pacientul?'))
+				accept = true;
+			}
 	
- 	if(nume.disabled ||verify=="delete"){
+	if(accept){
+ 	if(telefon.disabled ||verify=="delete"){
  		$.post("ModificaPacient",
  		        {
  		          nume:nume.value,
@@ -124,4 +135,5 @@
  		        });
  	}
  }
+	}
  </script>

@@ -8,12 +8,13 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Pagina administrator</title>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <link rel="stylesheet" type="text/css" href="Styles/bootstrap.min.css">
 <script src="Styles/bootstrap.min.js"></script>
- <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"/>
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"/>
+ 
 </head>
 <%List<Consultatie> consultatii=(List<Consultatie>)request.getAttribute("consultatii");
 String msg=(String)request.getAttribute("msg");%>
@@ -94,6 +95,16 @@ $( function() {
  	var pacient = element.querySelector("#pacient");
 	var medic=element.querySelector("#medic");
 	var data=element.querySelector("#data");
+	var status=element.querySelector("#status");
+	if(verify=="anulare"){
+	if(status.value=="anulat"){
+		alert("Programarea este deja anulata");
+	return false;
+	}
+	}
+	if(confirm("Sunteti sigur ca doriti sa anulati programarea?")){
+		
+	
  		$.post("AnuleazaProgramare",
  		        {
 		          pacient:pacient.value,
@@ -107,6 +118,7 @@ $( function() {
  		        	location.reload(true);
  		        });
  	}
+}
 function Verif(){
 	if(document.getElementById("medic").value==''||document.getElementById("data").value==''){
 	alert("Introduceti medicul si data");

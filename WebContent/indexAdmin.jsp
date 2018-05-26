@@ -5,28 +5,28 @@
 <head>
 
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-
 <link rel="stylesheet" type="text/css" href="Styles/bootstrap.min.css">
 <script src="Styles/bootstrap.min.js"></script>
 <link rel="stylesheet" type="text/css" href="Styles/Style.css">
 <title>Pagina Administrator</title>
+
 </head>
 <body>
 
-<div class="list-group float-left" id="left" >
-    <a class="list-group-item list-group-item-action"  href="ContMedic.jsp">Cont Medic</a>
+<div class="list-group float-left" id="left" style="background-color:#6F9CEB">
+    <a class="list-group-item list-group-item-action"  href="ContMedic.jsp" >Cont Medic</a>
  
-    <a class="list-group-item list-group-item-action"   href="InformatiiMedic.jsp">Medici</a>
+    <a class="list-group-item list-group-item-action"   href="InformatiiMedic.jsp" >Medici</a>
   
     <a class="list-group-item list-group-item-action"   href="InformatiiConsultatie.jsp">Programari consultatii</a>
   
-    <a class="list-group-item list-group-item-action"  href="InformatiiAnalize.jsp">Programari analize</a>
+    <a class="list-group-item list-group-item-action"  href="InformatiiAnalize.jsp" >Programari analize</a>
     
     <a class="list-group-item list-group-item-action"  href="InformatiiSpecialitati.jsp">Specialitati</a>
     
-   <a class="list-group-item list-group-item-action"  href="ContPacient.jsp"> Cont pacient</a>
+   <a class="list-group-item list-group-item-action"  href="ContPacient.jsp" > Cont pacient</a>
    
-  <a href="InformatiiPacient.jsp"  class="list-group-item list-group-item-action">Pacienti</a>
+  <a href="InformatiiPacient.jsp"  class="list-group-item list-group-item-action" >Pacienti</a>
   
   <a class="list-group-item list-group-item-action"  href="AnulareProgramari.jsp"> Anulare programari</a>
  

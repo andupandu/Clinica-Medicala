@@ -4,37 +4,55 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<link rel="stylesheet" type="text/css" href="Styles/Style.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<link rel="stylesheet" type="text/css" href="Styles/bootstrap.min.css">
+<script src="Styles/bootstrap.min.js"></script>
 <title>Clinica medicala</title>
 </head>
 <body>
-	<h1>Clinica Medicala!</h1>
-	<ul>
+<nav class="navbar navbar-toggleable-md navbar-light bg-faded">
+  <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <a class="navbar-brand" href="#">Clinica medicala</a>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
  
-  <li class="dropdown">
-    <a href="javascript:void(0)" class="dropbtn">Specializari</a>
-    <div class="dropdown-content">
-    <%List<Specialitate> specializari=DbOperations.getSpecializari(); 
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Specializari
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+        
+            <%List<Specialitate> specializari=DbOperations.getSpecializari(); 
     for(Specialitate spec:specializari){%>
-      <a href="#"><%=spec.getDenumire() %></a>
+    
+      <a href="#" class="dropdown-item"><%=spec.getDenumire() %></a>
 <%} %>
-    </div>
-  </li>
-  <li class="dropdown">
-   <a href="#">Contul meu</a>
-   <div class="dropdown-content">
-   <a href="ContNou.jsp">Cont nou</a>
-   <a href="Login.jsp">Log in</a>
-   </div>
+        </div>
+      </li>
+       <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Contul meu
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+        
+            
+    
+      <a href="ContNou.jsp" class="dropdown-item">Cont nou</a>
+       <a href="Login.jsp" class="dropdown-item">Log in</a>
+        </div>
+      </li>
+  
    
-  
-  </li>
-  
-  
-</ul>
-	
-	<form action="Hello">
-		<input type="submit" value="Press">
-	</form>
+
+      
+   </ul>
+
+
+   
+ 
+
 </body>
 </html>

@@ -4,19 +4,21 @@
 <html>
 <head>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <link rel="stylesheet" type="text/css" href="Styles/bootstrap.min.css">
 <script src="Styles/bootstrap.min.js"></script>
- <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"/>
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"/>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+
 <title>Pagina administrator</title>
 </head>
-<body>
+<body style="background-color:#98B9F2">
 <%String msg=(String)request.getAttribute("msg");%>
 <jsp:include page="indexAdmin.jsp" />
 	<div id="right">
 	<form method="post" action="ContPacient">
+	<fieldset>
+ <legend style=text-align:center>Date pacient</legend>
 	<table align="center">
 	<tr>
  <td>
@@ -43,6 +45,7 @@
 <td><br><input type="submit" class="btn btn-outline-secondary" id="creaza" name="creaza" value="Creaza cont"></td>
 </tr>
 	</table>
+	</fieldset>
 	</form>
 	</div>
 </body>

@@ -71,7 +71,6 @@ public class ModificaPacient extends HttpServlet {
 		}
 			else {
 				String cnpDeCautat=request.getParameter("cnpintrodus");
-				//System.out.println("cnppppppp"+cnpDeCautat);
 				if(cnpDeCautat==null||cnpDeCautat=="") {
 					try {
 						request.setAttribute("pacienti", DbOperations.getPacienti());

@@ -3,6 +3,7 @@ package pkg.Servlets;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -11,6 +12,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import com.google.gson.Gson;
 
 import pkg.Entities.Consultatie;
 import pkg.Entities.Persoana;
@@ -35,6 +38,17 @@ public class ProgramariAnalize extends HttpServlet {
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
+    public List<String> getOreDisp(List<String> oreIndisponibile){
+    	List<String> oreLucru = Arrays.asList("08:00", "09:00", "10:00", "11:00", "12:00","13:00","14:00","15:00","16:00","17:00");
+    	List<String> oreDisp=new ArrayList<String>();
+    	for(String oraLucru:oreLucru) {
+    		if(!oreIndisponibile.contains(oraLucru)) {
+    			oreDisp.add(oraLucru);
+    		}
+    	}
+    	return oreDisp;
+
+    }
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		
@@ -59,6 +73,22 @@ public class ProgramariAnalize extends HttpServlet {
 					+ "}");
 		}
 		break;
+		case "ore":
+			String date=request.getParameter("dataAnalize");
+			
+			try { List<String> oreDisp=getOreDisp(DbOperations.getOreIndisponibileAnaliza(date));
+				if(oreDisp.isEmpty()) {
+					response.getWriter().append(null);
+				}else {
+					
+				}
+				String json = new Gson().toJson(oreDisp);
+				response.getWriter().append(json);
+			} catch (Exception e) {
+				System.out.println("Exceptie");
+				e.printStackTrace();
+			}
+			break;
 		}
 		}else {
 		List<String> analize=Arrays.asList(request.getParameterValues("analize"));
@@ -104,7 +134,7 @@ public class ProgramariAnalize extends HttpServlet {
 					for(Consultatie cons:consultatii) {
 						msg+=cons.getTipConsutatie()+",la data:"+cons.getData()+",ora:"+cons.getOraInceput()+"\\n"+"";
 					}
-					msg+="Daca a-ti selectat mai multe analize,incercati din nou ,programandu-va doar pentru analizele unde nu aveti deja o programare!";
+					msg+="Daca ati selectat mai multe analize,incercati din nou ,programandu-va doar pentru analizele unde nu aveti deja o programare!";
 					
 					request.setAttribute("msg", msg);
 				}

@@ -472,6 +472,39 @@ public class DbOperations {
 		return persoanaLogata;
 	}
 	
+	
+	public static List<String> getOreIndisponibileAnaliza(String data) {
+		Connection conn = getConnection();
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		
+		List<String> oreIndisponibile=new ArrayList<String>();
+		String query="select programareanaliza_ora_cerere" + 
+				" from clinicamedicala.programareanaliza" + 
+				" where programareanaliza_data_analiza=?" + 
+				" group by programareanaliza_ora_cerere" + 
+				" having count(distinct programareanaliza_pacient_cod)>=10";
+		try {
+
+			if (conn != null) {
+				
+				stmt=conn.prepareStatement(query);
+				stmt.setString(1, data);
+						rs=stmt.executeQuery();
+
+				while (rs.next()) {
+					oreIndisponibile.add(rs.getString("programareconsultatie_ora_consultatie"));
+				}
+			}
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+		} finally {
+			CloseResources(conn, rs, stmt);
+		}
+		return oreIndisponibile;
+	}
+	
 	public static List<Medic> getListaMedici() {
 		Connection conn = getConnection();
 		PreparedStatement stmt = null;

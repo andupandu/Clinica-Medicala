@@ -14,13 +14,15 @@
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Pagina administrator</title>
 </head>
-<body>
+<body style="background-color:#98B9F2">
 <%String msg=(String)request.getAttribute("msg"); %>
 <jsp:include page="indexAdmin.jsp" />
 	<div id="right">
-<h1>Cere o programare pentru analize</h1>
+
 <center>
 <form name="analize" action="ProgramariAnalize" method="post">
+<fieldset>
+ <legend style=text-align:center>Cere o programare pentru analize</legend>
 <table>
 <tr>
  <td>
@@ -55,11 +57,12 @@
 </tr>
 
 <tr>
-<td>Data:<br><input type="text" name="data" id="data" class=" datepicker form-control">
+<td>Data:<br><input type="text" name="data" id="data" class=" datepicker form-control" onchange="getOreDisp();">
 <input type="hidden" name="dataprog" id="dataprog"></td>
 </tr>
 <tr>
-<td>Ora:<input type="time" min="07:00:00" max="10:00:00" name="ora" id="ora" class=" form-control" /></td>
+<td>Ora:<br><select id="ora" name="ora" class="custom-select">
+</select></td>
 </tr>
 <br>
 <tr>
@@ -71,7 +74,9 @@
 <tr>
 <td><br><input type="submit" class="btn btn-outline-secondary" id="continua" name="continua" value="Programeaza"></td>
 </tr>
+
 </table>
+</fieldset>
 </form>
 </center>
 </div>
@@ -90,10 +95,9 @@ function searchPacient(){
 	          cnp:cnp.value
 	        },
 	        function(data,status){
-	        	alert(data)
+	        	
 	        	var response = JSON.parse(data)
 	        	if(response.valid==true){
-	        		alert(response.valid);
 	        		document.getElementById("pacient").value=response.nume+' '+response.prenume;
 	        		document.getElementById("pacientcod").value=response.id;
 	        		document.getElementById("trpacient").style.display="block";
@@ -101,6 +105,8 @@ function searchPacient(){
 	        		document.getElementById("trprenume").style.display="none";
 	        		document.getElementById("trtelefon").style.display="none";
 	        		document.getElementById("tremail").style.display="none";
+	        		document.getElementById("trcnp").style.display="none";
+	        		document.getElementById("trdataNasterii").style.display="none";
 	        	}
 	        	else{
 	        		document.getElementById("trcnp").style.display="block";
@@ -110,11 +116,33 @@ function searchPacient(){
 	        		document.getElementById("trtelefon").style.display="block";
 	        		document.getElementById("tremail").style.display="block";
 	        		document.getElementById("trpacient").style.display="none";
+	        		document.getElementById("pacient").value="";
 
 	        	}
 	        });
 }
-
+function getOreDisp(){
+	var data=document.getElementById("dataprog");
+	$.post("ProgramariAnalize",
+	        {
+			metoda:"ore",
+	          dataAnalize:data.value
+	        },
+	        function(data,status){
+	        	alert(data);
+	        	if(data!=null){
+	        	var response = JSON.parse(data);
+	        	alert(response);
+	        	var selectOra=document.getElementById("ora");
+				selectOra.innerHTML="";
+    	response.forEach(ora=>
+    		selectOra.innerHTML+="<option value="+ora+">"+ora+"</option>"	
+        );
+	        	}else{
+	        		alert("Nu mai sunt ore disponibile pentru aceasta zi.Va rugam selectati o alta zi!")
+	        	}
+	        });
+}
 function Disable() {
 	 
 	  var date = new Date();

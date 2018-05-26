@@ -63,7 +63,7 @@ public class ContMedic extends HttpServlet {
 			request.setAttribute("msg", "Contul s-a creat cu succes");
 		}
 		}
-		request.getRequestDispatcher("ContPacient.jsp").forward(request,response);
+		request.getRequestDispatcher("ContMedic.jsp").forward(request,response);
 	}
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)

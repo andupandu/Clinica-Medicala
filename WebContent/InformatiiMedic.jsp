@@ -18,8 +18,9 @@
 	<jsp:include page="indexAdmin.jsp" />
 	<div id="right">
 	<form method="post" action="ModificaMedic" style="text-align:center">
-		
-			Cauta medic dupa Specialitate:<br> <select
+		<fieldset>
+ <legend style=text-align:center>Cauta medic dupa Specialitate</legend>
+			<br> <select
 				id="specialitateIntrodusa" name="specialitateIntrodusa"
 				class="custom-select">
 				<%
@@ -31,11 +32,14 @@
 					}
 				%>
 			</select> <input type="submit" value="Cauta" class="btn btn-outline-secondary">
-		
+		</fieldset>
 	</form>
 	<form method="post" action="ModificaMedic" style="text-align:center">
-			Afiseaza toti medicii:<br> <input type="submit" value="Cauta"
+	<fieldset style=top:200px>
+ <legend style=text-align:center>Afiseaza toti medicii</legend>
+			<br> <input type="submit" value="Cauta"
 				class="btn btn-outline-secondary">
+				</fieldset>
 	</form>
 	<%
 		List<Medic> medici = (List<Medic>) request.getAttribute("medici");
@@ -112,8 +116,7 @@ function readyToModify(i, verify){
 	var telefon=element.querySelector("#telefon");
 	var email=element.querySelector("#email");
 	if(verify=="modif"){
-		nume.disabled = !nume.disabled;
-		prenume.disabled = !prenume.disabled;
+
 		codspec.disabled = !codspec.disabled;
 		telefon.disabled=!telefon.disabled;
 		email.disabled=!email.disabled;
@@ -122,9 +125,12 @@ function readyToModify(i, verify){
 			spec.style.display = "block";
 			codspec.style.display = "none";
 		} 
-		if(nume.disabled){
+		if(telefon.disabled){
 			if (confirm('Sunteti sigur ca doriti sa modificati medicul?')){
 				accept = true;
+			}
+			else{
+				window.location.href = "InformatiiMedic.jsp";
 			}
 		}
 	}else{
@@ -133,7 +139,7 @@ function readyToModify(i, verify){
 		accept = true;
 	}
 	if(accept){
-		if(nume.disabled ||verify=="delete")
+		if(telefon.disabled ||verify=="delete")
 		{
 		$.post("ModificaMedic",
 		        {

@@ -168,7 +168,7 @@ public class ProgramariConsultatie extends HttpServlet {
 				String json = new Gson().toJson(getOreDisp(codMed, date, codServ));
 				response.getWriter().append(json);
 			} catch (Exception e) {
-				System.out.println("sssssssssssssssssssssssssssssss");
+				System.out.println("Exceptie");
 				e.printStackTrace();
 			}
 			break;

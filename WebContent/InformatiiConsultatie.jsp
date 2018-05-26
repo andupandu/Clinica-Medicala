@@ -15,15 +15,85 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/js/bootstrap-datepicker.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/locales/bootstrap-datepicker.ro.min.js"></script>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+<script src="http://ajax.microsoft.com/ajax/jquery.validate/1.7/additional-methods.js"></script>
+<script>
+$.validator.addMethod(
+        "roCNP",
+        function(value, element) {
+            var check = false;
+            var re = /^\d{1}\d{2}(0[1-9]|1[0-2])(0[1-9]|[12]\d|3[01])(0[1-9]|[1-4]\d| 5[0-2]|99)\d{4}$/;
+            if( re.test(value)) {
+                var bigSum = 0, rest = 0, ctrlDigit = 0;
+                var control = '279146358279';
+                for (var i = 0; i < 12; i++) {
+                    bigSum += value[i] * control[i];
+                }
+                ctrlDigit = bigSum % 11;
+                if ( ctrlDigit == 10 ) ctrlDigit = 1;
+ 
+                if ( ctrlDigit != value[12] ) return false;
+                else return true;
+            } return false;
+        }, 
+        "CNP invalid"
+    );
+
+$(document).ready(function(){
+	$('#consultatie').validate({
+		rules:{
+			cnp: { required: true,
+				roCNP: true
+				},
+			cnpcautat: { required: true,
+					roCNP: true
+				},
+        nume:{
+			required:true,
+			lettersonly: true
+		},
+		prenume:{
+			required:true,
+			lettersonly: true
+		},
+		email:{
+			required:true,
+			email:true
+		},
+		telefon:{
+				required:true
+			
+		},
+		dataNasterii:{
+				required:true
+			}
+		}
+		    });
+		})
+</script>
+<script>
+jQuery.extend(jQuery.validator.messages, {
+    required: "Campul este obligatoriu.",
+   lettersonly:"Va rog inserati doar litere",
+    email: "Inserati un email valid.",
+    equalTo: "Please enter the same value again.",
+    accept: "Please enter a value with a valid extension.",
+    email:"Va rog inserati un email valid",
+    cnp:"CNP invalid",
+    cnpcautat:"CNP invalid"
+    
+});
+</script>
 <title>Pagina administrator</title>
 </head>
 <%String msg=(String)request.getAttribute("msg");%>
-<body>
+<body style="background-color:#98B9F2">
 <jsp:include page="indexAdmin.jsp" />
 	<div id="right">
-<h1>Cere o programare</h1>
 <center>
-<form name="consultatie" action="ProgramariConsultatie" method="post">
+<form id="consultatie" action="ProgramariConsultatie" method="post">
+<fieldset>
+ <legend style=text-align:center>Cere o programare</legend>
 <table>
  <tr>
  <td>
@@ -44,7 +114,7 @@
 <td>Telefon:<input type="text" name="telefon" id="telefon" class=" form-control"></td>
 </tr>
 <tr style="display:none" id="trcnp">
-<td>Cnp:<input type="text" name="cnp" id="cnp" class=" form-control"></td>
+<td>Cnp:<input type="text" name="cnp" id="cnp" class=" form-control" ></td>
 </tr>
 <tr style="display:none" id="trdatanasterii">
 <td>Data Nasterii:<input type="text" name="dataNasterii" id="dataNasterii" class=" datepicker form-control">
@@ -90,6 +160,7 @@
 <td><br><input type="submit" class="btn btn-outline-secondary" id="continua" name="continua" value="Programeaza"></td>
 </tr>
 </table>
+</fieldset>
 </form>
 </center>
 </div>
@@ -126,10 +197,7 @@ fillMotivCons();
 
 function searchPacient(){
 	var cnp=document.getElementById("cnpcautat");
-	if(cnp.value==""){
-		alert("Introduceti CNP-UL!!");
-		return;
-	}
+	if($('#consultatie').valid()){
 	$.post("ProgramariConsultatie",
 	        {
 			  metoda:"detalii",
@@ -138,7 +206,7 @@ function searchPacient(){
 	        function(data,status){
 	        	var response = JSON.parse(data)
 	        	if(response.valid==true){
-	        		alert(response.valid);
+	        		
 	        		document.getElementById("pacient").value=response.nume+' '+response.prenume;
 	        		document.getElementById("pacientcod").value=response.id;
 	        		document.getElementById("trpacient").style.display="block";
@@ -150,7 +218,7 @@ function searchPacient(){
 	        		document.getElementById("trcnp").style.display="none";
 	        	}
 	        	else{
-	        		alert(response.valid);
+	        		
 	        		document.getElementById("trnume").style.display="block";
 	        		document.getElementById("trprenume").style.display="block";
 	        		document.getElementById("trtelefon").style.display="block";
@@ -158,9 +226,11 @@ function searchPacient(){
 	        		document.getElementById("trdatanasterii").style.display="block";
 	        		document.getElementById("trcnp").style.display="block";
 	        		document.getElementById("trpacient").style.display="none";
-
+	        		document.getElementById("pacient").value="";
+	        		document.getElementById("cnp").value=document.getElementById("cnpcautat").value;
 	        	}
 	        });
+}
 }
 function InitializeDatepicker(){
 $('.data').datepicker({
