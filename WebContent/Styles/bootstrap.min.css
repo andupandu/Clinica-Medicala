@@ -149,18 +149,15 @@ button, select {
 }
 
 fieldset {
-	border: 1px solid #ddd !important;
-		
-		xmin-width: 0;
-		padding: 30px;       
-		 position: absolute;
-  		 top: 50%;
-  		 left: 40%;
+	border: 1px solid #ddd !important;      
+		width: 450px;
+	    display: block;
+	    background-color: #eee;
+	    margin-left: auto;
+	    margin-right: auto;
 		border-radius:4px;
 		background-color:#f5f5f5;
-		padding-left:40px!important;
-		padding-right:40px!important;
-	
+		margin-top:4px;
 		
 }
 
@@ -4275,7 +4272,8 @@ tbody.collapse.show {
 }
 
 .navbar-light .navbar-brand, .navbar-light .navbar-toggler {
-	color: rgba(0, 0, 0, .9)
+	color: rgba(0, 0, 0, .9);
+	
 }
 
 .navbar-light .navbar-brand:focus, .navbar-light .navbar-brand:hover,
@@ -9287,7 +9285,7 @@ a.text-gray-dark:focus, a.text-gray-dark:hover {
 } /*# sourceMappingURL=bootstrap.min.css.map */
 
 fieldset input{
-	width:100%;
+	width:95%;
 	margin:10px;
 } 
 label.error{

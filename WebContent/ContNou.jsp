@@ -67,7 +67,7 @@ if(persoanaLogata!=null){
 	Data nastere:<input type="date" name="dataNasterii" class=" form-control" size="50"><br>
 	Telefon:<input type="number" name="telefon" class=" form-control" size="50"><br>
 	Email:<input type="email" name="email" class=" form-control" size="50"><br>
-	<input type="submit" value="Log in" class="btn btn-outline-secondary">
+	<input type="submit" value="Log in" class="btn btn-secondary">
 	</form>
 	<%String msg=(String)request.getAttribute("msg");
 if(msg!=null && msg!="null"){%>

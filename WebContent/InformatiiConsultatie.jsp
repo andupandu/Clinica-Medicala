@@ -17,90 +17,28 @@
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
 <script src="http://ajax.microsoft.com/ajax/jquery.validate/1.7/additional-methods.js"></script>
-<script>
-$.validator.addMethod(
-        "roCNP",
-        function(value, element) {
-            var check = false;
-            var re = /^\d{1}\d{2}(0[1-9]|1[0-2])(0[1-9]|[12]\d|3[01])(0[1-9]|[1-4]\d| 5[0-2]|99)\d{4}$/;
-            if( re.test(value)) {
-                var bigSum = 0, rest = 0, ctrlDigit = 0;
-                var control = '279146358279';
-                for (var i = 0; i < 12; i++) {
-                    bigSum += value[i] * control[i];
-                }
-                ctrlDigit = bigSum % 11;
-                if ( ctrlDigit == 10 ) ctrlDigit = 1;
- 
-                if ( ctrlDigit != value[12] ) return false;
-                else return true;
-            } return false;
-        }, 
-        "CNP invalid"
-    );
-
-$(document).ready(function(){
-	$('#consultatie').validate({
-		rules:{
-			cnp: { required: true,
-				roCNP: true
-				},
-			cnpcautat: { required: true,
-					roCNP: true
-				},
-        nume:{
-			required:true,
-			lettersonly: true
-		},
-		prenume:{
-			required:true,
-			lettersonly: true
-		},
-		email:{
-			required:true,
-			email:true
-		},
-		telefon:{
-				required:true
-			
-		},
-		dataNasterii:{
-				required:true
-			}
-		}
-		    });
-		})
-</script>
-<script>
-jQuery.extend(jQuery.validator.messages, {
-    required: "Campul este obligatoriu.",
-   lettersonly:"Va rog inserati doar litere",
-    email: "Inserati un email valid.",
-    equalTo: "Please enter the same value again.",
-    accept: "Please enter a value with a valid extension.",
-    email:"Va rog inserati un email valid",
-    cnp:"CNP invalid",
-    cnpcautat:"CNP invalid"
-    
-});
-</script>
 <title>Pagina administrator</title>
 </head>
 <%String msg=(String)request.getAttribute("msg");%>
-<body style="background-color:#98B9F2">
+
+<body id="gradient">
+
 <jsp:include page="indexAdmin.jsp" />
 	<div id="right">
 <center>
-<form id="consultatie" action="ProgramariConsultatie" method="post">
+<form id="cauta" action="ProgramariConsultatie" method="post">
 <fieldset>
  <legend style=text-align:center>Cere o programare</legend>
 <table>
  <tr>
  <td>
  Cauta pacient:<input type="text" name="cnpcautat" id="cnpcautat" class=" form-control"  placeholder="Insereaza CNP-ul pacientului">
- <input type="button" onclick="searchPacient();" value="Cauta" class="btn btn-outline-secondary">
+ <input type="button" onclick="searchPacient();" value="Cauta" class="btn btn-secondary">
  </td>
  </tr>
+ </form>
+ 
+ <form id="consultatie" action="ProgramariConsultatie" method="post"> 
 <tr style="display:none" id="trnume">
 <td>Nume:<input type="text" name="nume" id="nume" class=" form-control" ></td>
 </tr>
@@ -157,11 +95,11 @@ jQuery.extend(jQuery.validator.messages, {
 </tr>
 
 <tr>
-<td><br><input type="submit" class="btn btn-outline-secondary" id="continua" name="continua" value="Programeaza"></td>
+<td><br><input type="submit" class="btn btn-secondary" id="continua" name="continua" value="Programeaza"></td>
 </tr>
+</form>
 </table>
 </fieldset>
-</form>
 </center>
 </div>
 </body>
@@ -197,7 +135,8 @@ fillMotivCons();
 
 function searchPacient(){
 	var cnp=document.getElementById("cnpcautat");
-	if($('#consultatie').valid()){
+	
+	if($("#cauta").valid()){
 	$.post("ProgramariConsultatie",
 	        {
 			  metoda:"detalii",
@@ -310,5 +249,82 @@ if(msj!="null")
 	alert(msj);
 $( function() {
     $( '#dataNasterii' ).datepicker();})
-  
+$.validator.addMethod(
+        "roCNP",
+        function(value, element) {
+            var check = false;
+            var re = /^\d{1}\d{2}(0[1-9]|1[0-2])(0[1-9]|[12]\d|3[01])(0[1-9]|[1-4]\d| 5[0-2]|99)\d{4}$/;
+            if( re.test(value)) {
+                var bigSum = 0, rest = 0, ctrlDigit = 0;
+                var control = '279146358279';
+                for (var i = 0; i < 12; i++) {
+                    bigSum += value[i] * control[i];
+                }
+                ctrlDigit = bigSum % 11;
+                if ( ctrlDigit == 10 ) ctrlDigit = 1;
+ 
+                if ( ctrlDigit != value[12] ) return false;
+                else return true;
+            } return false;
+        }, 
+        "CNP invalid"
+    );
+$(document).ready(
+function(){
+	$("#cauta").validate({
+		rules:{
+			cnpcautat: { 
+				required: true,
+				roCNP: true
+			}
+	
+		}
+	})
+})
+$( "#continua" ).click(function() {
+	$('#consultatie').validate({
+		rules:{
+			cnp: { required: true,
+				roCNP: true
+				},
+        nume:{
+			required:true,
+			lettersonly: true
+		},
+		prenume:{
+			required:true,
+			lettersonly: true
+		},
+		email:{
+			required:true,
+			email:true
+		},
+		telefon:{
+				required:true
+			
+		},
+		dataNasterii:{
+				required:true
+			}
+		,
+		data:{ required:true
+			
+		},
+		ora:{
+			required:true
+		}
+		}
+		    });
+		})
+		
+jQuery.extend(jQuery.validator.messages, {
+    required: "Campul este obligatoriu.",
+   	lettersonly:"Va rog inserati doar litere",
+    email: "Inserati un email valid.",
+    equalTo: "Please enter the same value again.",
+    accept: "Please enter a value with a valid extension.",
+    email:"Email invalid",
+    cnp:"CNP invalid",
+    cnpcautat:"CNP invalid"
+});
 </script>

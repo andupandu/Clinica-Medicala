@@ -14,7 +14,7 @@
 <title>Pagina administrator</title>
 </head>
 <%String msg=(String)request.getAttribute("msjInserareSpecialitate"); %>
-<body>
+<body id="gradient">
 <jsp:include page="indexAdmin.jsp" />
 	<div id="right">
 <h2><center>Specialitati</center></h2>
@@ -36,8 +36,8 @@ for(Specialitate spec : DbOperations.getSpecializari()){ %>
 <input type="hidden" id="specId" name="specId" value="<%=spec.getCod()%>">
 <input type="text" name="spec" id="spec" class=" form-control" value="<%=spec.getDenumire() %>" disabled></td>
 <td>
-<input type="submit" class="btn btn-outline-danger" id="sterge" name="sterge" value="Sterge" onclick="readyToModify(<%=i%>, 'delete')">
-<input type="button" class="btn btn-outline-secondary" id="modifica" name="modifica" value="Modifica" onclick="readyToModify(<%=i%>, 'modify')">
+<input type="submit" class="btn btn-danger" id="sterge" name="sterge" value="Sterge" onclick="readyToModify(<%=i%>, 'delete')">
+<input type="button" class="btn btn-secondary" id="modifica" name="modifica" value="Modifica" onclick="readyToModify(<%=i%>, 'modify')">
 </td>
 </tr>
 <%
@@ -50,7 +50,7 @@ i++;
 
 <td><input type="text" name="specNoua" id="specNoua" class=" form-control" ></td>
 <td>
-<input type="submit" class="btn btn-outline-secondary" id="adauga" name="adauga" value="Adauga"  >
+<input type="submit" class="btn btn-secondary" id="adauga" name="adauga" value="Adauga"  >
 </td>
 </tr>
 </form>

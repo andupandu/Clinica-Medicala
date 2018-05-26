@@ -30,7 +30,9 @@ public class Login extends HttpServlet {
 		// TODO Auto-generated method stub
 		//PrintWriter msj=response.getWriter();
 		String email=request.getParameter("email");
+		
 		String password=request.getParameter("password");
+		System.out.println(email+" "+password);
 		if(DbOperations.isAccountInDB(email)!=null) {
 		if(DbOperations.isAccountInDB(email).equals("pacient")) {
 		

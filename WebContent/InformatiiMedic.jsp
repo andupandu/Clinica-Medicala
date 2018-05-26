@@ -14,10 +14,12 @@
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Pagina administrator</title>
 </head>
-<body>
+<body id="gradient">
 	<jsp:include page="indexAdmin.jsp" />
 	<div id="right">
-	<form method="post" action="ModificaMedic" style="text-align:center">
+	
+	<form method="post" action="ModificaMedic">
+	<center>
 		<fieldset>
  <legend style=text-align:center>Cauta medic dupa Specialitate</legend>
 			<br> <select
@@ -31,16 +33,20 @@
 				<%
 					}
 				%>
-			</select> <input type="submit" value="Cauta" class="btn btn-outline-secondary">
+			</select> <input type="submit" value="Cauta" class="btn btn-secondary">
 		</fieldset>
+		</center>
 	</form>
-	<form method="post" action="ModificaMedic" style="text-align:center">
+	<form method="post" action="ModificaMedic">
+	<center> 
 	<fieldset style=top:200px>
  <legend style=text-align:center>Afiseaza toti medicii</legend>
 			<br> <input type="submit" value="Cauta"
-				class="btn btn-outline-secondary">
+				class="btn btn-secondary">
 				</fieldset>
+				
 	</form>
+	</center>
 	<%
 		List<Medic> medici = (List<Medic>) request.getAttribute("medici");
 		if (medici != null) {
@@ -74,7 +80,7 @@
 					<%
 						for (Specialitate spec : specializari) {
 					%>
-					<option value="<%=spec.getDenumire()%>"><%=spec.getDenumire()%></option>
+					<option value="<%=spec.getDenumire()%>" <%if(spec.getCod()==p.getCodSpec()){ %> selected <%} %>><%=spec.getDenumire()%></option>
 					<%
 						}
 					%>
@@ -84,10 +90,10 @@
 				class=" form-control" value="<%=p.getTelefon()%>" disabled></td>
 			<td><input type="text" name="email" id="email"
 				class=" form-control" value="<%=p.getEmail()%>" disabled></td>
-			<td><input type="submit" class="btn btn-outline-danger"
+			<td><input type="submit" class="btn btn-danger"
 				id="sterge" name="sterge" value="Sterge"
 				onclick="readyToModify(<%=i%>, 'delete')"> <input
-				type="button" class="btn btn-outline-secondary" id="modifica"
+				type="button" class="btn btn-secondary" id="modifica"
 				name="modifica" value="Modifica"
 				onclick="readyToModify(<%=i%>, 'modif')"></td>
 		</tr>

@@ -17,6 +17,9 @@
 <script src="http://ajax.microsoft.com/ajax/jquery.validate/1.7/additional-methods.js"></script>
 
 <script>
+$.validator.addMethod("verifTelefon", function (value, element) {
+    return this.optional(element) || /(02|07)\d{8}$/.test(value);
+}, 'Telefon invalid');
 $(document).ready(function(){
 	$('#formContMedic').validate({
 		rules:{
@@ -33,7 +36,8 @@ $(document).ready(function(){
 		email:true
 	},
 		telefon:{
-			required:true
+			required:true,
+			verifTelefon:true
 		
 		},
 		dataNasterii:{
@@ -58,7 +62,7 @@ jQuery.extend(jQuery.validator.messages, {
 
 <title>Pagina administrator</title>
 </head>
-<body style="background-color:#98B9F2">
+<body id="gradient">
 <%String msg=(String)request.getAttribute("msg");%>
 <jsp:include page="indexAdmin.jsp" />
 
@@ -66,6 +70,7 @@ jQuery.extend(jQuery.validator.messages, {
 	<div id="right">
 
 	<form method="post" action="ContMedic" id="formContMedic">
+	<center>
 	<fieldset>
  <legend style=text-align:center>Date medic</legend>
 	<table align="center">	
@@ -99,11 +104,12 @@ Specialitate:<br><select id="spec" name="spec"class="custom-select">
 <input type="hidden" name="data1" id="data1" ></td>
 </tr>
 <tr>
-<td><br><input type="submit" class="btn btn-outline-secondary" id="creaza" name="creaza" value="Creaza cont" style="text-align:center"></td>
+<td><br><input type="submit" class="btn btn-secondary" id="creaza" name="creaza" value="Creaza cont" style="text-align:center"></td>
 </tr>
 
 	</table>
 	</fieldset>
+	</center>
 	</form>
 	
 	</div>

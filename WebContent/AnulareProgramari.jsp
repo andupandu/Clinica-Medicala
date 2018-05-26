@@ -18,20 +18,27 @@
 </head>
 <%List<Consultatie> consultatii=(List<Consultatie>)request.getAttribute("consultatii");
 String msg=(String)request.getAttribute("msg");%>
-<body>
+<body id="gradient">
 <jsp:include page="indexAdmin.jsp" />
 <div id="right">
+
+<form method="post" action="AnuleazaProgramare" onsubmit="return Verif()">
+<center>
+<fieldset>
+<legend>Anulare programari</legend>
 <table align="center">
 <tr>
 <td>
-<form method="post" action="AnuleazaProgramare" onsubmit="return Verif()">
-Cauta medic:<input type="text" id="medic" name="medic" class=" form-control"><br>
-Data:<input type="text" name="data" id="data" class="datepicker form-control"><br>
-<input type="hidden" name="data1" id="data1" ><br>
-<input type="submit" class="btn btn-outline-secondary" value="Afiseaza programari"><br>
-</form>
+Cauta medic:<input type="text" id="medic" name="medic" class=" form-control">
+Data:<input type="text" name="data" id="data" class="datepicker form-control">
+<input type="hidden" name="data1" id="data1" >
+<input type="submit" class="btn btn-secondary" value="Afiseaza programari">
 </td>
 </tr>
+</table>
+</fieldset>
+</center>
+</form>
 <% if(consultatii!=null)
 if(!consultatii.isEmpty()){%>
 <table class="table" style="width: auto" align="center">
@@ -41,7 +48,7 @@ if(!consultatii.isEmpty()){%>
 				<th>Pacient</th>
 				<th>Tip Consultatie</th>
 				<th>Status</th>
-				<th><input type="button" class="btn btn-outline-secondary"
+				<th><input type="button" class="btn btn-secondary"
 						id="anuleaza" name="anuleaza" value="Anuleaza toate programarile"
 						onclick="anuleazaProg('1', 'anularetotala')"></th>
 				
@@ -68,7 +75,7 @@ if(!consultatii.isEmpty()){%>
 				<td><input type="text" id="status" name="status"
 					class=" form-control"  size="10" value="<%=cons.getStatus()%>" disabled></td>
 		<td> <input
-					type="button" class="btn btn-outline-secondary" id="anuleaza"
+					type="button" class="btn btn-secondary" id="anuleaza"
 					name="anuleaza" value="Anuleaza"
 					onclick="anuleazaProg(<%=i%>, 'anulare')"></td>
 			</tr>

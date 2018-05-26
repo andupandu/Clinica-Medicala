@@ -12,11 +12,12 @@
 
 <title>Pagina administrator</title>
 </head>
-<body style="background-color:#98B9F2">
+<body id="gradient">
 <%String msg=(String)request.getAttribute("msg");%>
 <jsp:include page="indexAdmin.jsp" />
 	<div id="right">
 	<form method="post" action="ContPacient">
+	<center>
 	<fieldset>
  <legend style=text-align:center>Date pacient</legend>
 	<table align="center">
@@ -42,10 +43,11 @@
 <input type="hidden" name="data1" id="data1" ></td>
 </tr>
 <tr>
-<td><br><input type="submit" class="btn btn-outline-secondary" id="creaza" name="creaza" value="Creaza cont"></td>
+<td><br><input type="submit" class="btn btn-secondary" id="creaza" name="creaza" value="Creaza cont"></td>
 </tr>
 	</table>
 	</fieldset>
+	</center>
 	</form>
 	</div>
 </body>

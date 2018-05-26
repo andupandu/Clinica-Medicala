@@ -14,7 +14,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Pagina administrator</title>
 </head>
-<body style="background-color:#98B9F2">
+<body id="gradient">
 <%String msg=(String)request.getAttribute("msg"); %>
 <jsp:include page="indexAdmin.jsp" />
 	<div id="right">
@@ -27,7 +27,7 @@
 <tr>
  <td>
  Cauta pacient:<input type="text" name="cnp" id="cnp" class=" form-control"  placeholder="Insereaza CNP-ul pacientului">
- <input type="button" onclick="searchPacient();" value="Cauta" class="btn btn-outline-secondary">
+ <input type="button" onclick="searchPacient();" value="Cauta" class="btn btn-secondary">
  </td>
  </tr>
 <tr style="display:none" id="trnume">
@@ -72,7 +72,7 @@
 </tr>
 
 <tr>
-<td><br><input type="submit" class="btn btn-outline-secondary" id="continua" name="continua" value="Programeaza"></td>
+<td><br><input type="submit" class="btn btn-secondary" id="continua" name="continua" value="Programeaza"></td>
 </tr>
 
 </table>
@@ -129,10 +129,10 @@ function getOreDisp(){
 	          dataAnalize:data.value
 	        },
 	        function(data,status){
-	        	alert(data);
+	        
 	        	if(data!=null){
 	        	var response = JSON.parse(data);
-	        	alert(response);
+	        	
 	        	var selectOra=document.getElementById("ora");
 				selectOra.innerHTML="";
     	response.forEach(ora=>
@@ -153,11 +153,12 @@ var msj="<%=msg%>";
 if(msj!="null")
 	alert(msj);
 	
-	 $(function() {
+$(document).ready( $(function() {
 	 $( "#data" ).datepicker({
-	 minDate: 0
+	 minDate:new Date()
 	 });
-	 });
+	 })
+	 );
 	 
 	 $(function() {
 		 $( "#dataNasterii" ).datepicker();

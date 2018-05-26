@@ -84,11 +84,13 @@
 	%>
 	<p><%=msg %></p>
 <% }%>
+<form id="back" action="index.jsp" method="post"></form>
 </body>
 <script type="text/javascript">
 function reloadPage(){
-	<%request.getSession().removeAttribute("persoanaLogata");%>
-location.reload();
+	<%session.removeAttribute("persoanaLogata");
+	%>
+	document.getElementById("back").submit();
 }
 </script>
 </html>

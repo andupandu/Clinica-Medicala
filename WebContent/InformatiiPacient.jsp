@@ -15,15 +15,19 @@
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Pagina administrator</title>
 </head>
-<body>
+<body id="gradient">
 	<jsp:include page="indexAdmin.jsp" />
 	<div id="right">
 		<form method="post" action="ModificaPacient" style="text-align:center">
 			<center>
-				Cauta pacient dupa CNP: <input type="text" name="cnpintrodus"
+			<fieldset>
+			<legend>Cauta pacient dupa CNP</legend>
+				<input type="text" name="cnpintrodus"
 					id="cnpintrodus" class=" form-control" style="width: auto">
-				<input type="submit" value="Cauta" class="btn btn-outline-secondary">
+				<input type="submit" value="Cauta" class="btn btn-secondary">
+				</fieldset>
 			</center>
+			
 		</form>
 		<%
 			List<Persoana> pacienti = (List<Persoana>) request.getAttribute("pacienti");
@@ -65,10 +69,10 @@
 				<td><input type="text" name="telefon" id="telefon"
 					class=" form-control" value="<%=p.getTelefon()%>" disabled></td>
 
-				<td><input type="submit" class="btn btn-outline-danger"
+				<td><input type="submit" class="btn btn-danger"
 					id="sterge" name="sterge" value="Sterge"
 					onclick="readyToModify(<%=i%>, 'delete')"> <input
-					type="button" class="btn btn-outline-secondary" id="modifica"
+					type="button" class="btn btn-secondary" id="modifica"
 					name="modifica" value="Modifica"
 					onclick="readyToModify(<%=i%>, 'modif')"></td>
 			</tr>
