@@ -29,7 +29,7 @@ public class SMTPHelper {
          new javax.mail.Authenticator() {
             protected PasswordAuthentication getPasswordAuthentication() {
                return new PasswordAuthentication(
-            		   "andreea.limba96@gmail.com", "andutupandutud");
+            		   "andreea.limba96@gmail.com", "pass");
             }
          });
 
