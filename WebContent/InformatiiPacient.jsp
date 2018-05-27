@@ -69,9 +69,7 @@
 				<td><input type="text" name="telefon" id="telefon"
 					class=" form-control" value="<%=p.getTelefon()%>" disabled></td>
 
-				<td><input type="submit" class="btn btn-danger"
-					id="sterge" name="sterge" value="Sterge"
-					onclick="readyToModify(<%=i%>, 'delete')"> <input
+				<td> <input
 					type="button" class="btn btn-secondary" id="modifica"
 					name="modifica" value="Modifica"
 					onclick="readyToModify(<%=i%>, 'modif')"></td>
@@ -102,7 +100,7 @@
  	var datanasterii = element.querySelector("#dataNasterii");
  	var telefon=element.querySelector("#telefon");
  	var email=element.querySelector("#email");
- 	if(verify=="modif"){
+ 	
  	telefon.disabled=!telefon.disabled;
  	email.disabled=!email.disabled;
 
@@ -114,11 +112,7 @@
 			window.location.href = "InformatiiPacient.jsp";
 		}
 	}
-	}else{
-		if(verify=="delete")
-			 if (confirm('Sunteti sigur ca doriti sa stergeti pacientul?'))
-				accept = true;
-			}
+	
 	
 	if(accept){
  	if(telefon.disabled ||verify=="delete"){

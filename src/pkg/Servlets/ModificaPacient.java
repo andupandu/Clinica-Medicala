@@ -41,11 +41,6 @@ public class ModificaPacient extends HttpServlet {
 		String msg=null;
 		if(metoda!=null) {
 			switch (metoda) {
-			case "delete":
-
-				DbOperations.deletePacient((String)request.getParameter("pacientId"));
-				msg="Pacientul a fost sters cu succes";
-				break;
 			case "modif": 
 				Persoana pacient=new Persoana();
 				pacient.setNume(request.getParameter("nume"));
@@ -61,6 +56,7 @@ public class ModificaPacient extends HttpServlet {
 					e.printStackTrace();
 				}
 				DbOperations.modifyPacient(pacient);
+				DbOperations.modifyEmailInCont(pacient);
 				msg="Datele au fost modificate";
 				break;
 			}

@@ -27,7 +27,7 @@ public class DbOperations {
 			Connection conn = DriverManager.getConnection(connectionUrl, connectionUser, connectionPassword);
 			return conn;
 		} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
-			System.out.println(e.getMessage());
+			System.out.println("Exception:" + e.getMessage());
 		return null;
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
@@ -410,6 +410,25 @@ public class DbOperations {
 				stmt.setString(5, pacient.getTelefon());
 				stmt.setLong(6, pacient.getId());
 						stmt.executeUpdate();
+			}
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+		} finally {
+			CloseResources(conn, rs, stmt);
+		}
+	}
+	public static void modifyEmailInCont(Persoana pacient) {
+		Connection conn = getConnection();
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		String query="update cont set cont_email=? where cont_pacient_cod= ?";
+		try {
+			if (conn != null) {			
+				stmt=conn.prepareStatement(query);	
+				stmt.setString(1, pacient.getEmail());
+				stmt.setLong(2, pacient.getId());
+				stmt.executeUpdate();
 			}
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
