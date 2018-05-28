@@ -1,8 +1,8 @@
 <%@page import="pkg.Utils.DbOperations"%>
 <%@page import="java.util.List"%>
 <%@page import="pkg.Entities.*"%>
-<%@ page language="java" contentType="text/html; charset=utf-8"
-    pageEncoding="utf-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <%List<Specialitate> specialitati=DbOperations.getSpecializari();%>
 <html>
@@ -13,7 +13,7 @@
 <script src="Styles/bootstrap.min.js"></script>
 <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/css/bootstrap-datepicker.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/js/bootstrap-datepicker.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/locales/bootstrap-datepicker.ro.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/locales/bootstrap-datepicker.ro.min.js" ></script>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
 <script src="http://ajax.microsoft.com/ajax/jquery.validate/1.7/additional-methods.js"></script>
@@ -25,10 +25,12 @@
 
 <jsp:include page="indexAdmin.jsp" />
 	<div id="right">
+		<div class="alert alert-info alert-dismissible fade show" role="alert" style="display:none" id="mesaj">
+</div>
 <center>
-<form id="cauta" action="ProgramariConsultatie" method="post">
 <fieldset>
  <legend style=text-align:center>Cere o programare</legend>
+<form id="cauta" action="ProgramariConsultatie" method="post">
 <table>
  <tr>
  <td>
@@ -36,9 +38,11 @@
  <input type="button" onclick="searchPacient();" value="Cauta" class="btn btn-secondary">
  </td>
  </tr>
- </form>
+ </table>
+</form>
  
  <form id="consultatie" action="ProgramariConsultatie" method="post"> 
+ <table>
 <tr style="display:none" id="trnume">
 <td>Nume:<input type="text" name="nume" id="nume" class=" form-control" ></td>
 </tr>
@@ -52,10 +56,11 @@
 <td>Telefon:<input type="text" name="telefon" id="telefon" class=" form-control"></td>
 </tr>
 <tr style="display:none" id="trcnp">
-<td>Cnp:<input type="text" name="cnp" id="cnp" class=" form-control" ></td>
+<td>Cnp:<input type="text" name="cnp" id="cnp" class=" form-control" readonly></td>
 </tr>
 <tr style="display:none" id="trdatanasterii">
-<td>Data Nasterii:<input type="text" name="dataNasterii" id="dataNasterii" class=" datepicker form-control">
+<td>Data Nasterii:<input type="text" name="dataNasterii" id="dataNasterii" class=" datepicker form-control" readonly>
+<input type="hidden" id="data1" name="data1">
 </td>
 </tr>
 <tr style="display:none" id="trpacient">
@@ -83,7 +88,7 @@
 </tr>
 <tr>
 <td>
-	Data:<br><input id="data" name="data" class="data"  data-date="" data-date-format="dd/mm/yyyy hh:ii"  data-link-format="yyyy-mm-dd hh:ii" onchange="getOreDisponibile()">
+	Data:<br><input id="data" name="data" class="data"  onchange="getOreDisponibile()" readonly>
       </td>      			
 </tr>
 <tr>
@@ -97,13 +102,14 @@
 <tr>
 <td><br><input type="submit" class="btn btn-secondary" id="continua" name="continua" value="Programeaza"></td>
 </tr>
-</form>
 </table>
+</form>
 </fieldset>
 </center>
 </div>
 </body>
-</html>
+
+
 <script>
 
 
@@ -178,6 +184,7 @@ $('.data').datepicker({
     changeyear:false,
 	daysOfWeekDisabled: "0,6",
 	format:"dd/mm/yyyy",
+	language:"ro",
 	 beforeShowDay: function (date){
 		 var response;
 		 var medic=document.getElementById("medic").value;
@@ -211,10 +218,7 @@ function getOreDisponibile(){
 	var data=$('.data').datepicker( "getDate" );
 	 var medic=document.getElementById("medic").value;
 	 var serviciu=document.getElementById("serviciu").value;
-	//if(cnp.value==""){
-	//	alert("Introduceti CNP-UL!!");
-	//	return;
-	//}
+	
 	$.post("ProgramariConsultatie",
 	        {
 			  metoda:"ora",
@@ -245,10 +249,22 @@ if(document.getElementById("serviciu").value != null)
 	
 
 var msj="<%=msg%>";
-if(msj!="null")
-	alert(msj);
+if(msj!="null"){
+	 var mesaj=document.getElementById("mesaj");
+	 mesaj.innerHTML=msj+"<button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button>"
+ document.getElementById("mesaj").style.display="block";
+}
+	
 $( function() {
-    $( '#dataNasterii' ).datepicker();})
+    $( '#dataNasterii' ).datepicker({
+    	format:"dd/mm/yyyy",
+    	language:"ro"
+    })
+    })
+      $('#continua').click(function(){
+    $('#data1').val(moment($('#dataNasterii').datepicker("getDate")).format("YYYY-MM-DD"));
+}); 
+
 $.validator.addMethod(
         "roCNP",
         function(value, element) {
@@ -281,7 +297,8 @@ function(){
 		}
 	})
 })
-$( "#continua" ).click(function() {
+$(document).ready(
+function() {
 	$('#consultatie').validate({
 		rules:{
 			cnp: { required: true,
@@ -300,8 +317,8 @@ $( "#continua" ).click(function() {
 			email:true
 		},
 		telefon:{
-				required:true
-			
+				required:true,
+			verifTelefon:true
 		},
 		dataNasterii:{
 				required:true
@@ -317,6 +334,9 @@ $( "#continua" ).click(function() {
 		    });
 		})
 		
+		$.validator.addMethod("verifTelefon", function (value, element) {
+    return this.optional(element) || /(02|07)\d{8}$/.test(value);
+}, 'Telefon invalid');
 jQuery.extend(jQuery.validator.messages, {
     required: "Campul este obligatoriu.",
    	lettersonly:"Va rog inserati doar litere",
@@ -328,3 +348,5 @@ jQuery.extend(jQuery.validator.messages, {
     cnpcautat:"CNP invalid"
 });
 </script>
+
+</html>

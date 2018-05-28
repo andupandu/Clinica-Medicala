@@ -10,29 +10,37 @@
 <title>Pagina administrator</title>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://momentjs.com/downloads/moment.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <link rel="stylesheet" type="text/css" href="Styles/bootstrap.min.css">
 <script src="Styles/bootstrap.min.js"></script>
 <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"/>
- 
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/css/bootstrap-datepicker.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/js/bootstrap-datepicker.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/locales/bootstrap-datepicker.ro.min.js"></script>
+ <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+<script src="http://ajax.microsoft.com/ajax/jquery.validate/1.7/additional-methods.js"></script>
 </head>
 <%List<Consultatie> consultatii=(List<Consultatie>)request.getAttribute("consultatii");
 String msg=(String)request.getAttribute("msg");%>
 <body id="gradient">
 <jsp:include page="indexAdmin.jsp" />
 <div id="right">
-
-<form method="post" action="AnuleazaProgramare" onsubmit="return Verif()">
+<div class="alert alert-info alert-dismissible fade show" role="alert" style="display:none" id="mesaj">
+</div>
+<form method="post" action="AnuleazaProgramare" onsubmit="return Verif()" id="anulareProg">
 <center>
 <fieldset>
 <legend>Anulare programari</legend>
 <table align="center">
 <tr>
 <td>
-Cauta medic:<input type="text" id="medic" name="medic" class=" form-control">
-Data:<input type="text" name="data" id="data" class="datepicker form-control">
-<input type="hidden" name="data1" id="data1" >
-<input type="submit" class="btn btn-secondary" value="Afiseaza programari">
+Cauta medic:<select id="medic" name="medic" class=" form-control">
+<%for(Medic m :DbOperations.getMedici()){%>
+<option value="<%=m.getId()%>"><%=m.getNume()+" "+m.getPrenume() %></option> <%} %></select><br>
+Data:<input type="text" name="data" id="data" class="datepicker form-control" readonly>
+<input type="hidden" name="data1" id="data1">
+<input type="submit" class="btn btn-secondary"  id="cauta" name="cauta" value="Afiseaza programari">
 </td>
 </tr>
 </table>
@@ -92,11 +100,12 @@ if(!consultatii.isEmpty()){%>
 <script>
 $( function() {
     $( "#data" ).datepicker();})
-   $('#data').datepicker({ dateFormat: 'dd/mm/yy',
-	   altField: "#data1",
-	      altFormat: "yy-mm-dd"})
-	      
-	      
+   $('#data').datepicker({ format:"dd/mm/yyyy",
+	   						language:"ro"})   
+   
+	   $('#cauta').click(function(){
+    $('#data1').val(moment($('#data').datepicker("getDate")).format("YYYY-MM-DD"));
+}); 
 	      function anuleazaProg(i, verify){
  	var element = document.getElementById("consultatie"+i);
  	var pacient = element.querySelector("#pacient");
@@ -121,21 +130,42 @@ $( function() {
  		          
  		        },
  		        function(data,status){
- 		        	alert(data);
- 		        	location.reload(true);
+ 		        	window.location.href = "AnulareProgramari.jsp?message="+data;
  		        });
  	}
 }
 function Verif(){
-	if(document.getElementById("medic").value==''||document.getElementById("data").value==''){
-	alert("Introduceti medicul si data");
+	if(!$("#anulareProg").valid()){
 	return false;
 	}else
 		return true;
 	
 }
- var msj="<%=msg%>";
- if(msj!="null")
- 	alert(msj);
+
+ 
+ $(document).ready(function(){
+		$('#anulareProg').validate({
+			rules:{
+				data:{
+					required:true
+					
+				}
+				
+			}
+	})
+	if(window.location.href.indexOf("message=") > 0)
+	{	
+		var message = window.location.href.split("message=")[1].replace(/%20/g," ");
+		var mesaj=document.getElementById("mesaj");
+	    mesaj.innerHTML=message+"<button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button>"
+	    document.getElementById("mesaj").style.display="block";
+	}
+		})
+	
+	
+	jQuery.extend(jQuery.validator.messages, {
+    required: "Campul este obligatoriu.",
+    lettersonly: "Va rog inserati doar litere",
+});
   </script>
 </html>

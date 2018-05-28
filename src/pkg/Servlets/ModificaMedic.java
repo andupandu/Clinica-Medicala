@@ -57,6 +57,7 @@ public class ModificaMedic extends HttpServlet {
 					e.printStackTrace();
 				}
 				DbOperations.modifyMedic(medic);
+				DbOperations.modifyMedicEmailInCont(medic);
 				msg="Datele au fost modificate";
 				break;
 			}

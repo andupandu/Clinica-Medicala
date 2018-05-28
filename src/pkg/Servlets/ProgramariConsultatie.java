@@ -38,7 +38,10 @@ public class ProgramariConsultatie extends HttpServlet {
 		boolean hasFreeHours=false;
 
 		if(DbOperations.hasProgramInThatDay(DateUtil.getSqlDateFromUtilDate(date), Long.valueOf(codMedic))) {
-
+			if(DbOperations.isFreeDay(DateUtil.getSqlDateFromUtilDate(date))) {
+				System.out.println("Ziua :"+date+" libera");
+				return "{\"valid\":false,\"color\":\"red\"}";
+			}
 			if(!getOreDisp(codMedic, data, codServiciu).isEmpty())
 				hasFreeHours=true;
 
@@ -48,6 +51,7 @@ public class ProgramariConsultatie extends HttpServlet {
 				return "{\"valid\":false,\"color\":\"red\"}";
 		}
 
+		 
 		else
 			return "{\"valid\":false,\"color\":\"red\"}";
 

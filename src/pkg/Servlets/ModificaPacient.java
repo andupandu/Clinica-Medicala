@@ -56,7 +56,7 @@ public class ModificaPacient extends HttpServlet {
 					e.printStackTrace();
 				}
 				DbOperations.modifyPacient(pacient);
-				DbOperations.modifyEmailInCont(pacient);
+				DbOperations.modifyPacientEmailInCont(pacient);
 				msg="Datele au fost modificate";
 				break;
 			}

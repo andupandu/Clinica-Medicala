@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.text.ParseException;
+import java.util.Arrays;
+
 import pkg.Utils.*;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -60,7 +62,13 @@ public class ContNou extends HttpServlet {
 			}
 			DbOperations.insertPacientUser(email, parola,DbOperations.getPacient(email).getId().intValue());
 			DbOperations.insertCodContIntoPacient(email, Long.valueOf(DbOperations.getCodCont(email)));
-			SMTPHelper.SendEmail(email,parola);
+			String subiect="Bun venit";
+			String continut="Buna ziua,\n" + 
+					"Multumim ca v ati inregistrat pe site ul nostru.\n" + 
+					"Datele dumneavoastra de logare sunt urmatoarele:\n" + 
+					"Username: " + email+ "\n" + 
+					"Parola:"+parola;
+			SMTPHelper.SendEmail(Arrays.asList(email),continut,subiect);
 			request.setAttribute("msg", "Contul s a creat cu succes");
 		}
 		} catch (JAXBException e) {

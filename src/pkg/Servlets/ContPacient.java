@@ -40,7 +40,7 @@ public class ContPacient extends HttpServlet {
 		String cnp=request.getParameter("cnp");
 		String dataNasterii=request.getParameter("data1");
 		String parola=SMTPHelper.generatePassword();
-		System.out.println("lalala"+nume+prenume);
+		System.out.println("DATAAAAAA"+dataNasterii);
 		Persoana pacient=new Persoana();
 		pacient.setNume(nume);
 		pacient.setPrenume(prenume);
@@ -61,14 +61,13 @@ public class ContPacient extends HttpServlet {
 		else {
 			try {
 				DbOperations.insertPacient(pacient);
+				DbOperations.insertPacientUser(email, parola,DbOperations.getPacient(email).getId().intValue());
+				DbOperations.insertCodContIntoPacient(email, Long.valueOf(DbOperations.getCodCont(email)));
+				request.setAttribute("msg", "Contul s a creat cu succes");
 			} catch (SQLException e) {
-				System.out.println(e.getMessage());
-				request.setAttribute("msg", e.getMessage());
-				e.printStackTrace();
+				System.out.println("Exceptie"+e.getMessage());
+				request.setAttribute("msg", "CNP-ul exista deja in baza de date");
 			}
-			DbOperations.insertPacientUser(email, parola,DbOperations.getPacient(email).getId().intValue());
-			DbOperations.insertCodContIntoPacient(email, Long.valueOf(DbOperations.getCodCont(email)));
-			request.setAttribute("msg", "Contul s a creat cu succes");
 		}
 		}
 		request.getRequestDispatcher("ContPacient.jsp").forward(request,response);

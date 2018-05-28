@@ -13,6 +13,13 @@
 					<script src="Styles/bootstrap.min.js"></script>
 					<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" />
 					<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+					<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/css/bootstrap-datepicker.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/js/bootstrap-datepicker.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/locales/bootstrap-datepicker.ro.min.js"></script>
+<script src="https://momentjs.com/downloads/moment.js"></script>
+<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+<script src="http://ajax.microsoft.com/ajax/jquery.validate/1.7/additional-methods.js"></script>
+
 					<title>Pagina administrator</title>
 				</head>
 
@@ -20,11 +27,13 @@
 					<%String msg=(String)request.getAttribute("msg"); %>
 						<jsp:include page="indexAdmin.jsp" />
 						<div id="right">
-
+<div class="alert alert-info alert-dismissible fade show" role="alert" style="display:none" id="mesaj">
+</div>
 							<center>
-								<form name="analize" action="ProgramariAnalize" method="post">
-									<fieldset>
+							<fieldset>
 										<legend style=text-align:center>Cere o programare pentru analize</legend>
+								<form id="cauta" action="ProgramariAnalize" method="post">
+									
 										<table>
 											<tr>
 												<td>
@@ -33,6 +42,10 @@
 													<input type="button" onclick="searchPacient();" value="Cauta" class="btn btn-secondary">
 												</td>
 											</tr>
+											</table>
+											</form>
+											<form id="analize" action="ProgramariAnalize" method="post">
+											<table>
 											<tr style="display:none" id="trnume">
 												<td>Nume:
 													<input type="text" name="nume" id="nume" class=" form-control">
@@ -55,12 +68,12 @@
 											</tr>
 											<tr style="display:none" id="trcnp">
 												<td>CNP:
-													<input type="text" name="cnpNou" id="cnpNou" class=" form-control">
+													<input type="text" name="cnpNou" id="cnpNou" class=" form-control" readonly>
 												</td>
 											</tr>
 											<tr style="display:none" id="trdataNasterii">
 												<td>Data nasterii:
-													<input type="text" name="dataNasterii" id="dataNasterii" class=" datepicker form-control">
+													<input type="text" name="dataNasterii" id="dataNasterii" class=" datepicker form-control" readonly>
 													<input type="hidden" name="data1" id="data1">
 												</td>
 											</tr>
@@ -78,7 +91,7 @@
 											<tr>
 												<td>Data:
 													<br>
-													<input type="text" name="data" id="data" class=" datepicker form-control" onchange="getOreDisp();">
+													<input type="text" name="data" id="data" class=" datepicker form-control" onchange="getOreDisp();" readonly>
 													<input type="hidden" name="dataprog" id="dataprog">
 												</td>
 											</tr>
@@ -89,7 +102,7 @@
 													</select>
 												</td>
 											</tr>
-											<br>
+											
 											<tr>
 												<td>Analize:
 													<br>
@@ -111,20 +124,17 @@
 											</tr>
 
 										</table>
+										</form>
 									</fieldset>
-								</form>
 							</center>
 						</div>
 				</body>
 
-				</html>
+				
 				<script>
 					function searchPacient() {
 						var cnp = document.getElementById("cnp");
-						if (cnp.value == "") {
-							alert("Introduceti CNP-UL!!");
-							return;
-						}
+						if($("#cauta").valid()){
 						$.post("ProgramariAnalize",
 							{
 								metoda: "detalii",
@@ -153,16 +163,18 @@
 									document.getElementById("tremail").style.display = "block";
 									document.getElementById("trpacient").style.display = "none";
 									document.getElementById("pacient").value = "";
+									document.getElementById("cnpNou").value=document.getElementById("cnp").value;
 
 								}
 							});
+					}
 					}
 					function getOreDisp() {
 						var data = document.getElementById("dataprog");
 						$.post("ProgramariAnalize",
 							{
 								metoda: "ore",
-								dataAnalize: data.value
+								dataAnalize: moment(data).format("YYYY-MM-DD")
 							},
 							function (data, status) {
 
@@ -179,34 +191,126 @@
 								}
 							});
 					}
-					function Disable() {
-
-						var date = new Date();
-						var day = date.getTime();
-						return day;
-					}
 					var msj = "<%=msg%>";
-					if (msj != "null")
-						alert(msj);
+					if (msj != "null"){
+						 var mesaj=document.getElementById("mesaj");
+			        	 mesaj.innerHTML=msj+"<button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button>"
+			         document.getElementById("mesaj").style.display="block";
+					}
+						
+				    $('#continua').click(function(){
+				        $('#data1').val(moment($('#dataNasterii').datepicker("getDate")).format("YYYY-MM-DD"));
+				        $('#dataprog').val(moment($('#data').datepicker("getDate")).format("YYYY-MM-DD"));
 
+				    }); 
+				    var disableddates = ["01-01-2018", "30-11-2018", "01-12-2018", "25-12-2018","26-12-2018","02-01-2018","24-01-2018","09-04-2018",
+				    	"01-05-2018","27-05-2018","28-05-2018","01-06-2018","15-08-2018"];
+
+
+				    function DisableSpecificDates(date) {
+				        var string = jQuery.datepicker.formatDate('dd-mm-yy', date);
+				        console.log(string + " " + disableddates.indexOf(string) == -1)
+				        return disableddates.indexOf(string) == -1;
+				      }
 					$(document).ready($(function () {
-						$("#data").datepicker({
-							startDate: '+1d'
-
-						});
-					})
-					);
-
-					$(function () {
-						$("#dataNasterii").datepicker();
-					});
 					$('#data').datepicker({
-						dateFormat: 'dd/mm/yy',
-						altField: "#dataprog",
-						altFormat: "yy-mm-dd"
-					})
+						format: 'dd/mm/yyyy',
+						startDate: '+1d',
+						language:"ro",
+						beforeShowDay: DisableSpecificDates,
+						endDate:'+30d',
+						daysOfWeekDisabled: "0,6"
+					});
 					$('#dataNasterii').datepicker({
-						dateFormat: 'dd/mm/yy',
-						altField: "#data1",
-						altFormat: "yy-mm-dd"
-					})</script>
+						format: 'dd/mm/yyyy',
+						language:"ro"
+					})
+					}));
+			
+					$.validator.addMethod(
+					        "roCNP",
+					        function(value, element) {
+					            var check = false;
+					            var re = /^\d{1}\d{2}(0[1-9]|1[0-2])(0[1-9]|[12]\d|3[01])(0[1-9]|[1-4]\d| 5[0-2]|99)\d{4}$/;
+					            if( re.test(value)) {
+					                var bigSum = 0, rest = 0, ctrlDigit = 0;
+					                var control = '279146358279';
+					                for (var i = 0; i < 12; i++) {
+					                    bigSum += value[i] * control[i];
+					                }
+					                ctrlDigit = bigSum % 11;
+					                if ( ctrlDigit == 10 ) ctrlDigit = 1;
+					 
+					                if ( ctrlDigit != value[12] ) return false;
+					                else return true;
+					            } return false;
+					        }, 
+					        "CNP invalid"
+					    );
+					$(document).ready(
+					function(){
+						$("#cauta").validate({
+							rules:{
+								cnp: { 
+									required: true,
+									roCNP: true
+								}
+						
+							}
+						})
+					})
+					$(document).ready(
+					function() {
+						$('#analize').validate({
+							rules:{
+								cnpNou: { required: true,
+									roCNP: true
+									},
+					        nume:{
+								required:true,
+								lettersonly: true
+							},
+							prenume:{
+								required:true,
+								lettersonly: true
+							},
+							email:{
+								required:true,
+								email:true
+							},
+							telefon:{
+									required:true,
+								verifTelefon:true
+							},
+							dataNasterii:{
+									required:true
+								}
+							,
+							data:{ required:true
+								
+							},
+							ora:{
+								required:true
+							},
+							analize:{
+								required:true
+							}
+							}
+							    });
+							})
+							
+							$.validator.addMethod("verifTelefon", function (value, element) {
+					    return this.optional(element) || /(02|07)\d{8}$/.test(value);
+					}, 'Telefon invalid');
+					jQuery.extend(jQuery.validator.messages, {
+					    required: "Campul este obligatoriu.",
+					   	lettersonly:"Va rog inserati doar litere",
+					    email: "Inserati un email valid.",
+					    equalTo: "Please enter the same value again.",
+					    accept: "Please enter a value with a valid extension.",
+					    email:"Email invalid",
+					    cnp:"CNP invalid",
+					    cnpNou:"CNP invalid"
+					});
+					</script>
+					</html>

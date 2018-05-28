@@ -6,7 +6,8 @@
 
  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <link rel="stylesheet" type="text/css" href="Styles/bootstrap.min.css">
-
+<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+<script src="http://ajax.microsoft.com/ajax/jquery.validate/1.7/additional-methods.js"></script>
 <script src="Styles/bootstrap.min.js"></script>
 <html>
 <head>
@@ -17,8 +18,10 @@
 <body id="gradient">
 <jsp:include page="indexAdmin.jsp" />
 	<div id="right">
-<h2><center>Specialitati</center></h2>
-
+<h2 style="text-align:center">Specialitati</h2>
+<div class="alert alert-info alert-dismissible fade show" role="alert" style="display:none" id="mesaj">
+</div>
+<form id="listaSpec">
 <table class="table">
 <tr>
     
@@ -43,18 +46,22 @@ for(Specialitate spec : DbOperations.getSpecializari()){ %>
 <%
 i++;
 } %>
-
-<form name="addSpec" method="post" action="EditeazaSpecialitati" onsubmit="return Verif()">
+</table>
+</form>
+<form id="addSpec" method="post" action="EditeazaSpecialitati" onsubmit="return Verif()">
+<table class="table">
 <tr>
-<input type="hidden" class=" form-control" name="verif" id="verif" value="add">
-
-<td><input type="text" name="specNoua" id="specNoua" class=" form-control" ></td>
 <td>
+<input type="hidden" class=" form-control" name="verif" id="verif" value="add">
+<input type="text" name="specNoua" id="specNoua" class=" form-control" ></td>
+<td>
+<input type="hidden">
 <input type="submit" class="btn btn-secondary" id="adauga" name="adauga" value="Adauga"  >
 </td>
 </tr>
+</table>
 </form>
-</table></div>
+</div>
 </body>
 </html>
 <script>
@@ -65,8 +72,12 @@ function readyToModify(i, verify){
 	var specId = element.querySelector("#specId");
 	var spec = element.querySelector("#spec");
 	if(verify=="modify"){
+		if(!$("#listaSpec").valid() && !spec.disabled){
+			return;
+		}
 	spec.disabled = !spec.disabled;
 	if(spec.disabled){
+		
 		if (confirm('Sunteti sigur ca doriti sa modificati specialitatea?')){
 			accept = true;
 		}
@@ -89,16 +100,15 @@ function readyToModify(i, verify){
 			          spec:spec.value
 			        },
 			        function(data,status){
-			        	alert(data);
-			        	window.location.href = "InformatiiSpecialitati.jsp";
+			        	window.location.href = "InformatiiSpecialitati.jsp?message="+data;
 			        });}
 		
 	}
 }
 function Verif(){
-	document.getElementById("verif").value="add";
-	if(document.getElementById("specNoua").value==''){
-		alert("Introduce o denumire pentru specialitate");
+	
+	if(!$("#addSpec").valid()){
+		
 			return false;
 	}else{
 		if(confirm("Introduceti specialitatea?"))
@@ -108,7 +118,41 @@ function Verif(){
 		}
 	}
 var msjInsert="<%=msg%>";
-if(msjInsert!="null")
-	alert(msjInsert);
+if(msjInsert!="null"){
+	 var mesaj=document.getElementById("mesaj");
+	 mesaj.innerHTML=msjInsert+"<button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button>"
+ document.getElementById("mesaj").style.display="block";
+}
 	
+$(document).ready(
+		function() {
+			$('#addSpec').validate({
+				rules:{
+					specNoua:{
+						required:true,
+						lettersonly:true
+						}
+					}
+				    });
+			$('#listaSpec').validate({
+				rules:{
+					spec:{
+						required:true,
+						lettersonly:true
+						}
+					}
+				    });		
+			if(window.location.href.indexOf("message=") > 0)
+			{	
+				var message = window.location.href.split("message=")[1].replace(/%20/g," ");
+				var mesaj=document.getElementById("mesaj");
+			    mesaj.innerHTML=message+"<button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button>"
+			    document.getElementById("mesaj").style.display="block";
+			}
+				})
+				
+		jQuery.extend(jQuery.validator.messages, {
+		    required: "Campul este obligatoriu.",
+		   	lettersonly:"Va rog inserati doar litere"
+		});
 </script>

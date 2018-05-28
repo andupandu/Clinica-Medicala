@@ -1,6 +1,8 @@
 package pkg.Utils;
 
 import java.security.SecureRandom;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 import javax.mail.Message;
@@ -15,7 +17,7 @@ import javax.xml.bind.JAXBException;
 import pkg.Entities.Mesaj;
 
 public class SMTPHelper {
-	public static void SendEmail(String email,String parola) throws JAXBException {
+	public static void SendEmail(List<String> emails,String continut,String subiect) throws JAXBException {
 		Properties props = new Properties();
 	
 		props.put("mail.smtp.host", "smtp.gmail.com");
@@ -24,7 +26,7 @@ public class SMTPHelper {
 				"javax.net.ssl.SSLSocketFactory");
 		props.put("mail.smtp.auth", "true");
 		props.put("mail.smtp.port", "465");
-
+		InternetAddress[] recipientAdress=new InternetAddress [emails.size()] ;
 		Session session = Session.getInstance(props,
          new javax.mail.Authenticator() {
             protected PasswordAuthentication getPasswordAuthentication() {
@@ -37,16 +39,14 @@ public class SMTPHelper {
 
 			Message message = new MimeMessage(session);
 			message.setFrom(new InternetAddress("clinicaMedicala@yahoo.com"));
-			message.setRecipients(Message.RecipientType.TO,
-					InternetAddress.parse(email));
-			message.setSubject("Bun venit");
-			Mesaj m = new Mesaj();
-			//message.setText(String.format(m.IncarcaMesaje(), "username",  "parola"));
-			message.setText("Buna ziua,\n" + 
-					"	Multumim ca v ati inregistrat pe site ul nostru.\n" + 
-					"	Datele dumneavoastra de logare sunt urmatoarele:\n" + 
-					"	Username: " + email+ "\n"+
-					"	Parola: "+parola);
+			int i=0;
+			for(String email:emails) {
+				recipientAdress[i]=new InternetAddress(email);
+				i++;
+			}
+			message.setRecipients(Message.RecipientType.CC, recipientAdress);
+			message.setSubject(subiect);
+			message.setText(continut);
 			Transport.send(message);
 
 			System.out.println("Done");

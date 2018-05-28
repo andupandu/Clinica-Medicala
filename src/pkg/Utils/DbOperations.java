@@ -9,6 +9,7 @@ import pkg.Entities.Specialitate;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
 import java.sql.*;
@@ -68,7 +69,18 @@ public class DbOperations {
 		return areProgram;
 	
 	}
+	public static String getPacientEmail(String  pacient) throws SQLException {
+		
+		String query="SELECT * FROM pacient where CONCAT(pacient_nume, ' ', pacient_prenume)=? ";
+		ResultSet rs =getQueryResults(query, Arrays.asList(pacient));
+		String email=null;
+		if (rs.next()) {
+				email= rs.getString("pacient_email");
+		}
+		CloseResources(conn, rs, null);
+		return email;
 	
+	}
 	public static List<Medic> getMediciPentruConsultatii(Long codSpec) throws SQLException {
 		List<Medic> medici=DbOperations.getMedicFromCodSpec(codSpec);
 		for (Iterator<Medic> iter = medici.listIterator(); iter.hasNext(); ) {
@@ -80,7 +92,70 @@ public class DbOperations {
 		return medici;
 	
 	}
+	public static List<Long> getListaPacienti(Date data,String codMedic) throws SQLException {
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		String query="SELECT * FROM programareconsultatie where programareconsultatie_medic_cod=? and programareconsultatie_data_consultatie=?";
+		conn = getConnection();
+		List<Long> coduriPacienti=new ArrayList<Long>();
+		try {
+
+			if (conn != null) {
+				
+				stmt=conn.prepareStatement(query);
+				stmt.setLong(1, Long.valueOf(codMedic));
+				stmt.setDate(2 ,data);
+				rs=stmt.executeQuery();
+
+				while (rs.next()) {
+					coduriPacienti.add(rs.getLong("programareconsultatie_pacient_cod"));
+				}
+			}
 	
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+		} finally {
+			CloseResources(conn, rs, stmt);
+		}
+		return coduriPacienti;
+		
+	}
+	public static String getEmailPacient(Long codPacient) throws SQLException {
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		String query="SELECT * FROM pacient where pacient_cod=?";
+		conn = getConnection();
+		String email=null;
+		try {
+
+			if (conn != null) {
+				
+				stmt=conn.prepareStatement(query);
+				stmt.setLong(1,codPacient);
+				rs=stmt.executeQuery();
+				while (rs.next()) {
+					email=rs.getString("pacient_email");
+				}
+			}
+	
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+		} finally {
+			CloseResources(conn, rs, stmt);
+		}
+		return email;
+		
+	}
+	public static List<String> getEmailuriPacienti(String codMedic,Date data) throws SQLException {
+		List<String> emails=new ArrayList<String>();
+		for(Long codP :getListaPacienti(data, codMedic))	{
+			System.out.println("EMAILURIIIII "+getEmailPacient(codP));
+			emails.add(getEmailPacient(codP));
+		}
+		return emails;
+	}
 	public static ResultSet getQueryResults(String query, List<Object> params) {
 		conn = getConnection();
 		PreparedStatement stmt = null;
@@ -251,6 +326,40 @@ public class DbOperations {
 		CloseResources(conn, rs, null);
 		return medici;
 	}
+	public static boolean isFreeDay(Date data) throws SQLException, ParseException {
+	return getFreeDays().contains(data);
+	}
+	public static List<Date> getFreeDays() throws SQLException, ParseException{
+		String query="Select * from zilelibere";
+		ResultSet rs=getQueryResults(query,  null);
+		List<Date> dateLibere=new ArrayList<Date>();
+		while(rs.next()) {
+			String data=Calendar.getInstance().get(Calendar.YEAR)+"-"+rs.getString("luna")+"-"+rs.getString("zi");
+			Date dataLibera=DateUtil.getDateFromString(data);
+			System.out.println("ZIUA"+data +" DATA LIBERA "+dataLibera);
+			dateLibere.add(dataLibera);
+		}
+		CloseResources(conn, rs, null);
+		return dateLibere;
+	}
+	
+	public static List<Medic> getMedici() throws SQLException{
+		String query="Select * from medic where medic_valid=1";
+		ResultSet rs=getQueryResults(query,  null);
+		List<Medic> medici=new ArrayList<Medic>();
+		while(rs.next()) {
+			Medic medic=new Medic();
+			medic.setId(rs.getLong("medic_cod"));
+			medic.setNume(rs.getString("medic_nume"));
+			medic.setPrenume(rs.getString("medic_prenume"));
+			medic.setTelefon(rs.getString("medic_telefon"));
+			medic.setEmail(rs.getString("medic_email"));
+			medic.setCodSpec(rs.getLong("specialitate_cod"));
+			medici.add(medic);
+		}
+		CloseResources(conn, rs, null);
+		return medici;
+	}
 	public static String getDenServiciuFromCodServiciu(Long codServiciu) throws SQLException{
 		String query="Select serviciu_denumire from serviciu where serviciu_cod=?";
 		ResultSet rs=getQueryResults(query,  Arrays.asList(codServiciu));
@@ -339,7 +448,16 @@ public class DbOperations {
 		CloseResources(conn, rs, null);
 		return specializare==null?"-":specializare;
 	}
-	
+	public static String getNumePrenumeMedic(long cod) throws SQLException {
+		String query="SELECT * FROM medic where medic_cod=? and medic_valid=1";
+		ResultSet rs =getQueryResults(query, Arrays.asList(cod));
+		String numePrenume=null;
+		while (rs.next()) {
+			 numePrenume = rs.getString("medic_nume")+" "+rs.getString("medic_prenume");									
+		}
+		CloseResources(conn, rs, null);
+		return numePrenume;
+	}
 	public static Persoana getPacient(String email) {
 		Connection conn = getConnection();
 		PreparedStatement stmt = null;
@@ -418,7 +536,7 @@ public class DbOperations {
 			CloseResources(conn, rs, stmt);
 		}
 	}
-	public static void modifyEmailInCont(Persoana pacient) {
+	public static void modifyPacientEmailInCont(Persoana pacient) {
 		Connection conn = getConnection();
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
@@ -428,6 +546,25 @@ public class DbOperations {
 				stmt=conn.prepareStatement(query);	
 				stmt.setString(1, pacient.getEmail());
 				stmt.setLong(2, pacient.getId());
+				stmt.executeUpdate();
+			}
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+		} finally {
+			CloseResources(conn, rs, stmt);
+		}
+	}
+	public static void modifyMedicEmailInCont(Medic  medic) {
+		Connection conn = getConnection();
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		String query="update cont set cont_email=? where cont_medic_cod= ?";
+		try {
+			if (conn != null) {			
+				stmt=conn.prepareStatement(query);	
+				stmt.setString(1, medic.getEmail());
+				stmt.setLong(2, medic.getId());
 				stmt.executeUpdate();
 			}
 		} catch (SQLException e) {
@@ -983,13 +1120,13 @@ public class DbOperations {
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
 		//System.out.println(data);
-		String query="select programareconsultatie_status,programareconsultatie_ora_consultatie,programareconsultatie_data_consultatie,CONCAT(pacient_nume, ' ', pacient_prenume) pacient,CONCAT(medic_nume, ' ', medic_prenume) medic,serviciu_denumire " + 
+		String query="select programareconsultatie_status,programareconsultatie_ora_consultatie,programareconsultatie_data_consultatie,CONCAT(pacient_nume, ' ', pacient_prenume) pacient,medic_cod medic,serviciu_denumire " + 
 				"from programareconsultatie,pacient,medic,serviciu " + 
 				"where programareconsultatie_tip_consultatie=serviciu_cod" + 
 				" and programareconsultatie_medic_cod=medic_cod" + 
 				" and programareconsultatie_pacient_cod=pacient_cod" + 
 				" and programareconsultatie_data_consultatie=?" + 
-				" and CONCAT(medic_nume, ' ', medic_prenume)= ?";
+				" and programareconsultatie_medic_cod= ?";
 		
 		List<Consultatie> consultatii=new ArrayList<Consultatie>();
 		try {
@@ -1025,7 +1162,7 @@ public class DbOperations {
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
 		//System.out.println(pacient+""+medic+""+data);
-		String query="Update programareconsultatie set programareconsultatie_status='anulat' where programareconsultatie_pacient_cod=(select pacient_cod from pacient where CONCAT(pacient_nume, ' ', pacient_prenume)=?)and programareconsultatie_data_consultatie=? and programareconsultatie_medic_cod=(select medic_cod from medic where CONCAT(medic_nume, ' ', medic_prenume)=?)";
+		String query="Update programareconsultatie set programareconsultatie_status='anulat' where programareconsultatie_pacient_cod=(select pacient_cod from pacient where CONCAT(pacient_nume, ' ', pacient_prenume)=?)and programareconsultatie_data_consultatie=? and programareconsultatie_medic_cod=?";
 		try {
 
 			if (conn != null) {
@@ -1049,7 +1186,7 @@ public class DbOperations {
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
 		//System.out.println(medic+""+data);
-		String query="Update programareconsultatie set programareconsultatie_status='anulat' where programareconsultatie_data_consultatie=? and programareconsultatie_medic_cod=(select medic_cod from medic where CONCAT(medic_nume, ' ', medic_prenume)=?)";
+		String query="Update programareconsultatie set programareconsultatie_status='anulat' where programareconsultatie_data_consultatie=? and programareconsultatie_medic_cod=?";
 		try {
 
 			if (conn != null) {

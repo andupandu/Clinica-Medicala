@@ -3,8 +3,8 @@
 <%@page import="pkg.Entities.*"%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
-
-
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+    
 <html>
 <head>
 <link rel="stylesheet" type="text/css" href="Styles/Style.css">
@@ -13,12 +13,16 @@
 <link rel="stylesheet" type="text/css" href="Styles/bootstrap.min.css">
 <script src="Styles/bootstrap.min.js"></script>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+<script src="http://ajax.microsoft.com/ajax/jquery.validate/1.7/additional-methods.js"></script>
 <title>Pagina administrator</title>
 </head>
 <body id="gradient">
 	<jsp:include page="indexAdmin.jsp" />
 	<div id="right">
-		<form method="post" action="ModificaPacient" style="text-align:center">
+	<div class="alert alert-info alert-dismissible fade show" role="alert" style="display:none" id="mesaj">
+</div>
+		<form method="post" action="ModificaPacient" style="text-align:center" id="cautaCnp">
 			<center>
 			<fieldset>
 			<legend>Cauta pacient dupa CNP</legend>
@@ -29,6 +33,8 @@
 			</center>
 			
 		</form>
+		<br>
+		<form id="informatii">
 		<%
 			List<Persoana> pacienti = (List<Persoana>) request.getAttribute("pacienti");
 
@@ -85,9 +91,11 @@
 			<%}
 		
 		%>
+		</form>
 	</div>
+	
 </body>
-</html>
+
 <script>
 
  function readyToModify(i, verify){
@@ -100,7 +108,9 @@
  	var datanasterii = element.querySelector("#dataNasterii");
  	var telefon=element.querySelector("#telefon");
  	var email=element.querySelector("#email");
- 	
+ 	if(!$("#informatii").valid() && !telefon.disabled){
+		return;
+	}
  	telefon.disabled=!telefon.disabled;
  	email.disabled=!email.disabled;
 
@@ -128,10 +138,71 @@
  		          dataNasterii:datanasterii.value
  		        },
  		        function(data,status){
- 		        	alert(data);
- 		        	location.reload(true);
+ 			         window.location.href = "InformatiiPacient.jsp?message=" + data;
+
  		        });
  	}
  }
 	}
+ 
+ $.validator.addMethod("verifTelefon", function (value, element) {
+	    return this.optional(element) || /(02|07)\d{8}$/.test(value);
+	}, 'Telefon invalid');
+ $.validator.addMethod(
+	        "roCNP",
+	        function(value, element) {
+	        	if(value=="")
+	        		return true;
+	            var check = false;
+	            var re = /^\d{1}\d{2}(0[1-9]|1[0-2])(0[1-9]|[12]\d|3[01])(0[1-9]|[1-4]\d| 5[0-2]|99)\d{4}$/;
+	            if( re.test(value)) {
+	                var bigSum = 0, rest = 0, ctrlDigit = 0;
+	                var control = '279146358279';
+	                for (var i = 0; i < 12; i++) {
+	                    bigSum += value[i] * control[i];
+	                }
+	                ctrlDigit = bigSum % 11;
+	                if ( ctrlDigit == 10 ) ctrlDigit = 1;
+	 
+	                if ( ctrlDigit != value[12] ) return false;
+	                else return true;
+	            } return false;
+	        }, 
+	        "CNP invalid"
+	    );
+	$(document).ready(function(){
+		$('#informatii').validate({
+			rules:{
+				email:{
+					required:true,
+					email:true
+				},
+				telefon:{
+					required:true,
+					verifTelefon:true
+				}
+			}
+	})
+		$('#cautaCnp').validate({
+			rules:{
+				cnpintrodus:{
+					roCNP:true
+				}
+			}
+	})
+	if(window.location.href.indexOf("message=") > 0)
+	{	
+		var message = window.location.href.split("message=")[1].replace(/%20/g," ");
+		var mesaj=document.getElementById("mesaj");
+	    mesaj.innerHTML=message+"<button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button>"
+	    document.getElementById("mesaj").style.display="block";
+	}
+	})
+
+	jQuery.extend(jQuery.validator.messages, {
+	    required: "Campul este obligatoriu.",
+	    email: "Inserati un email valid.",
+	});
+
  </script>
+ </html>

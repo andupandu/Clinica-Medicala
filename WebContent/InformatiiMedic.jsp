@@ -3,6 +3,7 @@
 <%@page import="pkg.Entities.*"%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 
 
 <html>
@@ -12,12 +13,15 @@
 <link rel="stylesheet" type="text/css" href="Styles/bootstrap.min.css">
 <script src="Styles/bootstrap.min.js"></script>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+<script src="http://ajax.microsoft.com/ajax/jquery.validate/1.7/additional-methods.js"></script>
 <title>Pagina administrator</title>
 </head>
 <body id="gradient">
 	<jsp:include page="indexAdmin.jsp" />
 	<div id="right">
-	
+	<div class="alert alert-info alert-dismissible fade show" role="alert" style="display:none" id="mesaj">
+</div>
 	<form method="post" action="ModificaMedic">
 	<center>
 		<fieldset>
@@ -37,6 +41,7 @@
 		</fieldset>
 		</center>
 	</form>
+	<br>
 	<form method="post" action="ModificaMedic">
 	<center> 
 	<fieldset style=top:200px>
@@ -44,9 +49,10 @@
 			<br> <input type="submit" value="Cauta"
 				class="btn btn-secondary">
 				</fieldset>
-				
+	</center>			
 	</form>
-	</center>
+	<br>
+	<form id="informatii">
 	<%
 		List<Medic> medici = (List<Medic>) request.getAttribute("medici");
 		if (medici != null) {
@@ -106,9 +112,10 @@
 	<%
 		}
 	%>
+	</form>
 	</div>
 </body>
-</html>
+
 <script>
 
 function readyToModify(i, verify){
@@ -116,13 +123,15 @@ function readyToModify(i, verify){
 	var element = document.getElementById("medic"+i);
 	var nume = element.querySelector("#nume");
 	var prenume = element.querySelector("#prenume");
-	var codspec = element.querySelector("#codspec");
+	var codspec = element.querySelector("#codSpec");
 	var medicId = element.querySelector("#medicId");
 	var spec = element.querySelector("#spec");
 	var telefon=element.querySelector("#telefon");
 	var email=element.querySelector("#email");
 	if(verify=="modif"){
-
+		if(!$("#informatii").valid() && !telefon.disabled){
+			return;
+		}
 		codspec.disabled = !codspec.disabled;
 		telefon.disabled=!telefon.disabled;
 		email.disabled=!email.disabled;
@@ -131,6 +140,7 @@ function readyToModify(i, verify){
 			spec.style.display = "block";
 			codspec.style.display = "none";
 		} 
+	
 		if(telefon.disabled){
 			if (confirm('Sunteti sigur ca doriti sa modificati medicul?')){
 				accept = true;
@@ -159,24 +169,45 @@ function readyToModify(i, verify){
 		          spec:spec.value
 		        },
 		        function(data,status){
-		        	alert(data);
-		        	location.reload(true);
+		         window.location.href = "InformatiiMedic.jsp?message=" + data;
 		        });
 		}
 	}
 		 
 
 }
-function Verif(){
-	document.getElementById("verif").value="add";
-	if(document.getElementById("numeNou").value==''||document.getElementById("prenumeNou").value==''
-			||document.getElementById("specNoua").value==''||document.getElementById("telefonNou").value==''||
-			document.getElementById("emailNou").value==''){
-	alert("Toate campurile sunt obligatorii");
-	return false;
-	}else
-		return true;
+
+
+$.validator.addMethod("verifTelefon", function (value, element) {
+    return this.optional(element) || /(02|07)\d{8}$/.test(value);
+}, 'Telefon invalid');
+$(document).ready(function(){
+	$('#informatii').validate({
+		rules:{
+			email:{
+				required:true,
+				email:true
+			},
+			telefon:{
+				required:true,
+				verifTelefon:true
+			}
+		}
+});
 	
-}
+	if(window.location.href.indexOf("message=") > 0)
+	{	
+		var message = window.location.href.split("message=")[1].replace(/%20/g," ");
+		var mesaj=document.getElementById("mesaj");
+	    mesaj.innerHTML=message+"<button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button>"
+	    document.getElementById("mesaj").style.display="block";
+	}
+})
+
+jQuery.extend(jQuery.validator.messages, {
+    required: "Campul este obligatoriu.",
+    email: "Inserati un email valid.",
+});
 
 </script>
+</html>

@@ -2,7 +2,7 @@
 <%@page import="java.util.List"%>
 <%@page import="pkg.Entities.*"%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-    pageEncoding="ISO-8859-1"%>
+    pageEncoding="utf-8"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -15,7 +15,10 @@
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
 <script src="http://ajax.microsoft.com/ajax/jquery.validate/1.7/additional-methods.js"></script>
-
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/css/bootstrap-datepicker.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/js/bootstrap-datepicker.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/locales/bootstrap-datepicker.ro.min.js"></script>
+<script src="https://momentjs.com/downloads/moment.js"></script>
 <script>
 $.validator.addMethod("verifTelefon", function (value, element) {
     return this.optional(element) || /(02|07)\d{8}$/.test(value);
@@ -52,10 +55,8 @@ $(document).ready(function(){
 jQuery.extend(jQuery.validator.messages, {
     required: "Campul este obligatoriu.",
    lettersonly:"Va rog inserati doar litere",
-    email: "Inserati un email valid.",
-    equalTo: "Please enter the same value again.",
-    accept: "Please enter a value with a valid extension.",
-    email:"Va rog inserati un email valid",
+    email: "Email valid.",
+   
     
 });
 </script>
@@ -68,7 +69,9 @@ jQuery.extend(jQuery.validator.messages, {
 
 
 	<div id="right">
+<div class="alert alert-info alert-dismissible fade show" role="alert" style="display:none" id="mesaj">
 
+</div>
 	<form method="post" action="ContMedic" id="formContMedic">
 	<center>
 	<fieldset>
@@ -100,7 +103,7 @@ Specialitate:<br><select id="spec" name="spec"class="custom-select">
 <td>Telefon:<input type="text" name="telefon" id="telefon" class=" form-control"></td>
 </tr>
 <tr>
-<td>Data nasterii:<input type="text" name="dataNasterii" id="dataNasterii" placeholder="dd/mm/yyyy" class=" form-control">
+<td>Data nasterii:<input type="text" name="dataNasterii" id="dataNasterii" placeholder="dd/mm/yyyy" class=" form-control" readonly>
 <input type="hidden" name="data1" id="data1" ></td>
 </tr>
 <tr>
@@ -116,14 +119,19 @@ Specialitate:<br><select id="spec" name="spec"class="custom-select">
 	
 </body>
 <script>
-$( function() {
-    $( "#dataNasterii" ).datepicker();})
-   $('#dataNasterii').datepicker({ dateFormat: 'dd/mm/yy',
-	   altField: "#data1",
-	      altFormat: "yy-mm-dd"})
+
+   $('#dataNasterii').datepicker({
+	   format:"dd/mm/yyyy",
+	   language: 'ro'})
 	      
+	    $('#creaza').click(function(){
+    $('#data1').val(moment($('#dataNasterii').datepicker("getDate")).format("YYYY-MM-DD"));
+}); 
 	      var msj="<%=msg%>";
- if(msj!="null")
- 	alert(msj);
+ if(msj!="null"){
+	 var mesaj=document.getElementById("mesaj");
+	 mesaj.innerHTML=msj+"<button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button>"
+ document.getElementById("mesaj").style.display="block";
+ }
   </script>
 </html>
