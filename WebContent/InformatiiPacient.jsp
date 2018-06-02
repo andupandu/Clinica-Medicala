@@ -15,10 +15,26 @@
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
 <script src="http://ajax.microsoft.com/ajax/jquery.validate/1.7/additional-methods.js"></script>
+<%if(session.getAttribute("tipUser")=="admin"){%>
 <title>Pagina administrator</title>
+<%}else{
+	if(session.getAttribute("tipUser")=="receptioner"){%>
+<title>Pagina receptioner</title>
+<%}
+	}%>
 </head>
 <body id="gradient">
-	<jsp:include page="indexAdmin.jsp" />
+	<% 
+if(session.getAttribute("tipUser")=="admin"){%>
+<jsp:include page="indexAdmin.jsp" />
+<%}else{
+	if(session.getAttribute("tipUser")=="receptioner"){%>
+	<jsp:include page="indexReceptioner.jsp" />
+<%}else{%><script>
+window.location.href = "index.jsp?message=Nu aveti drept de intrare pe pagina solicitata!";
+</script>
+<% }
+}%>
 	<div id="right">
 	<div class="alert alert-info alert-dismissible fade show" role="alert" style="display:none" id="mesaj">
 </div>

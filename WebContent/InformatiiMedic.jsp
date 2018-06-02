@@ -18,7 +18,12 @@
 <title>Pagina administrator</title>
 </head>
 <body id="gradient">
-	<jsp:include page="indexAdmin.jsp" />
+	<%if(session.getAttribute("tipUser")=="admin"){%>
+<jsp:include page="indexAdmin.jsp" />
+<%}else{%><script>
+	window.location.href = "index.jsp?message=Nu aveti drept de intrare pe pagina solicitata!";
+	</script>
+<% }%>
 	<div id="right">
 	<div class="alert alert-info alert-dismissible fade show" role="alert" style="display:none" id="mesaj">
 </div>

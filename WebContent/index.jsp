@@ -48,5 +48,15 @@
    </ul>
    </div>
    </nav>
+   <div class="alert alert-info alert-dismissible fade show" role="alert" style="display:none" id="mesaj">
+</div>
 </body>
+<script>
+if(window.location.href.indexOf("message=") > 0)
+{	
+	var message = window.location.href.split("message=")[1].replace(/%20/g," ");
+	var mesaj=document.getElementById("mesaj");
+    mesaj.innerHTML=message+"<button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button>"
+    document.getElementById("mesaj").style.display="block";
+}</script>
 </html>

@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import pkg.Entities.Persoana;
 import pkg.Utils.DateUtil;
 import pkg.Utils.DbOperations;
 import pkg.Utils.SMTPHelper;
@@ -36,7 +37,15 @@ public class AnuleazaProgramare extends HttpServlet {
 		String metoda=request.getParameter("verif");
 		System.out.println("Metoda:"+metoda);
 		String pacient=request.getParameter("pacient");
-		String idMedic=request.getParameter("medic");
+		Persoana user=(Persoana) request.getSession().getValue("persoanaLogata");
+		String tipUser=(String)request.getSession().getValue("tipUser");
+		String idMedic=null;
+		if(tipUser=="medic") {
+			idMedic=DbOperations.getUserCodFromPassword(user,tipUser).toString();
+		}
+		else {
+		 idMedic=request.getParameter("medic");
+		}
 		System.out.println("IDMEDIC"+idMedic);
 		String msg=null;
 		String continut=null;
@@ -57,7 +66,7 @@ public class AnuleazaProgramare extends HttpServlet {
 			switch(metoda) {
 			case "anulare":
 				
-				DbOperations.anuleazaConsultatie(pacient, idMedic, data);
+				DbOperations.changeConsultatieStatus(pacient, idMedic, data,"anulat");
 				
 				SMTPHelper.SendEmail(Arrays.asList(DbOperations.getPacientEmail(pacient)), continut, "Anulare consultatie");
 				 msg="Programarea a fost anulata";

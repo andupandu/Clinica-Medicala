@@ -7,17 +7,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<%if(session.getAttribute("tipUser")=="admin"){%>
-<title>Pagina administrator</title>
-<%}else
-	if(session.getAttribute("tipUser")=="receptioner"){%>
 <title>Pagina receptioner</title>
-<%}
-	else
-	if(session.getAttribute("tipUser")=="medic"){%>
-<title>Pagina receptioner</title>
-<%}
-	%>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script src="https://momentjs.com/downloads/moment.js"></script>
@@ -37,36 +27,28 @@ String msg=(String)request.getAttribute("msg");%>
 <% 
 if(session.getAttribute("tipUser")=="admin"){%>
 <jsp:include page="indexAdmin.jsp" />
-<%}else
+<%}else{
 	if(session.getAttribute("tipUser")=="receptioner"){%>
 	<jsp:include page="indexReceptioner.jsp" />
-<%}else
-	if(session.getAttribute("tipUser")=="medic"){%>
-	<jsp:include page="indexMedic.jsp" />
-<%}
-else{
-	%><script>
+<%}else{%><script>
 	window.location.href = "index.jsp?message=Nu aveti drept de intrare pe pagina solicitata!";
 	</script>
-<% 
-}%>
-
-	
+<% }
+	}%>
 <div id="right">
 <div class="alert alert-info alert-dismissible fade show" role="alert" style="display:none" id="mesaj">
 </div>
-<form method="post" action="AnuleazaProgramare" onsubmit="return Verif()" id="anulareProg">
+<form method="post" action="FinalizareProgCons" onsubmit="return Verif()" id="anulareProg">
 <center>
 <fieldset>
 <legend>Anulare programari</legend>
 <table align="center">
 <tr>
 <td>
-<%if(session.getAttribute("tipUser")!="medic") {%>
+Cauta pacient dupa CNP:<input type="text" name="cnp" id="cnp" class="form-control"><br>
 Cauta medic:<select id="medic" name="medic" class=" form-control">
 <%for(Medic m :DbOperations.getMedici()){%>
 <option value="<%=m.getId()%>"><%=m.getNume()+" "+m.getPrenume() %></option> <%} %></select><br>
-<%} %>
 Data:<input type="text" name="data" id="data" class="datepicker form-control" readonly>
 <input type="hidden" name="data1" id="data1">
 <input type="submit" class="btn btn-secondary"  id="cauta" name="cauta" value="Afiseaza programari">
@@ -85,9 +67,6 @@ if(!consultatii.isEmpty()){%>
 				<th>Pacient</th>
 				<th>Tip Consultatie</th>
 				<th>Status</th>
-				<th><input type="button" class="btn btn-secondary"
-						id="anuleaza" name="anuleaza" value="Anuleaza toate programarile"
-						onclick="anuleazaProg('1', 'anularetotala')"></th>
 				
 			</tr>
 
@@ -121,7 +100,9 @@ if(!consultatii.isEmpty()){%>
 					}
 			%>
 </table>
-<%}%>
+<%
+			}
+		%>
 </div>
 </body>
 <script>
@@ -139,25 +120,22 @@ $( function() {
 	var medic=element.querySelector("#medic");
 	var data=element.querySelector("#data");
 	var status=element.querySelector("#status");
+	var cnp=document.getElementById("cnp");
 	if(verify=="anulare"){
-	if(status.value=="anulat"){
-		alert("Programarea este deja anulata");
-	return false;
 	}
-	}
-	if(confirm("Sunteti sigur ca doriti sa anulati programarea?")){
+	if(confirm("Sunteti sigur ca doriti sa finalizati programarea?")){
 		
 	
- 		$.post("AnuleazaProgramare",
+ 		$.post("FinalizareProgCons",
  		        {
 		          pacient:pacient.value,
  		          verif:verify,
  		          medic:medic.value,
- 		          data:data.value
- 		          
+ 		          data:data.value,
+ 		          cnp:cnp.value
  		        },
  		        function(data,status){
- 		        	window.location.href = "AnulareProgramari.jsp?message="+data;
+ 		        	window.location.href = "StatusProgCons.jsp?message="+data;
  		        });
  	}
 }
@@ -169,13 +147,36 @@ function Verif(){
 	
 }
 
+$.validator.addMethod(
+        "roCNP",
+        function(value, element) {
+            var check = false;
+            var re = /^\d{1}\d{2}(0[1-9]|1[0-2])(0[1-9]|[12]\d|3[01])(0[1-9]|[1-4]\d| 5[0-2]|99)\d{4}$/;
+            if( re.test(value)) {
+                var bigSum = 0, rest = 0, ctrlDigit = 0;
+                var control = '279146358279';
+                for (var i = 0; i < 12; i++) {
+                    bigSum += value[i] * control[i];
+                }
+                ctrlDigit = bigSum % 11;
+                if ( ctrlDigit == 10 ) ctrlDigit = 1;
  
+                if ( ctrlDigit != value[12] ) return false;
+                else return true;
+            } return false;
+        }, 
+        "CNP invalid"
+    );
  $(document).ready(function(){
 		$('#anulareProg').validate({
 			rules:{
 				data:{
 					required:true
 					
+				},
+				cnp:{
+					required:true,
+					roCNP:true
 				}
 				
 			}

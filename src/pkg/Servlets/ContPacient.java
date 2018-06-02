@@ -56,7 +56,7 @@ public class ContPacient extends HttpServlet {
 		if(nume=="" ||prenume==""||telefon==""||cnp==""||email==""||dataNasterii=="") {
 			request.setAttribute("msg", "Toate campurile sunt obligatorii");
 		}else {
-		if(DbOperations.isAccountInDB(email)!=null)
+		if(DbOperations.isAccountInDB(email,null)!=null)
 			request.setAttribute("msg", "Exista deja un cont cu acest email");
 		else {
 			try {

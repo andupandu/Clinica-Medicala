@@ -33,25 +33,39 @@ public class Login extends HttpServlet {
 		
 		String password=request.getParameter("password");
 		System.out.println(email+" "+password);
-		if(DbOperations.isAccountInDB(email)!=null) {
-		if(DbOperations.isAccountInDB(email).equals("pacient")) {
-		
-			request.getSession().putValue("persoanaLogata",DbOperations.getPacient(email));
-			request.getRequestDispatcher("Login.jsp").forward(request,response);
-		}
-		if(DbOperations.isAccountInDB(email).equals("medic")) {
-			
-			request.getSession().putValue("persoanaLogata",DbOperations.getMedic(email));
-			request.getRequestDispatcher("Login.jsp").forward(request,response);
-		}
-		if(DbOperations.isAccountInDB(email).equals("admin")) {
-			
-			//request.getSession().putValue("persoanaLogata",DbOperations.getNumePrenumePacient(email));
-			 request.getRequestDispatcher("indexAdmin.jsp").forward(request,response);
+		String user=DbOperations.isAccountInDB(email,password);
+		if(user!=null) {
+			switch(user) {
+			case "pacient":{
+
+				request.getSession().putValue("persoanaLogata",DbOperations.getPacient(email));
+				request.getSession().putValue("tipUser","pacient");	
+				request.getRequestDispatcher("Login.jsp").forward(request,response);
+				break;
+
+			}
+			case "medic":{
+
+				request.getSession().putValue("persoanaLogata",DbOperations.getMedic(email));
+				request.getSession().putValue("tipUser","medic");
+				request.getRequestDispatcher("indexMedic.jsp").forward(request,response);
+				break;
+			}
+			case "admin":{
+				request.getSession().putValue("tipUser","admin");
+				request.getRequestDispatcher("indexAdmin.jsp").forward(request,response);
+				break;
+			}
+			case "receptioner": {
+				request.getSession().putValue("persoanaLogata",DbOperations.getReceptioner(email));
+				request.getSession().putValue("tipUser","receptioner");
+				request.getRequestDispatcher("indexReceptioner.jsp").forward(request,response);
+				break;
+			}
 		}
 		}
 		else { 
-		request.setAttribute("msg","Nu s a gasit userul in db");
+		request.setAttribute("msg","Email/Parola gresita !");
 		request.getRequestDispatcher("Login.jsp").forward(request,response);
 		}
 		

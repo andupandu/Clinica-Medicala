@@ -490,6 +490,33 @@ public class DbOperations {
 		}
 		return persoanaLogata;
 	}
+	public static Long getCodPacientFromCnp(String cnp) {
+		Connection conn = getConnection();
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		Long codPacient=null;
+		String query="SELECT * FROM Pacient where pacient_cnp= ?";
+		try {
+
+			if (conn != null) {
+				
+				stmt=conn.prepareStatement(query);
+				stmt.setString(1, cnp);
+						rs=stmt.executeQuery();
+
+				while (rs.next()) {
+					codPacient=rs.getLong("pacient_cod");
+					
+				}
+			}
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+		} finally {
+			CloseResources(conn, rs, stmt);
+		}
+		return codPacient;
+	}
 	public static void modifyMedic(Medic medic) {
 		Connection conn = getConnection();
 		PreparedStatement stmt = null;
@@ -574,7 +601,32 @@ public class DbOperations {
 			CloseResources(conn, rs, stmt);
 		}
 	}
-	
+	public static void modifyUserEmailInCont(Long userCod,String tipUser,String email) {
+		Connection conn = getConnection();
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		String query=null;
+		if(tipUser=="medic") {
+		 query="update cont set cont_email=? where cont_medic_cod= ?";
+		}
+		else if(tipUser=="receptioner") {
+			query="update cont set cont_email=? where cont_receptioner_cod= ?";
+		}
+		try {
+			if (conn != null) {			
+				stmt=conn.prepareStatement(query);	
+				stmt.setString(1, email);
+				stmt.setLong(2, userCod);
+				
+				stmt.executeUpdate();
+			}
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+		} finally {
+			CloseResources(conn, rs, stmt);
+		}
+	}
 	public static void modifySpecialitate(Specialitate spec) {
 		Connection conn = getConnection();
 		PreparedStatement stmt = null;
@@ -594,6 +646,70 @@ public class DbOperations {
 		} finally {
 			CloseResources(conn, rs, stmt);
 		}
+	}
+	public static Persoana getReceptioner(String email) {
+		Connection conn = getConnection();
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		
+		Persoana persoanaLogata=new Persoana();
+		String query="SELECT receptioner_id,receptioner_nume,receptioner_prenume FROM receptioner,cont where receptioner_id=cont_receptioner_cod and cont_email=?";
+		try {
+
+			if (conn != null) {
+				
+				stmt=conn.prepareStatement(query);
+				stmt.setString(1, email);
+				
+						rs=stmt.executeQuery();
+
+				while (rs.next()) {
+					String nume = rs.getString("receptioner_nume");
+					String prenume=rs.getString("receptioner_prenume");
+					persoanaLogata.setNume(nume);
+					persoanaLogata.setPrenume(prenume);
+					persoanaLogata.setId(rs.getLong("receptioner_id"));
+				}
+			}
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+		} finally {
+			CloseResources(conn, rs, stmt);
+		}
+		return persoanaLogata;
+	}
+	public static Persoana getReceptioner(Persoana receptioner) {
+		Connection conn = getConnection();
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		
+		Persoana persoanaLogata=new Persoana();
+		String query="SELECT receptioner_id,receptioner_nume,receptioner_prenume FROM receptioner where receptioner_nume=? and receptioner_prenume=?";
+		try {
+
+			if (conn != null) {
+				
+				stmt=conn.prepareStatement(query);
+				stmt.setString(1, receptioner.getNume());
+				stmt.setString(2, receptioner.getPrenume());
+						rs=stmt.executeQuery();
+
+				while (rs.next()) {
+					String nume = rs.getString("receptioner_nume");
+					String prenume=rs.getString("receptioner_prenume");
+					persoanaLogata.setNume(nume);
+					persoanaLogata.setPrenume(prenume);
+					persoanaLogata.setId(rs.getLong("receptioner_id"));
+				}
+			}
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+		} finally {
+			CloseResources(conn, rs, stmt);
+		}
+		return persoanaLogata;
 	}
 	public static Persoana getMedic(String email) {
 		Connection conn = getConnection();
@@ -696,39 +812,7 @@ public class DbOperations {
 		return medici;
 	}
 	
-//	public static List<Persoana> getListaPacienti() {
-//		Connection conn = getConnection();
-//		PreparedStatement stmt = null;
-//		ResultSet rs = null;
-//		List<Persoana> pacienti=new ArrayList<Persoana>();
-//		
-//		String query="SELECT * FROM pacient";
-//		try {
-//
-//			if (conn != null) {
-//				
-//				stmt=conn.prepareStatement(query);
-//						rs=stmt.executeQuery();
-//
-//				while (rs.next()) {
-//					Persoana pacient=new Persoana();
-//					pacient.setId(rs.getLong("pacient_cod"));
-//					pacient.setNume(rs.getString("pacient_nume"));
-//					pacient.setPrenume(rs.getString("pacient_cnp"));
-//					pacient.setEmail(rs.getString("pacient_data_nasterii"));
-//					pacient.setTelefon(rs.getString("medic_telefon"));
-//					pacienti.add(pacient);
-//					
-//				}
-//			}
-//		} catch (SQLException e) {
-//			System.out.println(e.getMessage());
-//			e.printStackTrace();
-//		} finally {
-//			CloseResources(conn, rs, stmt);
-//		}
-//		return medici;
-//	}
+
 	
 	public static Persoana cautaPacientDupaCNP(String cnp) {
 		Connection conn = getConnection();
@@ -825,17 +909,26 @@ public class DbOperations {
 		}
 		return consultatii;
 	}
-	public static String isAccountInDB(String email) {
+	public static String isAccountInDB(String email,String parola) {
 		Connection conn = getConnection();
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
-		String query="SELECT * FROM cont WHERE cont_email= ?";
+		String query=null;
+		if(parola==null) {
+			 query="SELECT * FROM cont WHERE cont_email= ?";
+
+		}else {
+			 query="SELECT * FROM cont WHERE cont_email= ? and cont_parola= ?";
+		}
 		try {
 
 			if (conn != null) {
 			
 				stmt=conn.prepareStatement(query);
 				stmt.setString(1,email);
+				if(parola!=null) {
+				stmt.setString(2, parola);
+				}
 				
 				rs=stmt.executeQuery();
 				if(rs.next()) {
@@ -843,6 +936,8 @@ public class DbOperations {
 						return "pacient";
 				if(rs.getString("cont_medic_cod")!=null)
 					return "medic";
+				if(rs.getString("cont_receptioner_cod")!=null)
+					return "receptioner";
 				if(rs.getString("cont_pacient_cod")==null && rs.getString("cont_medic_cod")==null)
 					return "admin";
 				}
@@ -904,7 +999,27 @@ public class DbOperations {
 			CloseResources(conn, rs, stmt);
 		}
 	}
-	
+	public static void insertReceptionerNou(Persoana receptioner) {
+		Connection conn = getConnection();
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		String query="INSERT INTO receptioner(receptioner_nume,receptioner_prenume) values(?,?)";
+		try {
+
+			if (conn != null) {
+			
+				stmt=conn.prepareStatement(query);
+				stmt.setString(1,receptioner.getNume());
+				stmt.setString(2,receptioner.getPrenume());
+				stmt.executeUpdate();
+	}
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+		} finally {
+			CloseResources(conn, rs, stmt);
+		}
+	}
 	public static int getCodCont(String email) {
 		Connection conn = getConnection();
 		PreparedStatement stmt = null;
@@ -942,6 +1057,105 @@ public class DbOperations {
 				stmt.setInt(1,cod.intValue());
 				stmt.setString(2,email);
 				
+				stmt.executeUpdate();
+	}
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+		} finally {
+			CloseResources(conn, rs, stmt);
+		}
+	}
+	public static Long getUserCodFromPassword(Persoana user,String tipUser) {
+		Connection conn = getConnection();
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		Long cod=null;
+		String query=null;
+		if(tipUser=="receptioner") {
+		query="select cont_receptioner_cod from cont where cont_receptioner_cod=(select receptioner_id from receptioner where receptioner_nume=? and receptioner_prenume=?)";
+		}
+		else if(tipUser=="medic"){
+			query="select cont_medic_cod from cont where cont_medic_cod=(select medic_cod from medic where medic_nume=? and medic_prenume=?)";
+
+		}
+		try {
+
+			if (conn != null) {
+			
+				stmt=conn.prepareStatement(query);
+			
+				stmt.setString(1,user.getNume());
+				stmt.setString(2,user.getPrenume());
+				System.out.println(user.getNume()+user.getPrenume());
+				rs=stmt.executeQuery();
+				if(rs.next()) 
+					if(tipUser=="receptioner") {
+				 cod=rs.getLong("cont_receptioner_cod");
+					}
+					else {
+						cod=rs.getLong("cont_medic_cod");
+					}
+	}
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+		} finally {
+			CloseResources(conn, rs, stmt);
+		}
+		return cod;
+	}
+	public static String getUserEmail(Persoana user,String tipUser) {
+		Connection conn = getConnection();
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		String email=null;
+		String query=null;
+		if(tipUser=="receptioner") {
+		query="select cont_email from cont where cont_receptioner_cod=(select receptioner_id from receptioner where receptioner_nume=? and receptioner_prenume=?)";
+		}
+		else {
+			query="select cont_email from cont where cont_medic_cod=(select medic_cod from medic where medic_nume=? and medic_prenume=?)";
+		}
+		try {
+
+			if (conn != null) {
+			
+				stmt=conn.prepareStatement(query);
+			
+				stmt.setString(1,user.getNume());
+				stmt.setString(2,user.getPrenume());
+				rs=stmt.executeQuery();
+				if(rs.next()) 
+				 email=rs.getString("cont_email");
+	}
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+		} finally {
+			CloseResources(conn, rs, stmt);
+		}
+		return email;
+	}
+	public static void modifyUserParola(Long codUser,String parola,String tipUser) {
+		Connection conn = getConnection();
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		String query=null;
+		if(tipUser=="receptioner") {
+		 query="update cont set cont_parola=? where cont_receptioner_cod=?";
+		}
+		else if(tipUser=="medic") {
+			 query="update cont set cont_parola=? where cont_medic_cod=?";
+
+		}
+		try {
+
+			if (conn != null) {
+			
+				stmt=conn.prepareStatement(query);
+				stmt.setString(1,parola);
+				stmt.setLong(2,codUser);
 				stmt.executeUpdate();
 	}
 		} catch (SQLException e) {
@@ -996,11 +1210,53 @@ public class DbOperations {
 			CloseResources(conn, rs, stmt);
 		}
 	}
+	public static void changeMedicEmail(String email,Long codMedic) {
+		Connection conn = getConnection();
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		String query="Update medic set medic_email=? where medic_cont_id=?";
+		try {
+
+			if (conn != null) {
+				stmt=conn.prepareStatement(query);
+				stmt.setString(1,email);
+				stmt.setLong(2,codMedic);
+				stmt.executeUpdate();
+	}
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+		} finally {
+			CloseResources(conn, rs, stmt);
+		}
+	}
 	public static void insertMedicUser(String email,String parola,int id) {
 		Connection conn = getConnection();
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
 		String query="INSERT INTO Cont(cont_email,cont_parola,cont_medic_cod) values(?,?,?)";
+		try {
+
+			if (conn != null) {
+			
+				stmt=conn.prepareStatement(query);
+				stmt.setString(1,email);
+				stmt.setString(2,parola);
+				stmt.setInt(3, id);
+				stmt.executeUpdate();
+	}
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+		} finally {
+			CloseResources(conn, rs, stmt);
+		}
+	}
+	public static void insertReceptionerUser(String email,String parola,int id) {
+		Connection conn = getConnection();
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		String query="INSERT INTO Cont(cont_email,cont_parola,cont_receptioner_cod) values(?,?,?)";
 		try {
 
 			if (conn != null) {
@@ -1157,20 +1413,64 @@ public class DbOperations {
 		}
 		return consultatii;
 	}
-	public static void anuleazaConsultatie( String pacient,String medic,Date data) {
+	public static List<Consultatie> getConsultatii(String medic,String data,String cnp) {
+		Connection conn = getConnection();
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		String query="select programareconsultatie_status,programareconsultatie_ora_consultatie,programareconsultatie_data_consultatie,CONCAT(pacient_nume, ' ', pacient_prenume) pacient,medic_cod medic,serviciu_denumire " + 
+				"from programareconsultatie,pacient,medic,serviciu " + 
+				"where programareconsultatie_tip_consultatie=serviciu_cod" + 
+				" and programareconsultatie_medic_cod=medic_cod" + 
+				" and programareconsultatie_pacient_cod=pacient_cod" + 
+				" and programareconsultatie_data_consultatie=?" + 
+				" and programareconsultatie_medic_cod= ?"+
+				" and programareconsultatie_pacient_cod= ?";
+		
+		List<Consultatie> consultatii=new ArrayList<Consultatie>();
+		try {
+
+			if (conn != null) {
+				stmt=conn.prepareStatement(query);
+				stmt.setString(1, data);
+				stmt.setString(2, medic);
+				stmt.setLong(3, getCodPacientFromCnp(cnp));
+				rs=stmt.executeQuery();
+				while(rs.next()) {
+					Consultatie consultatie=new Consultatie();
+					consultatie.setStatus(rs.getString("programareconsultatie_status"));
+					consultatie.setOraInceput(rs.getString("programareconsultatie_ora_consultatie"));
+					consultatie.setPacient(rs.getString("pacient"));
+					consultatie.setTipConsutatie(rs.getString("serviciu_denumire"));
+					consultatie.setData(rs.getDate("programareconsultatie_data_consultatie"));
+					consultatie.setMedic(rs.getString("medic"));
+					consultatii.add(consultatie);
+
+				}
+
+			}
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+		} finally {
+			CloseResources(conn, rs, stmt);
+		}
+		return consultatii;
+	}
+	public static void changeConsultatieStatus(String pacient,String medic,Date data,String status) {
 		Connection conn = getConnection();
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
 		//System.out.println(pacient+""+medic+""+data);
-		String query="Update programareconsultatie set programareconsultatie_status='anulat' where programareconsultatie_pacient_cod=(select pacient_cod from pacient where CONCAT(pacient_nume, ' ', pacient_prenume)=?)and programareconsultatie_data_consultatie=? and programareconsultatie_medic_cod=?";
+		String query="Update programareconsultatie set programareconsultatie_status=? where programareconsultatie_pacient_cod=(select pacient_cod from pacient where CONCAT(pacient_nume, ' ', pacient_prenume)=?)and programareconsultatie_data_consultatie=? and programareconsultatie_medic_cod=?";
 		try {
 
 			if (conn != null) {
 			
 				stmt=conn.prepareStatement(query);
-				stmt.setString(1,pacient);
-				stmt.setDate(2,data);
-				stmt.setString(3,medic);
+				stmt.setString(1,status);
+				stmt.setString(2,pacient);
+				stmt.setDate(3,data);
+				stmt.setString(4,medic);
 				stmt.executeUpdate();
 	}
 		} catch (SQLException e) {
@@ -1180,6 +1480,7 @@ public class DbOperations {
 			CloseResources(conn, rs, stmt);
 		}
 	}
+	
 	
 	public static void anuleazaToateConsultatiileDinZi(String medic,Date data) {
 		Connection conn = getConnection();

@@ -51,7 +51,7 @@ public class ContNou extends HttpServlet {
 		pacient.setEmail(email);
 		pacient.setTelefon(telefon);
 		
-		try { if(DbOperations.isAccountInDB(email)!=null)
+		try { if(DbOperations.isAccountInDB(email,null)!=null)
 			request.setAttribute("msg", "Exista deja un cont cu acest email");
 		else {
 			try {

@@ -24,7 +24,7 @@ $.validator.addMethod("verifTelefon", function (value, element) {
     return this.optional(element) || /(02|07)\d{8}$/.test(value);
 }, 'Telefon invalid');
 $(document).ready(function(){
-	$('#formContMedic').validate({
+	$('#formContReceptioner').validate({
 		rules:{
 			nume:{
 				required:true,
@@ -37,15 +37,7 @@ $(document).ready(function(){
 	email:{
 		required:true,
 		email:true
-	},
-		telefon:{
-			required:true,
-			verifTelefon:true
-		
-		},
-		dataNasterii:{
-			required:true
-		}
+	}
 	}
 })
 })
@@ -65,7 +57,6 @@ jQuery.extend(jQuery.validator.messages, {
 </head>
 <body id="gradient">
 <%String msg=(String)request.getAttribute("msg");
-
 if(session.getAttribute("tipUser")=="admin"){%>
 <jsp:include page="indexAdmin.jsp" />
 <%}else{%>
@@ -75,14 +66,15 @@ if(session.getAttribute("tipUser")=="admin"){%>
 <%} %>
 
 
+
 	<div id="right">
 <div class="alert alert-info alert-dismissible fade show" role="alert" style="display:none" id="mesaj">
 
 </div>
-	<form method="post" action="ContMedic" id="formContMedic">
+	<form method="post" action="ContReceptioner" id="formContReceptioner">
 	<center>
 	<fieldset>
- <legend style=text-align:center>Date medic</legend>
+ <legend style=text-align:center>Date receptioner</legend>
 	<table align="center">	
 	<tr>
  <td>
@@ -92,26 +84,8 @@ if(session.getAttribute("tipUser")=="admin"){%>
 <tr>
 <td>Prenume:<input type="text" name="prenume" id="prenume" class=" form-control"></td>
 </tr>
-<tr><td>
-Specialitate:<br><select id="spec" name="spec"class="custom-select">
-<%
-	List<Specialitate> specializari = (List<Specialitate>) DbOperations.getSpecializari();
-	for (Specialitate spec : specializari) {
-	%>
-				<option value="<%=spec.getCod()%>"><%=spec.getDenumire()%></option>
-				<%
-					}
-				%>
-			</select></td></tr>
-			<tr>
+<tr>
 <td>Email:<input type="text" name="email" id="email" class=" form-control"></td>
-</tr>
-<tr>
-<td>Telefon:<input type="text" name="telefon" id="telefon" class=" form-control"></td>
-</tr>
-<tr>
-<td>Data nasterii:<input type="text" name="dataNasterii" id="dataNasterii" placeholder="dd/mm/yyyy" class=" form-control" readonly>
-<input type="hidden" name="data1" id="data1" ></td>
 </tr>
 <tr>
 <td><br><input type="submit" class="btn btn-secondary" id="creaza" name="creaza" value="Creaza cont" style="text-align:center"></td>
@@ -121,19 +95,10 @@ Specialitate:<br><select id="spec" name="spec"class="custom-select">
 	</fieldset>
 	</center>
 	</form>
-	
 	</div>
 	
 </body>
 <script>
-
-   $('#dataNasterii').datepicker({
-	   format:"dd/mm/yyyy",
-	   language: 'ro'})
-	      
-	    $('#creaza').click(function(){
-    $('#data1').val(moment($('#dataNasterii').datepicker("getDate")).format("YYYY-MM-DD"));
-}); 
 	      var msj="<%=msg%>";
  if(msj!="null"){
 	 var mesaj=document.getElementById("mesaj");

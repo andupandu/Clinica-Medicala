@@ -16,7 +16,12 @@
 </head>
 <%String msg=(String)request.getAttribute("msjInserareSpecialitate"); %>
 <body id="gradient">
+<%if(session.getAttribute("tipUser")=="admin"){%>
 <jsp:include page="indexAdmin.jsp" />
+<%}else{%><script>
+	window.location.href = "index.jsp?message=Nu aveti drept de intrare pe pagina solicitata!";
+	</script>
+<% }%>
 	<div id="right">
 <h2 style="text-align:center">Specialitati</h2>
 <div class="alert alert-info alert-dismissible fade show" role="alert" style="display:none" id="mesaj">

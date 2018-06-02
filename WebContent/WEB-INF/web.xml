@@ -119,4 +119,44 @@
     <servlet-name>ContMedic</servlet-name>
     <url-pattern>/ContMedic</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>FinalizareProgCons</display-name>
+    <servlet-name>FinalizareProgCons</servlet-name>
+    <servlet-class>pkg.Servlets.FinalizareProgCons</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>FinalizareProgCons</servlet-name>
+    <url-pattern>/FinalizareProgCons</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>ContReceptioner</display-name>
+    <servlet-name>ContReceptioner</servlet-name>
+    <servlet-class>pkg.Servlets.ContReceptioner</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ContReceptioner</servlet-name>
+    <url-pattern>/ContReceptioner</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>DateCont</display-name>
+    <servlet-name>DateCont</servlet-name>
+    <servlet-class>pkg.Servlets.DateCont</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>DateCont</servlet-name>
+    <url-pattern>/DateCont</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>Delogare</display-name>
+    <servlet-name>Delogare</servlet-name>
+    <servlet-class>pkg.Servlets.Delogare</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>Delogare</servlet-name>
+    <url-pattern>/Delogare</url-pattern>
+  </servlet-mapping>
 </web-app>
