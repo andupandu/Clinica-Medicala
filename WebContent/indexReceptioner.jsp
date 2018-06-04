@@ -46,7 +46,6 @@ if(session.getAttribute("tipUser")!="receptioner"){%>
   
   <a class="list-group-item list-group-item-action"  href="AnulareProgramari.jsp"> Anulare programari consultatie</a>
   <a class="list-group-item list-group-item-action"  href="StatusProgCons.jsp"> Status programari consultatie</a>
-  <a class="list-group-item list-group-item-action"  href="StatusProgAnalize.jsp"> Status programari analize</a>
   <a class="list-group-item list-group-item-action"  href="DateCont.jsp"> Date Cont</a>
  
          

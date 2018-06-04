@@ -6,8 +6,6 @@
 <head>
 
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-
 <link rel="stylesheet" type="text/css" href="Styles/bootstrap.min.css">
 <script src="Styles/bootstrap.min.js"></script>
 <link rel="stylesheet" type="text/css" href="Styles/Style.css">
@@ -38,7 +36,7 @@ if(session.getAttribute("tipUser")!="medic"){%>
 
 <div class="list-group float-left" id="left" style="background:linear-gradient(#e6f3f7,#b1cad1)">
    
-  <a href="InformatiiPacient.jsp"  class="list-group-item list-group-item-action" >Zile libere</a>
+  <a href="ZileLibereMedic.jsp"  class="list-group-item list-group-item-action" >Zile libere</a>
   
   <a class="list-group-item list-group-item-action"  href="AnulareProgramari.jsp"> Anulare programari consultatie</a>
 <div id="accordion">
@@ -51,13 +49,13 @@ if(session.getAttribute("tipUser")!="medic"){%>
    
     <div id="collapseOne" class="collapse" data-parent="#accordion">
       <div class="card-body">
-           <a class="list-group-item list-group-item-action"  href="StatusProgAnalize.jsp">Adauga serviciu</a>
-  <a class="list-group-item list-group-item-action"  href="StatusProgAnalize.jsp">Modifica serviciu</a>
+           <a class="list-group-item list-group-item-action"  href="ServiciiNoiMedic.jsp">Adauga serviciu</a>
+  <a class="list-group-item list-group-item-action"  href="ModificareServiciiMedic.jsp">Modifica serviciu</a>
       </div>
     </div>
   </div>
 
-  <a class="list-group-item list-group-item-action"  href="StatusProgAnalize.jsp">Program de lucru</a>
+  <a class="list-group-item list-group-item-action"  href="ProgramDeLucruMedic.jsp">Program de lucru</a>
   <a class="list-group-item list-group-item-action"  href="DateCont.jsp"> Date Cont</a>
 </div>
 </div>

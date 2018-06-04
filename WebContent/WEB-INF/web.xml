@@ -159,4 +159,34 @@
     <servlet-name>Delogare</servlet-name>
     <url-pattern>/Delogare</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>AdaugaServiciuMedic</display-name>
+    <servlet-name>AdaugaServiciuMedic</servlet-name>
+    <servlet-class>pkg.Servlets.AdaugaServiciuMedic</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>AdaugaServiciuMedic</servlet-name>
+    <url-pattern>/AdaugaServiciuMedic</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>ModificareServiciuMedic</display-name>
+    <servlet-name>ModificareServiciuMedic</servlet-name>
+    <servlet-class>pkg.Servlets.ModificareServiciuMedic</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ModificareServiciuMedic</servlet-name>
+    <url-pattern>/ModificareServiciuMedic</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>AdaugaZiLibera</display-name>
+    <servlet-name>AdaugaZiLibera</servlet-name>
+    <servlet-class>pkg.Servlets.AdaugaZiLibera</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>AdaugaZiLibera</servlet-name>
+    <url-pattern>/AdaugaZiLibera</url-pattern>
+  </servlet-mapping>
 </web-app>

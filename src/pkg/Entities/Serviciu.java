@@ -2,9 +2,10 @@ package pkg.Entities;
 
 public class Serviciu {
 Long cod;
-Long Timp;
+String Timp;
 Long pret;
 Long codMedic;
+String denumire;
 public Long getCodMedic() {
 	return codMedic;
 }
@@ -17,10 +18,10 @@ public Long getCod() {
 public void setCod(Long cod) {
 	this.cod = cod;
 }
-public Long getTimp() {
+public String getTimp() {
 	return Timp;
 }
-public void setTimp(Long timp) {
+public void setTimp(String timp) {
 	Timp = timp;
 }
 public Long getPret() {
@@ -29,4 +30,11 @@ public Long getPret() {
 public void setPret(Long pret) {
 	this.pret = pret;
 }
+public String getDenumire() {
+	return denumire;
+}
+public void setDenumire(String denumire) {
+	this.denumire = denumire;
+}
+
 }

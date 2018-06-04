@@ -309,6 +309,15 @@ public class DbOperations {
 		CloseResources(conn, rs, null);
 		return specializari;
 	}
+	public static boolean isServiciu(String serviciu) throws SQLException {
+		String query="SELECT * FROM serviciu where serviciu_denumire=?";
+		ResultSet rs =getQueryResults(query, Arrays.asList(serviciu));
+		if (rs.next()) {
+			return true;
+		}
+		CloseResources(conn, rs, null);
+		return false;
+	}
 	public static List<Medic> getMedicFromCodSpec(Long codSpec) throws SQLException{
 		String query="Select * from medic where specialitate_cod=? and medic_valid=1";
 		ResultSet rs=getQueryResults(query,  Arrays.asList(codSpec));
@@ -490,6 +499,37 @@ public class DbOperations {
 		}
 		return persoanaLogata;
 	}
+	public static List<Serviciu> getMedicServicii(String idMedic) {
+		Connection conn = getConnection();
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		List<Serviciu> servicii=new ArrayList<Serviciu>();
+		String query="SELECT * from ofera,serviciu where serviciu.serviciu_cod=ofera.serviciu_cod and medic_cod= ?";
+		try {
+
+			if (conn != null) {
+				
+				stmt=conn.prepareStatement(query);
+				stmt.setLong(1, Long.valueOf(idMedic));
+						rs=stmt.executeQuery();
+
+				while (rs.next()) {
+					Serviciu serviciu=new Serviciu();
+					serviciu.setCod(rs.getLong("serviciu_cod"));
+					serviciu.setDenumire(rs.getString("serviciu_denumire"));
+					serviciu.setPret(rs.getLong("ofera_pret"));
+					serviciu.setTimp(rs.getString("ofera_timp"));
+					servicii.add(serviciu);
+				}
+			}
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+		} finally {
+			CloseResources(conn, rs, stmt);
+		}
+		return servicii;
+	}
 	public static Long getCodPacientFromCnp(String cnp) {
 		Connection conn = getConnection();
 		PreparedStatement stmt = null;
@@ -639,6 +679,27 @@ public class DbOperations {
 				stmt.setLong(2,spec.getCod());
 				
 						stmt.executeUpdate();
+			}
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+		} finally {
+			CloseResources(conn, rs, stmt);
+		}
+	}
+	public static void modifyServiciu(Serviciu serviciu,String idMedic) {
+		Connection conn = getConnection();
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		String query="update ofera set ofera_timp=?,ofera_pret=? where serviciu_cod=? and medic_cod=?";
+		try {
+			if (conn != null) {			
+				stmt=conn.prepareStatement(query);
+				stmt.setString(1, serviciu.getTimp());
+				stmt.setLong(2,serviciu.getPret());
+				stmt.setLong(3,serviciu.getCod());
+				stmt.setLong(4,Long.valueOf(idMedic));
+				stmt.executeUpdate();
 			}
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
@@ -848,6 +909,31 @@ public class DbOperations {
 		}
 		return pacient;
 	}
+	public static boolean areZiuaLibera(Long medicId,String data) {
+		Connection conn = getConnection();
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		String query="SELECT * FROM concediu where medic_cod=? and concediu_data=?";
+		try {
+
+			if (conn != null) {
+				stmt=conn.prepareStatement(query);
+				stmt.setLong(1, medicId);
+				stmt.setString(2, data);
+						rs=stmt.executeQuery();
+
+				if (rs.next()) {
+					return true;				
+					}
+			}
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+		} finally {
+			CloseResources(conn, rs, stmt);
+		}
+		return false;
+	}
 	public static String getNumeAnalizaFromCod(Long codAnaliza) {
 		Connection conn = getConnection();
 		PreparedStatement stmt = null;
@@ -872,6 +958,31 @@ public class DbOperations {
 			CloseResources(conn, rs, stmt);
 		}
 		return denumireAnaliza;
+	}
+	public static boolean mediculOferaServiciul(String denumireServ,String idMedic) {
+		Connection conn = getConnection();
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		String query="SELECT * FROM ofera where medic_cod=? and serviciu_cod=(select serviciu_cod from serviciu where serviciu_denumire=?)";
+		try {
+
+			if (conn != null) {
+				stmt=conn.prepareStatement(query);
+				stmt.setLong(1, Long.valueOf(idMedic));
+				stmt.setString(2, denumireServ);
+						rs=stmt.executeQuery();
+
+				if (rs.next()) {
+					return true;
+				}
+			}
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+		} finally {
+			CloseResources(conn, rs, stmt);
+		}
+		return false;
 	}
 	
 	// se verifica daca pacientul are o programare in curs la analiza selectata
@@ -974,6 +1085,23 @@ public class DbOperations {
 		}
 	
 	
+	public static void insertZiLibera(Long idMedic,String data) throws SQLException {
+		Connection conn = getConnection();
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		String query="INSERT INTO concediu(medic_cod,concediu_data) values(?,?)";
+
+			if (conn != null) {
+			
+				stmt=conn.prepareStatement(query);
+				stmt.setLong(1,idMedic);
+				stmt.setString(2,data);
+				stmt.executeUpdate();
+	}
+			CloseResources(conn, rs, stmt);
+		}
+	
+	
 	public static void insertMedicNou(Medic medic) {
 		Connection conn = getConnection();
 		PreparedStatement stmt = null;
@@ -1011,6 +1139,50 @@ public class DbOperations {
 				stmt=conn.prepareStatement(query);
 				stmt.setString(1,receptioner.getNume());
 				stmt.setString(2,receptioner.getPrenume());
+				stmt.executeUpdate();
+	}
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+		} finally {
+			CloseResources(conn, rs, stmt);
+		}
+	}
+	public static void insertServiciuNou(String denServiciu) {
+		Connection conn = getConnection();
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		String query="INSERT INTO serviciu(serviciu_denumire) values(?)";
+		
+		try {
+
+			if (conn != null) {
+			
+				stmt=conn.prepareStatement(query);
+				stmt.setString(1,denServiciu);
+				stmt.executeUpdate();
+	}
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+		} finally {
+			CloseResources(conn, rs, stmt);
+		}
+	}
+	public static void alocaServiciuNou(String denServiciu,String timp,String pret,String idMedic) {
+		Connection conn = getConnection();
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		String query="INSERT INTO ofera(ofera_pret,ofera_timp,medic_cod,serviciu_cod) values(?,?,?,(select serviciu_cod from serviciu where serviciu_denumire=?))";
+		try {
+
+			if (conn != null) {
+			
+				stmt=conn.prepareStatement(query);
+				stmt.setLong(1,Long.valueOf(pret));
+				stmt.setString(2,timp);
+				stmt.setLong(3,Long.valueOf(idMedic));
+				stmt.setString(4,denServiciu);
 				stmt.executeUpdate();
 	}
 		} catch (SQLException e) {
@@ -1382,7 +1554,7 @@ public class DbOperations {
 				" and programareconsultatie_medic_cod=medic_cod" + 
 				" and programareconsultatie_pacient_cod=pacient_cod" + 
 				" and programareconsultatie_data_consultatie=?" + 
-				" and programareconsultatie_medic_cod= ?";
+				" and programareconsultatie_medic_cod= ? and programareconsultatie_status='in curs'";
 		
 		List<Consultatie> consultatii=new ArrayList<Consultatie>();
 		try {
@@ -1413,6 +1585,7 @@ public class DbOperations {
 		}
 		return consultatii;
 	}
+	
 	public static List<Consultatie> getConsultatii(String medic,String data,String cnp) {
 		Connection conn = getConnection();
 		PreparedStatement stmt = null;

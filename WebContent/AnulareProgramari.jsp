@@ -7,17 +7,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<%if(session.getAttribute("tipUser")=="admin"){%>
-<title>Pagina administrator</title>
-<%}else
-	if(session.getAttribute("tipUser")=="receptioner"){%>
-<title>Pagina receptioner</title>
-<%}
-	else
-	if(session.getAttribute("tipUser")=="medic"){%>
-<title>Pagina receptioner</title>
-<%}
-	%>
+
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script src="https://momentjs.com/downloads/moment.js"></script>
@@ -31,6 +21,17 @@
  <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
 <script src="http://ajax.microsoft.com/ajax/jquery.validate/1.7/additional-methods.js"></script>
 </head>
+<%if(session.getAttribute("tipUser")=="admin"){%>
+<title>Pagina administrator</title>
+<%}else
+	if(session.getAttribute("tipUser")=="receptioner"){%>
+<title>Pagina receptioner</title>
+<%}
+	else
+	if(session.getAttribute("tipUser")=="medic"){%>
+<title>Pagina medic</title>
+<%}
+	%>
 <%List<Consultatie> consultatii=(List<Consultatie>)request.getAttribute("consultatii");
 String msg=(String)request.getAttribute("msg");%>
 <body id="gradient">

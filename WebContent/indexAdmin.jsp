@@ -45,6 +45,9 @@ if(session.getAttribute("tipUser")!="admin"){%>
     
     <a class="list-group-item list-group-item-action"  href="InformatiiSpecialitati.jsp">Specialitati</a>
     
+        <a class="list-group-item list-group-item-action"  href="InformatiiAnalize.jsp">Analize</a>
+    
+    
    <a class="list-group-item list-group-item-action"  href="ContPacient.jsp" > Cont pacient</a>
    
   <a href="InformatiiPacient.jsp"  class="list-group-item list-group-item-action" >Pacienti</a>
