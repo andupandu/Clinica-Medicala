@@ -45,6 +45,8 @@ public class ContReceptioner extends HttpServlet {
 		else {
 			DbOperations.insertReceptionerNou(receptioner);
 			DbOperations.insertReceptionerUser(email, parola,DbOperations.getReceptioner(receptioner).getId().intValue());
+			DbOperations.insertCodContIntoReceptioner(DbOperations.getReceptioner(receptioner).getId().intValue(), Long.valueOf(DbOperations.getCodCont(email)));
+
 			request.setAttribute("msg", "Contul s-a creat cu succes");
 		}
 		

@@ -19,6 +19,7 @@ import java.text.ParseException;
 public class DbOperations {
 	private static Connection conn = getConnection();
 	
+	 
 	public static Connection getConnection() {
 		String connectionUrl = "jdbc:mysql://localhost:3306/clinicamedicala";
 		String connectionUser = "root";
@@ -60,7 +61,7 @@ public class DbOperations {
 	}
 	public static boolean medicAreProgram(Long  codMedic) throws SQLException {
 		boolean areProgram=false;
-		String query="SELECT * FROM areprogram where areprogram_medic_cod=? ";
+		String query="SELECT * FROM areprogram where areprogram_medic_cod=? and areprogram_valid=1";
 		ResultSet rs =getQueryResults(query, Arrays.asList(codMedic));
 		if (rs.next()) {
 				areProgram= true;
@@ -339,11 +340,11 @@ public class DbOperations {
 	return getFreeDays().contains(data);
 	}
 	public static List<Date> getFreeDays() throws SQLException, ParseException{
-		String query="Select * from zilelibere";
+		String query="Select * from zilibera";
 		ResultSet rs=getQueryResults(query,  null);
 		List<Date> dateLibere=new ArrayList<Date>();
 		while(rs.next()) {
-			String data=Calendar.getInstance().get(Calendar.YEAR)+"-"+rs.getString("luna")+"-"+rs.getString("zi");
+			String data=Calendar.getInstance().get(Calendar.YEAR)+"-"+rs.getString("zilibera_luna")+"-"+rs.getString("zilibera_zi");
 			Date dataLibera=DateUtil.getDateFromString(data);
 			System.out.println("ZIUA"+data +" DATA LIBERA "+dataLibera);
 			dateLibere.add(dataLibera);
@@ -1382,6 +1383,29 @@ public class DbOperations {
 			CloseResources(conn, rs, stmt);
 		}
 	}
+	
+	public static void insertCodContIntoReceptioner(int id,Long cod) {
+		Connection conn = getConnection();
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		String query="Update receptioner set receptioner_cont_cod=? where receptioner_id=?";
+		try {
+
+			if (conn != null) {
+			
+				stmt=conn.prepareStatement(query);
+				stmt.setInt(1,cod.intValue());
+				stmt.setInt(2,id);
+				
+				stmt.executeUpdate();
+	}
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+		} finally {
+			CloseResources(conn, rs, stmt);
+		}
+	}
 	public static void changeMedicEmail(String email,Long codMedic) {
 		Connection conn = getConnection();
 		PreparedStatement stmt = null;
@@ -1487,12 +1511,38 @@ public class DbOperations {
 		return zi;
 	}
 	
+	public static List<String> getZileProgramLucruMedic(String codMedic) {
+		Connection conn = getConnection();
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		List<String> zile=new ArrayList<String>();
+		String query="select zi_denumire from clinicamedicala.zi where zi_denumire not in (select zi_denumire from clinicamedicala.zi,clinicamedicala.areprogram where zi_id=areprogram_zi_id and areprogram_medic_cod=6 and areprogram_valid=3) and zi_denumire not in ('Sâmbătă','Duminică')";
+		String zi=null;
+		try {
+
+			if (conn != null) {
+				stmt=conn.prepareStatement(query);
+				stmt.setLong(1,codMedic);
+				rs=stmt.executeQuery();
+				while(rs.next()) 
+				 zi=rs.getString("zi_denumire");
+				zile.add(zi);
+	}
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+		} finally {
+			CloseResources(conn, rs, stmt);
+		}
+		return zile;
+	}
+	
 	public static boolean  hasProgramInThatDay(Date data,Long codMedic) {
 		Connection conn = getConnection();
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
 		setCompatibility();
-		String query=" select areprogram_zi_id from clinicamedicala.areprogram where (select zi_id from clinicamedicala.zi where zi_denumire=clinicamedicala.ro_dayname(?))=areprogram_zi_id and areprogram_medic_cod=?";
+		String query=" select areprogram_zi_id from clinicamedicala.areprogram where (select zi_id from clinicamedicala.zi where zi_denumire=clinicamedicala.ro_dayname(?))=areprogram_zi_id and areprogram_medic_cod=? and areprogram_valid=1";
 		Boolean hasProgram=false;
 		try {
 
@@ -1518,7 +1568,7 @@ public class DbOperations {
 		ResultSet rs = null;
 		System.out.println(data);
 		String query=" select str_to_date(areprogram_ora_inceput,\"%H:%i\") orainceput,str_to_date(areprogram_ora_sfarsit,\"%H:%i\") orasfarsit from "
-				+ "clinicamedicala.areprogram where areprogram_medic_cod=? and areprogram_zi_id=(select zi_id from clinicamedicala.zi where zi_denumire=clinicamedicala.ro_dayname(?));"; 
+				+ "clinicamedicala.areprogram where areprogram_medic_cod=? and  areprogram_valid=1 and areprogram_zi_id=(select zi_id from clinicamedicala.zi where zi_denumire=clinicamedicala.ro_dayname(?));"; 
 		 List<String> oreProgram=new ArrayList<String>();
 		try {
 
@@ -1712,7 +1762,7 @@ public class DbOperations {
 		ResultSet rs = null;
 		//System.out.println("DATA"+data);
 		String query=" select programareconsultatie_ora_consultatie,ADDTIME(programareconsultatie_ora_consultatie,ofera_timp) ora" + 
-				"	 from clinicamedicala.areprogram ,clinicamedicala.programareconsultatie,clinicamedicala.ofera  where areprogram_medic_cod=programareconsultatie_medic_cod and areprogram_zi_id= (select zi_id from clinicamedicala.zi where zi_denumire=clinicamedicala.ro_dayname(programareconsultatie_data_consultatie)) and programareconsultatie_tip_consultatie=serviciu_cod and programareconsultatie_data_consultatie=? and areprogram_medic_cod=? order by ora"; 
+				"	 from clinicamedicala.areprogram ,clinicamedicala.programareconsultatie,clinicamedicala.ofera  where areprogram_valid=1 and  areprogram_medic_cod=programareconsultatie_medic_cod and areprogram_zi_id= (select zi_id from clinicamedicala.zi where zi_denumire=clinicamedicala.ro_dayname(programareconsultatie_data_consultatie)) and programareconsultatie_tip_consultatie=serviciu_cod and programareconsultatie_data_consultatie=? and areprogram_medic_cod=? order by ora"; 
 		List<Interval> ore=new ArrayList<Interval>();
 		try {
 

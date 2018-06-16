@@ -6,8 +6,16 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
+<%
+if(session.getAttribute("tipUser")=="admin"){%>
+<jsp:include page="indexAdmin.jsp" />
+<%}else{%>
+<script>
+	window.location.href = "index.jsp?message=Nu aveti drept de intrare pe pagina solicitata!";
+	</script>
+<%} %>
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <link rel="stylesheet" type="text/css" href="Styles/bootstrap.min.css">
 <script src="Styles/bootstrap.min.js"></script>
@@ -64,15 +72,8 @@ jQuery.extend(jQuery.validator.messages, {
 <title>Pagina administrator</title>
 </head>
 <body id="gradient">
-<%String msg=(String)request.getAttribute("msg");
+<%String msg=(String)request.getAttribute("msg");%>
 
-if(session.getAttribute("tipUser")=="admin"){%>
-<jsp:include page="indexAdmin.jsp" />
-<%}else{%>
-<script>
-	window.location.href = "index.jsp?message=Nu aveti drept de intrare pe pagina solicitata!";
-	</script>
-<%} %>
 
 
 	<div id="right">
@@ -129,7 +130,8 @@ Specialitate:<br><select id="spec" name="spec"class="custom-select">
 
    $('#dataNasterii').datepicker({
 	   format:"dd/mm/yyyy",
-	   language: 'ro'})
+	   language: 'ro',
+	   endDate:"+1d"})
 	      
 	    $('#creaza').click(function(){
     $('#data1').val(moment($('#dataNasterii').datepicker("getDate")).format("YYYY-MM-DD"));

@@ -3,7 +3,17 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<% 
+if(session.getAttribute("tipUser")=="admin"){%>
+<jsp:include page="indexAdmin.jsp" />
+<%}else
+	if(session.getAttribute("tipUser")=="receptioner"){%>
+	<jsp:include page="indexReceptioner.jsp" />
+<%}else{%>
+<script>
+	window.location.href = "index.jsp?message=Nu aveti drept de intrare pe pagina solicitata!";
+	</script>
+	<% }%>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <link rel="stylesheet" type="text/css" href="Styles/bootstrap.min.css">
 <script src="Styles/bootstrap.min.js"></script>
@@ -25,17 +35,7 @@
 </head>
 <body id="gradient">
 <%String msg=(String)request.getAttribute("msg");%>
-<% 
-if(session.getAttribute("tipUser")=="admin"){%>
-<jsp:include page="indexAdmin.jsp" />
-<%}else
-	if(session.getAttribute("tipUser")=="receptioner"){%>
-	<jsp:include page="indexReceptioner.jsp" />
-<%}else{%>
-<script>
-	window.location.href = "index.jsp?message=Nu aveti drept de intrare pe pagina solicitata!";
-	</script>
-	<% }%>
+
 	<div id="right">
 	<div class="alert alert-info alert-dismissible fade show" role="alert" style="display:none" id="mesaj">
 </div>
@@ -78,7 +78,8 @@ if(session.getAttribute("tipUser")=="admin"){%>
 
    $('#dataNasterii').datepicker({ 
 	   format: "dd/mm/yyyy",
-	   language:"ro"})
+	   language:"ro",
+	   endDate:"+1d"})
 	      
 	    $('#creaza').click(function(){
     $('#data1').val(moment($('#dataNasterii').datepicker("getDate")).format("YYYY-MM-DD"));

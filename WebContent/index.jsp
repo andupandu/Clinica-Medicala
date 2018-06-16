@@ -14,6 +14,7 @@
 <title>Clinica medicala</title>
 </head>
 <body id="gradient">
+<%Persoana persoanaLogata=(Persoana)session.getAttribute("persoanaLogata"); %>
 <nav class="navbar navbar-toggleable-md navbar-light bg-faded">
   <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
@@ -46,6 +47,37 @@
         </div>
       </li>
    </ul>
+   
+    <% if(persoanaLogata==null){%>
+<ul class="navbar-nav ml-auto">
+				<li class="nav-item dropdown"><a
+					class="nav-link dropdown-toggle" href="#"
+					id="navbarDropdownMenuLink" data-toggle="dropdown"
+					aria-haspopup="true" aria-expanded="false"> Log in </a>
+					<div class="dropdown-menu dropdown-menu-right">
+						<form class="px-4 py-3" action="Login" method="post">
+							<div class="form-group">
+								<label for="exampleDropdownFormEmail1">Email</label> <input
+									type="email" name="email" class="form-control"
+									id="exampleDropdownFormEmail1" placeholder="email@example.com">
+							</div>
+							<div class="form-group">
+								<label for="exampleDropdownFormPassword1">Parola</label> <input
+									type="password" name="password" class="form-control"
+									id="exampleDropdownFormPassword1" placeholder="Password">
+							</div>
+							<button type="submit" class="btn btn-primary">Autentificare</button>
+						</form>
+						<div class="dropdown-divider"></div>
+						<a class="dropdown-item" href="ContNou.jsp">Nu ai cont?
+							Creeaza unul acum </a> <a class="dropdown-item" href="#">Mi-am uitat parola</a>
+					</div></li>
+			</ul>
+			<%}else{%>
+				<a class="navbar-nav ml-auto"><%=persoanaLogata.getNume()+" "+persoanaLogata.getPrenume() %></a>
+				 <input type="button" class="btn btn-sm btn-outline-secondary" value="Delogare" onclick="reloadPage();">
+				
+			<% }%>
    </div>
    </nav>
    <div class="alert alert-info alert-dismissible fade show" role="alert" style="display:none" id="mesaj">
@@ -58,13 +90,13 @@
   </ol>
   <div class="carousel-inner">
     <div class="carousel-item active">
-      <img class="d-block w-100" src="../src/resources/img1.jpg" alt="First slide">
+      <img class="d-block w-100" src="resources/img1.jpg" alt="First slide">
     </div>
     <div class="carousel-item">
-      <img class="d-block w-100" src="/resources/img2.jpg" alt="Second slide">
+      <img class="d-block w-100" src="resources/img2.jpg" width="848" height="566" alt="Second slide">
     </div>
     <div class="carousel-item">
-      <img class="d-block w-100" src="img3.jpg" alt="Third slide">
+      <img class="d-block w-100" src="resources/img3.jpg" width="848" height="566" alt="Third slide">
     </div>
   </div>
   <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
@@ -75,6 +107,7 @@
     <span class="carousel-control-next-icon" aria-hidden="true"></span>
     <span class="sr-only">Next</span>
   </a>
+ 
 </div>
 </body>
 <script>

@@ -43,11 +43,9 @@ else{
 <link rel="stylesheet" type="text/css" href="Styles/bootstrap.min.css">
 <script src="Styles/bootstrap.min.js"></script>
 <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"/>
-<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/css/bootstrap-datepicker.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/js/bootstrap-datepicker.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/locales/bootstrap-datepicker.ro.min.js"></script>
- <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
-<script src="http://ajax.microsoft.com/ajax/jquery.validate/1.7/additional-methods.js"></script>
+
+
+
 </head>
 
 	
@@ -57,31 +55,27 @@ else{
 <form method="post" action="AdaugaZiLibera"  id="adaugazilibera">
 <center>
 <fieldset>
-<legend>Zile libere</legend>
+<legend>Program de lucru</legend>
 <table align="center">
 <tr>
 <td>
-Data:<input type="text" name="data" id="data" class="datepicker form-control" readonly>
-<input type="hidden" name="data1" id="data1">
-<input type="button" class="btn btn-secondary"  id="adauga"  name="adauga" value="Adauga zi libera" onClick="VerifyDate()">
-
-
-<!-- Modal -->
-<div class="modal fade bd-example-modal-lg" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg" role="document">
-    <div class="modal-content">
-       In aceasta zi aveti programate urmatoarele consultatii:
-         <table class="table" id="tableContent">	  
-		 </table>
-       Doriti sa continuati operatiunea si sa anulati consultatiile din aceasta zi?
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="window.location.reload()">Nu</button>
-        <button type="button" class="btn btn-primary" onclick="document.getElementById('adaugazilibera').submit()">Da</button>
-      </div>
-    </div>
-  </div>
-</div>
-
+Ziua:<br><select id="spec" name="spec"class="custom-select">
+<%
+	List<String> zile = (List<String>)request.getAttribute("zile");
+	for (String zi : zile) {
+	%>
+				<option value="<%=zi%>"><%=zi%></option>
+				<%
+					}
+				%>
+			</select></td></tr>
+			<tr><td>
+Ora inceput:<input type="time" name="orainceput" id="orainceput" class="datepicker form-control" ></td></tr>
+<tr><td>
+Ora sfarsit:<input type="time" name="orasfarsit" id="orasfarsit" class="datepicker form-control">
+</td></tr>
+<tr><td>
+<input type="button" class="btn btn-secondary"  id="adauga"  name="adauga" value="Adauga program" onClick="VerifyDate()">
 </td>
 </tr>
 </table>
@@ -92,45 +86,15 @@ Data:<input type="text" name="data" id="data" class="datepicker form-control" re
 
 </body>
 <script>
-$( function() {
-    $( "#data" ).datepicker();})
-   $('#data').datepicker({ format:"dd/mm/yyyy",
-	   						language:"ro",
-	   						startDate: '+3m'})   
-   
-	   $('#adauga').click(function(){
-		   $('#data1').val(moment($('#data').datepicker("getDate")).format("YYYY-MM-DD"));
-}); 
-	     
-
-
 var msjInsert="<%=msg%>";
 if(msjInsert!="null"){
 	 var mesaj=document.getElementById("mesaj");
 	 mesaj.innerHTML=msjInsert+"<button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button>"
  document.getElementById("mesaj").style.display="block";
 }
-
- $(document).ready(function(){
-		$('#adaugazilibera').validate({
-			rules:{
-				data:{
-					required:true
-					
-				}
-				
-			}
-	})
-		})
 	
-	
-	jQuery.extend(jQuery.validator.messages, {
-    required: "Campul este obligatoriu.",
-
-});
 
  function VerifyDate(){
-	 $('#data1').val(moment($('#data').datepicker("getDate")).format("YYYY-MM-DD"));
 	 var data = document.getElementById("data1").value;
 	 $.post("AdaugaZiLibera",
 		        {	tip:"verificazi",

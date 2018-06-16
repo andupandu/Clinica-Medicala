@@ -7,9 +7,18 @@
     
 <html>
 <head>
+	<% 
+if(session.getAttribute("tipUser")=="admin"){%>
+<jsp:include page="indexAdmin.jsp" />
+<%}else{
+	if(session.getAttribute("tipUser")=="receptioner"){%>
+	<jsp:include page="indexReceptioner.jsp" />
+<%}else{%><script>
+window.location.href = "index.jsp?message=Nu aveti drept de intrare pe pagina solicitata!";
+</script>
+<% }
+}%>
 <link rel="stylesheet" type="text/css" href="Styles/Style.css">
-<script
-	src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <link rel="stylesheet" type="text/css" href="Styles/bootstrap.min.css">
 <script src="Styles/bootstrap.min.js"></script>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
@@ -24,17 +33,6 @@
 	}%>
 </head>
 <body id="gradient">
-	<% 
-if(session.getAttribute("tipUser")=="admin"){%>
-<jsp:include page="indexAdmin.jsp" />
-<%}else{
-	if(session.getAttribute("tipUser")=="receptioner"){%>
-	<jsp:include page="indexReceptioner.jsp" />
-<%}else{%><script>
-window.location.href = "index.jsp?message=Nu aveti drept de intrare pe pagina solicitata!";
-</script>
-<% }
-}%>
 	<div id="right">
 	<div class="alert alert-info alert-dismissible fade show" role="alert" style="display:none" id="mesaj">
 </div>

@@ -3,8 +3,12 @@
 <%@page import="pkg.Entities.*"%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
-
- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <%if(session.getAttribute("tipUser")=="admin"){%>
+<jsp:include page="indexAdmin.jsp" />
+<%}else{%><script>
+	window.location.href = "index.jsp?message=Nu aveti drept de intrare pe pagina solicitata!";
+	</script>
+<% }%>
 <link rel="stylesheet" type="text/css" href="Styles/bootstrap.min.css">
 <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
 <script src="http://ajax.microsoft.com/ajax/jquery.validate/1.7/additional-methods.js"></script>
@@ -16,12 +20,6 @@
 </head>
 <%String msg=(String)request.getAttribute("msjInserareSpecialitate"); %>
 <body id="gradient">
-<%if(session.getAttribute("tipUser")=="admin"){%>
-<jsp:include page="indexAdmin.jsp" />
-<%}else{%><script>
-	window.location.href = "index.jsp?message=Nu aveti drept de intrare pe pagina solicitata!";
-	</script>
-<% }%>
 	<div id="right">
 <h2 style="text-align:center">Specialitati</h2>
 <div class="alert alert-info alert-dismissible fade show" role="alert" style="display:none" id="mesaj">

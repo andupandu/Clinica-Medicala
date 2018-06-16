@@ -7,7 +7,17 @@
 <%List<Specialitate> specialitati=DbOperations.getSpecializari();%>
 <html>
 <head>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<% 
+if(session.getAttribute("tipUser")=="admin"){%>
+<jsp:include page="indexAdmin.jsp" />
+<%}else{
+	if(session.getAttribute("tipUser")=="receptioner"){%>
+	<jsp:include page="indexReceptioner.jsp" />
+<%}else{%><script>
+window.location.href = "index.jsp?message=Nu aveti drept de intrare pe pagina solicitata!";
+</script>
+<% }
+}%>
 <link rel="stylesheet" type="text/css" href="Styles/bootstrap.min.css">
 <link rel="stylesheet" type="text/css" href="Styles/Style.css">
 <script src="Styles/bootstrap.min.js"></script>
@@ -28,17 +38,6 @@
 <%String msg=(String)request.getAttribute("msg");%>
 
 <body id="gradient">
-<% 
-if(session.getAttribute("tipUser")=="admin"){%>
-<jsp:include page="indexAdmin.jsp" />
-<%}else{
-	if(session.getAttribute("tipUser")=="receptioner"){%>
-	<jsp:include page="indexReceptioner.jsp" />
-<%}else{%><script>
-window.location.href = "index.jsp?message=Nu aveti drept de intrare pe pagina solicitata!";
-</script>
-<% }
-}%>
 	<div id="right">
 		<div class="alert alert-info alert-dismissible fade show" role="alert" style="display:none" id="mesaj">
 </div>
@@ -195,7 +194,7 @@ function searchPacient(){
 function InitializeDatepicker(){
 $('.data').datepicker({
 	startDate: "today",
-	endDate: '+1m',
+	endDate: '+3m',
     changeyear:false,
 	daysOfWeekDisabled: "0,6",
 	format:"dd/mm/yyyy",
@@ -273,7 +272,8 @@ if(msj!="null"){
 $( function() {
     $( '#dataNasterii' ).datepicker({
     	format:"dd/mm/yyyy",
-    	language:"ro"
+    	language:"ro",
+    	endDate:"+1d"
     })
     })
       $('#continua').click(function(){

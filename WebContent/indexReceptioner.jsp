@@ -4,7 +4,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <link rel="stylesheet" type="text/css" href="Styles/bootstrap.min.css">
 <script src="Styles/bootstrap.min.js"></script>
@@ -29,7 +29,7 @@ if(session.getAttribute("tipUser")!="receptioner"){%>
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="navbar-nav mr-auto">      
    </ul>
-   <a class="navbar-nav ml-auto">Receptioner:<%if(persoanaLogata!=null){%> <%=persoanaLogata.getNume()+" "+persoanaLogata.getPrenume()%><%} %></a>&nbsp;
+   <a class="navbar-nav ml-auto"><img src="resources/person.svg" width="25" height="25"> Receptioner:<%if(persoanaLogata!=null){%> <%=persoanaLogata.getNume()+" "+persoanaLogata.getPrenume()%><%} %></a>&nbsp;
 				 <input type="button" class="btn btn-sm btn-outline-secondary" value="Delogare" onclick="reloadPage()">
 </div>
 </nav>
@@ -39,14 +39,23 @@ if(session.getAttribute("tipUser")!="receptioner"){%>
     <a class="list-group-item list-group-item-action"   href="InformatiiConsultatie.jsp">Programari consultatii</a>
   
     <a class="list-group-item list-group-item-action"  href="InformatiiAnalize.jsp" >Programari analize</a>
-    
-   <a class="list-group-item list-group-item-action"  href="ContPacient.jsp" > Cont pacient</a>
+     <div class="card">
    
-  <a href="InformatiiPacient.jsp"  class="list-group-item list-group-item-action" >Pacienti</a>
+      <a class="list-group-item list-group-item-action" data-toggle="collapse" href="#collapse2">
+        Pacienti
+      </a>
+   
+    <div id="collapse2" class="collapse" data-parent="#accordion">
+      <div class="card-body">
+           <a class="list-group-item list-group-item-action"  href="ContPacient.jsp">Cont Pacienti</a>
+  <a class="list-group-item list-group-item-action"  href="InformatiiPacient.jsp">Date pacienti</a>
+      </div>
+    </div>
+  </div>
   
   <a class="list-group-item list-group-item-action"  href="AnulareProgramari.jsp"> Anulare programari consultatie</a>
   <a class="list-group-item list-group-item-action"  href="StatusProgCons.jsp"> Status programari consultatie</a>
-  <a class="list-group-item list-group-item-action"  href="DateCont.jsp"> Date Cont</a>
+  <a class="list-group-item list-group-item-action"  href="DateCont.jsp">Contul meu</a>
  
          
 </div>

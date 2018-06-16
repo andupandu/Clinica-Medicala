@@ -189,4 +189,14 @@
     <servlet-name>AdaugaZiLibera</servlet-name>
     <url-pattern>/AdaugaZiLibera</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>ZileProgramMedic</display-name>
+    <servlet-name>ZileProgramMedic</servlet-name>
+    <servlet-class>pkg.Servlets.ZileProgramMedic</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ZileProgramMedic</servlet-name>
+    <url-pattern>/ZileProgramMedic</url-pattern>
+  </servlet-mapping>
 </web-app>

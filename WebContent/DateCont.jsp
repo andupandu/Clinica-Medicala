@@ -7,9 +7,18 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<%Persoana persoanaLogata=(Persoana)session.getAttribute("persoanaLogata");
+String tipUser=(String)session.getAttribute("tipUser");%>
 <title>Pagina receptioner</title>
-
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<%if(tipUser=="receptioner"){%>
+<jsp:include page="indexReceptioner.jsp" />
+<%}else if(tipUser=="medic"){%>
+<jsp:include page="indexMedic.jsp" />
+	<%}else{%>
+<script>
+	window.location.href = "index.jsp?message=Nu aveti drept de intrare pe pagina solicitata!";
+	</script>
+<%} %>
 <script src="https://momentjs.com/downloads/moment.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <link rel="stylesheet" type="text/css" href="Styles/bootstrap.min.css">
@@ -22,18 +31,9 @@
 <script src="http://ajax.microsoft.com/ajax/jquery.validate/1.7/additional-methods.js"></script>
 </head>
 <% String msg=(String)request.getAttribute("msg");%>
-<%Persoana persoanaLogata=(Persoana)session.getAttribute("persoanaLogata");
-String tipUser=(String)session.getAttribute("tipUser");%>
+
 <body id="gradient">
-	<%if(tipUser=="receptioner"){%>
-<jsp:include page="indexReceptioner.jsp" />
-<%}else if(tipUser=="medic"){%>
-<jsp:include page="indexMedic.jsp" />
-	<%}else{%>
-<script>
-	window.location.href = "index.jsp?message=Nu aveti drept de intrare pe pagina solicitata!";
-	</script>
-<%} %>
+
 
 <div id="right">
 <div class="alert alert-info alert-dismissible fade show" role="alert" style="display:none" id="mesaj">
