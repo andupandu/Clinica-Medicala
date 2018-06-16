@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=utf-8"
     pageEncoding="utf-8"%>
     <%@page import="pkg.Utils.*"%>
-<%@page import="java.util.List"%>
+<%@page import="java.util.*"%>
 <%@page import="pkg.Entities.*"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -52,30 +52,30 @@ else{
 <div id="right">
 <div class="alert alert-info alert-dismissible fade show" role="alert" style="display:none" id="mesaj">
 </div>
-<form method="post" action="AdaugaZiLibera"  id="adaugazilibera">
+<form method="post" action="AdaugaProgramMedic"  accept-charset="UTF-8" id="adaugaprogrammedic">
 <center>
 <fieldset>
 <legend>Program de lucru</legend>
 <table align="center">
 <tr>
 <td>
-Ziua:<br><select id="spec" name="spec"class="custom-select">
+Ziua:<br><select id="zi" name="zi" class="custom-select">
 <%
-	List<String> zile = (List<String>)request.getAttribute("zile");
-	for (String zi : zile) {
+	Map<Long,String> zile = (Map<Long,String>)request.getAttribute("zile");
+	for (Long zi: zile.keySet()) {
 	%>
-				<option value="<%=zi%>"><%=zi%></option>
+				<option value="<%=zi%>"><%=zile.get(zi)%></option>
 				<%
 					}
 				%>
 			</select></td></tr>
 			<tr><td>
-Ora inceput:<input type="time" name="orainceput" id="orainceput" class="datepicker form-control" ></td></tr>
+Ora inceput:<input type="time" name="orainceput" id="orainceput" class="datepicker form-control" min="00:00" max="20:00"></td></tr>
 <tr><td>
-Ora sfarsit:<input type="time" name="orasfarsit" id="orasfarsit" class="datepicker form-control">
+Ora sfarsit:<input type="time" name="orasfarsit" id="orasfarsit" class="datepicker form-control" min="00:00" max="20:00">
 </td></tr>
 <tr><td>
-<input type="button" class="btn btn-secondary"  id="adauga"  name="adauga" value="Adauga program" onClick="VerifyDate()">
+<input type="submit" class="btn btn-secondary"  id="adauga"  name="adauga" value="Adauga program">
 </td>
 </tr>
 </table>
@@ -94,34 +94,6 @@ if(msjInsert!="null"){
 }
 	
 
- function VerifyDate(){
-	 var data = document.getElementById("data1").value;
-	 $.post("AdaugaZiLibera",
-		        {	tip:"verificazi",
-		        	data:data
-		        },
-		        function(data,status){
-		        	 var response = JSON.parse(data);
-		        	 if(!response.areConsultatii){
-		        		 alert()
-		        		 document.getElementById('adaugazilibera').submit();
-		        		 return;
-		        	 }
-		        	 var table = document.getElementById("tableContent");
-		        	 table.innerHtml=" <tr> <th>Pacient</th><th>Tip Consultatie</th><th>Ora</th></tr>";
-		        	 response.consultatii.forEach(consultatie => { 
-		        		var row = table.insertRow(-1);
-		        		var cell1 = row.insertCell(0);
-		        		var cell2 = row.insertCell(1);
-		        		var cell3 = row.insertCell(2);
-		        		
-		        		cell1.innerHTML = consultatie.pacient;
-		        		cell2.innerHTML = consultatie.serviciu;
-		        		cell3.innerHTML = consultatie.oraInceput;
-		        	 });
-		        	 
-		        	 $('#exampleModal').modal("toggle");
-		        });
- }
+
   </script>
 </html>

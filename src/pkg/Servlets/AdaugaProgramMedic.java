@@ -5,20 +5,20 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.*;
 
 import pkg.Entities.Persoana;
-import pkg.Utils.*;
+import pkg.Utils.DbOperations;
+
 /**
- * Servlet implementation class ZileProgramMedic
+ * Servlet implementation class AdaugaProgramMedic
  */
-public class ZileProgramMedic extends HttpServlet {
+public class AdaugaProgramMedic extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public ZileProgramMedic() {
+    public AdaugaProgramMedic() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -30,12 +30,13 @@ public class ZileProgramMedic extends HttpServlet {
 		Persoana user=(Persoana) request.getSession().getValue("persoanaLogata");
 		String tipUser=(String)request.getSession().getValue("tipUser");
 		 String idMedic=DbOperations.getUserCodFromPassword(user,tipUser).toString();
-		 Map<Long,String> zile =  DbOperations.getZileProgramLucruMedic(idMedic);
-		 request.setAttribute("zile", zile);
-		 request.setAttribute("msg", request.getAttribute("msg"));
-		 request.getRequestDispatcher("AdaugaProgramMedic.jsp").forward(request,response);
+		 String ziId=(String)request.getParameter("zi");
+		 String oraInceput=(String)request.getParameter("orainceput");
+		 String oraSfarsit=(String)request.getParameter("orasfarsit");
+		 DbOperations.insertProgramLucru(idMedic, oraInceput, oraSfarsit, Long.valueOf(ziId));
+		 request.setAttribute("msg", "Programul de lucru a fost adaugat!");
+		 request.getRequestDispatcher("/ZileProgramMedic").forward(request,response);
 	}
-		
 
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)

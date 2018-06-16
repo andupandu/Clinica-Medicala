@@ -199,4 +199,14 @@
     <servlet-name>ZileProgramMedic</servlet-name>
     <url-pattern>/ZileProgramMedic</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>AdaugaProgramMedic</display-name>
+    <servlet-name>AdaugaProgramMedic</servlet-name>
+    <servlet-class>pkg.Servlets.AdaugaProgramMedic</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>AdaugaProgramMedic</servlet-name>
+    <url-pattern>/AdaugaProgramMedic</url-pattern>
+  </servlet-mapping>
 </web-app>

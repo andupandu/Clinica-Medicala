@@ -40,7 +40,7 @@ public class Login extends HttpServlet {
 
 				request.getSession().putValue("persoanaLogata",DbOperations.getPacient(email));
 				request.getSession().putValue("tipUser","pacient");	
-				request.getRequestDispatcher("Login.jsp").forward(request,response);
+				request.getRequestDispatcher("index.jsp").forward(request,response);
 				break;
 
 			}
@@ -66,7 +66,7 @@ public class Login extends HttpServlet {
 		}
 		else { 
 		request.setAttribute("msg","Email/Parola gresita !");
-		request.getRequestDispatcher("Login.jsp").forward(request,response);
+		request.getRequestDispatcher("index.jsp").forward(request,response);
 		}
 		
 		

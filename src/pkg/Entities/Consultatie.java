@@ -10,6 +10,7 @@ public class Consultatie {
 	String tipConsutatie;
 	Date data;
 	String status;
+	String detalii;
 	public String getOraInceput() {
 		return oraInceput;
 	}
@@ -46,6 +47,11 @@ public class Consultatie {
 	public void setStatus(String status) {
 		this.status = status;
 	}
-	
+	public String getDetalii() {
+		return detalii;
+	}
+	public void setDetalii(String detalii) {
+		this.detalii = detalii;
+	}
 	
 }

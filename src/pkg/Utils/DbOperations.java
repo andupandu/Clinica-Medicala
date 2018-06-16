@@ -10,8 +10,10 @@ import pkg.Entities.Specialitate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.sql.*;
 import java.text.ParseException;
 
@@ -1511,22 +1513,25 @@ public class DbOperations {
 		return zi;
 	}
 	
-	public static List<String> getZileProgramLucruMedic(String codMedic) {
+	public static Map<Long, String> getZileProgramLucruMedic(String codMedic) {
 		Connection conn = getConnection();
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
-		List<String> zile=new ArrayList<String>();
-		String query="select zi_denumire from clinicamedicala.zi where zi_denumire not in (select zi_denumire from clinicamedicala.zi,clinicamedicala.areprogram where zi_id=areprogram_zi_id and areprogram_medic_cod=6 and areprogram_valid=3) and zi_denumire not in ('Sâmbătă','Duminică')";
+		Map<Long, String> zile=new HashMap<Long,String>();
+		String query="select zi_denumire,zi_id from clinicamedicala.zi where zi_denumire not in (select zi_denumire from clinicamedicala.zi,clinicamedicala.areprogram where zi_id=areprogram_zi_id and areprogram_medic_cod=? and areprogram_valid=1) and zi_denumire not in ('Sâmbătă','Duminică')";
 		String zi=null;
+		Long ziId=null;
 		try {
 
 			if (conn != null) {
 				stmt=conn.prepareStatement(query);
-				stmt.setLong(1,codMedic);
+				stmt.setString(1,codMedic);
 				rs=stmt.executeQuery();
-				while(rs.next()) 
+				while(rs.next()) {
 				 zi=rs.getString("zi_denumire");
-				zile.add(zi);
+				 ziId=rs.getLong("zi_id");
+				zile.put(ziId,zi);
+				}
 	}
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
@@ -1808,6 +1813,31 @@ public class DbOperations {
 				stmt.setDate(5,data);
 				stmt.setLong(6, Long.valueOf(medicCod));
 				stmt.setLong(7, Long.valueOf(codPacient));
+						stmt.executeUpdate();
+			}
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+		} finally {
+			CloseResources(conn, rs, stmt);
+		}
+	}
+	public static void insertProgramLucru(String codMedic,String oraInceput,String oraSfarsit,Long ziCod) {
+		Connection conn = getConnection();
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		String query="insert into areprogram(areprogram_ora_inceput,areprogram_ora_sfarsit,areprogram_medic_cod,areprogram_zi_id,areprogram_valid)"
+				+ " values(?,?,?,?,1)";
+		try {
+
+			if (conn != null) {
+				
+				stmt=conn.prepareStatement(query);
+				stmt.setString(1, oraInceput);
+				stmt.setString(2, oraSfarsit);
+				stmt.setLong(3, Long.valueOf(codMedic));
+				stmt.setLong(4, ziCod);
+				
 						stmt.executeUpdate();
 			}
 		} catch (SQLException e) {

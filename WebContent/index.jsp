@@ -80,6 +80,12 @@
 			<% }%>
    </div>
    </nav>
+   <%String msj=(String)request.getAttribute("msg");
+   if(msj!="" && msj!=null){ %>
+   <div class="alert alert-info alert-dismissible fade show" role="alert"  id="msg">
+   <%=msj %>
+</div>
+   <%} %>
    <div class="alert alert-info alert-dismissible fade show" role="alert" style="display:none" id="mesaj">
 </div>
 <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
@@ -111,11 +117,15 @@
 </div>
 </body>
 <script>
+
 if(window.location.href.indexOf("message=") > 0)
 {	
 	var message = window.location.href.split("message=")[1].replace(/%20/g," ");
 	var mesaj=document.getElementById("mesaj");
     mesaj.innerHTML=message+"<button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button>"
     document.getElementById("mesaj").style.display="block";
+}
+else if(msg!=""){
+	 mesaj.innerHTML=msg;
 }</script>
 </html>
