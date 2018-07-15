@@ -27,6 +27,8 @@ public class Delogare extends HttpServlet {
 		// TODO Auto-generated method stub
 		request.getSession().removeAttribute("persoanaLogata");
 		request.getSession().removeAttribute("tipUser");
+		request.getSession().removeAttribute("idPacient");
+		request.getSession().removeAttribute("idMedic");
 		request.getRequestDispatcher("index.jsp").forward(request,response);
 
 

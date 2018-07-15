@@ -25,29 +25,29 @@ if(session.getAttribute("tipUser")!="medic"){%>
   <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
-  <a class="navbar-brand" href="#">Clinica medicala</a>
+  <a class="navbar-brand" href="#"><img src="resources/clinica.png" width="40" height="40">&nbsp Clinica medicala</a>
 
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="navbar-nav mr-auto">      
    </ul>
-   <a class="navbar-nav ml-auto"><img src="resources/person.svg" width="25" height="25"> Medic:<%if(persoanaLogata!=null){%> <%=persoanaLogata.getNume()+" "+persoanaLogata.getPrenume()%><%} %></a>&nbsp;
+   <a class="navbar-nav ml-auto"><img src="resources/user-circle.svg" width="25" height="25">&nbsp Medic:<%if(persoanaLogata!=null){%> <%=persoanaLogata.getNume()+" "+persoanaLogata.getPrenume()%><%} %></a>&nbsp;
 				 <input type="button" class="btn btn-sm btn-outline-secondary" value="Delogare" onclick="reloadPage()">
 </div>
 </nav>
 
 <div class="list-group float-left" id="left" style="background:linear-gradient(#e6f3f7,#b1cad1)">
    
-  <a href="ZileLibereMedic.jsp"  class="list-group-item list-group-item-action" >Zile libere</a>
+  <a href="ZileLibereMedic.jsp"  class="list-group-item list-group-item-action" ><img src="resources/calendar-alt.svg" width="25" height="25">&nbsp Zile libere</a>
   <div class="card">
    
       <a class="list-group-item list-group-item-action" data-toggle="collapse" href="#collapse1">
-        Programari consultatie
+      <img src="resources/stethoscope.svg" width="15" height="15">&nbsp Programari consultatie
       </a>
    
     <div id="collapse1" class="collapse" data-parent="#accordion">
       <div class="card-body">
            <a class="list-group-item list-group-item-action"  href="AnulareProgramari.jsp">Anulare programari consultatie</a>
-  <a class="list-group-item list-group-item-action"  href="ProgramariMedic.jsp">Programarile mele</a>
+  <a class="list-group-item list-group-item-action"  href="VizualizareProgramari.jsp">Programarile mele</a>
       </div>
     </div>
   </div>
@@ -56,7 +56,7 @@ if(session.getAttribute("tipUser")!="medic"){%>
   <div class="card">
    
       <a class="list-group-item list-group-item-action" data-toggle="collapse" href="#collapseOne">
-        Servicii oferite
+      <img src="resources/tasks.svg" width="25" height="25"> &nbsp Servicii oferite
       </a>
    
     <div id="collapseOne" class="collapse" data-parent="#accordion">
@@ -72,18 +72,19 @@ if(session.getAttribute("tipUser")!="medic"){%>
   <div class="card">
    
       <a class="list-group-item list-group-item-action" data-toggle="collapse" href="#collapse2">
-        Program de lucru
+     <img src="resources/calendar-alt.svg" width="25" height="25">&nbsp Program de lucru
       </a>
    
     <div id="collapse2" class="collapse" data-parent="#accordion">
       <div class="card-body">
            <a class="list-group-item list-group-item-action"  href="ZileProgramMedic">Adauga program de lucru</a>
-  <a class="list-group-item list-group-item-action"  href="ModificaProgramMedic">Modifica program de lucru</a>
+  <a class="list-group-item list-group-item-action"  href="ModificaProgramMedic.jsp">Modifica program de lucru</a>
       </div>
     </div>
   </div>
 </div>
-  <a class="list-group-item list-group-item-action"  href="DateCont.jsp">Contul meu</a>
+
+  <a class="list-group-item list-group-item-action"  href="DateCont.jsp"><img src="resources/user-circle.svg" width="25" height="25">&nbsp Contul meu</a>
 
 </div>
 <form id="back" action="Delogare" action=post></form>

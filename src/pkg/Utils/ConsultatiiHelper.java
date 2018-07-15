@@ -2,7 +2,6 @@ package pkg.Utils;
 
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import pkg.Entities.Interval;
@@ -25,27 +24,26 @@ public class ConsultatiiHelper {
 		return oreDisp;
 	}
 
-	public static List<Interval> getListaIntervalePosibile(String codMedic,String data){
-		System.out.println(new Date(data));
-		List<String> oreLucruMedic=DbOperations.getPogramMedic(Long.valueOf(codMedic),DateUtil.getSqlDateFromUtilDate(new Date(data)));
+	public static List<Interval> getListaIntervalePosibile(String codMedic,String data) throws Exception{
+		List<String> oreLucruMedic=DbOperations.getPogramMedic(Long.valueOf(codMedic),DateUtil.getDateFromString(data));
 		List<Interval> intervalePosibile=new ArrayList<Interval>();
 		String inceput=oreLucruMedic.get(0).substring(0, oreLucruMedic.get(0).length() - 3);
 		String sfarsit=oreLucruMedic.get(1).substring(0, oreLucruMedic.get(1).length() - 3);
 
 		try {
-			if(!DbOperations.getBusyHoursConsultatie(DateUtil.getSqlDateFromUtilDate(new Date(data)), Long.valueOf(codMedic)).isEmpty()) {
-				for(Interval ora:DbOperations.getBusyHoursConsultatie(DateUtil.getSqlDateFromUtilDate(new Date(data)), Long.valueOf(codMedic)))
-				{ System.out.println("OREEEEE"+DateUtil.getDateHourFromString(inceput)+DateUtil.getDateHourFromString(ora.getInceput()));
-				if(DateUtil.getDateHourFromString(inceput).before(DateUtil.getDateHourFromString(ora.getInceput()))) {
+			if(!DbOperations.getBusyHoursConsultatie(DateUtil.getDateFromString(data), Long.valueOf(codMedic)).isEmpty()) {
+				for(Interval ora:DbOperations.getBusyHoursConsultatie(DateUtil.getDateFromString(data), Long.valueOf(codMedic)))
+				{ 
+					System.out.println("OREEEEE"+DateUtil.getDateHourFromString(inceput)+DateUtil.getDateHourFromString(ora.getInceput()));
+					if(DateUtil.getDateHourFromString(inceput).before(DateUtil.getDateHourFromString(ora.getInceput()))) {
 					Interval interval=new Interval();
 					interval.setInceput(inceput);
-					//System.out.println("INCEPUT"+inceput);
 					interval.setSfarsit(ora.getInceput());
 					intervalePosibile.add(interval);
 					inceput=ora.getSfarsit();
 				}
 				else {
-					inceput=getStartingHour(inceput,DbOperations.getBusyHoursConsultatie(DateUtil.getSqlDateFromUtilDate(new Date(data)), Long.valueOf(codMedic)));
+					inceput=getStartingHour(inceput,DbOperations.getBusyHoursConsultatie(DateUtil.getDateFromString(data), Long.valueOf(codMedic)));
 					}
 				}
 			}

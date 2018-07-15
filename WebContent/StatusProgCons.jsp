@@ -90,7 +90,7 @@ if(!consultatii.isEmpty()){%>
 					class=" form-control"  size="10" value="<%=cons.getStatus()%>" disabled></td>
 		<td> <input
 					type="button" class="btn btn-secondary" id="anuleaza"
-					name="anuleaza" value="Anuleaza"
+					name="anuleaza" value="Finalizeaza"
 					onclick="anuleazaProg(<%=i%>, 'anulare')"></td>
 			</tr>
 			<%

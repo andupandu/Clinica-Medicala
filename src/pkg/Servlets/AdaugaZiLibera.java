@@ -76,8 +76,8 @@ public class AdaugaZiLibera extends HttpServlet {
 						"Va rugam sa reveniti cu un telefon la 07555555555 pentru a muta consultatia .\n" + 
 						"Va multumim pentru intelegere!";
 					if (consultatii.size()>0) {
+						SMTPHelper.SendEmail(DbOperations.getEmailuriPacienti(idMedic,DateUtil.getDateFromString(date)), continut, "Anulare consultatie");
 					DbOperations.anuleazaToateConsultatiileDinZi(idMedic, DateUtil.getDateFromString(date));
-					SMTPHelper.SendEmail(DbOperations.getEmailuriPacienti(idMedic,DateUtil.getDateFromString(date)), continut, "Anulare consultatie");
 
 					DbOperations.insertZiLibera(Long.valueOf(idMedic), date);
 				}} catch (Exception e) {

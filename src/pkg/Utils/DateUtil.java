@@ -39,10 +39,24 @@ public class DateUtil {
 		int minute = Integer.parseInt(hour.substring(3));
 		return (hours*60)+minute;
 	}
-	public static Date addMonthToCurrentDate(String date) {
+	public static Date addMonthsToCurrentDate(String date,int month) {
 		Calendar cal = Calendar.getInstance();
         cal.setTime(new Date());
-        cal.add(Calendar.MONTH, 1);
+        cal.add(Calendar.MONTH, month);
         return cal.getTime();
+	}
+	public static String addDayToCurrentDate(String date,int day) {
+		Calendar cal = Calendar.getInstance();
+        cal.setTime(new Date());
+        cal.add(Calendar.DATE, day);
+        return new SimpleDateFormat("yyyy-MM-dd").format(cal.getTime());
+	}
+	public static Long getVarsta(Date dataNasterii) {
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(dataNasterii);
+		int anNastere = cal.get(Calendar.YEAR);
+		int anCurent = Calendar.getInstance().get(Calendar.YEAR);
+		return  (long) (anCurent-anNastere);
+		
 	}
 }

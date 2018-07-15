@@ -35,12 +35,10 @@ public class ProgramariConsultatie extends HttpServlet {
      * @see HttpServlet#HttpServlet()
      */
 	public String validDate(String data,String codMedic,String codServiciu) throws Exception {
-		Date date=new Date(data);
 		boolean hasFreeHours=false;
 
-		if(DbOperations.hasProgramInThatDay(DateUtil.getSqlDateFromUtilDate(date), Long.valueOf(codMedic))) {
-			if(DbOperations.isFreeDay(DateUtil.getSqlDateFromUtilDate(date))) {
-				System.out.println("Ziua :"+date+" libera");
+		if(DbOperations.hasProgramInThatDay(DateUtil.getDateFromString(data), Long.valueOf(codMedic))) {
+			if(DbOperations.isFreeDay(DateUtil.getDateFromString(data))) {
 				return "{\"valid\":false,\"color\":\"red\"}";
 			}
 			if(!ConsultatiiHelper.getOreDisp(codMedic, data, codServiciu).isEmpty())
@@ -112,17 +110,25 @@ public class ProgramariConsultatie extends HttpServlet {
     	}
     	else {
     		String medic=request.getParameter("medic");
-    		String pacient=request.getParameter("pacientcod");
+    		String pacient=null;
+    		System.out.println("pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp"+request.getParameter("pacient"));
+    		if(request.getParameter("pacientpag")!=null) {
+    		 pacient=(String)request.getSession().getValue("idPacient");
+    		}else {
+    		 pacient=request.getParameter("pacientcod");
+    		}
     		String dataCons=request.getParameter("data");
     		String serviciu=request.getParameter("serviciu");
     		String ora=request.getParameter("ora");
+    		if(ora.length()==8) {
+    			ora=ora.substring(0, ora.length() - 3);
+    		}
     		String detalii=request.getParameter("detalii");
     		//SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
-    		Date parsed;
-    		System.out.println("data11111"+request.getParameter("dataNasterii"));
+    		
+    		System.out.println("data11111"+request.getParameter("data"));
     		try {
-    			parsed = new SimpleDateFormat("dd/MM/yyyy").parse(dataCons);
-    			if(pacient=="") {
+    			if(request.getParameter("pacient")==null && pacient=="") {
     				Persoana pacientNou=new Persoana();
     				pacientNou.setCnp(request.getParameter("cnp"));
     				pacientNou.setEmail(request.getParameter("email"));
@@ -134,11 +140,12 @@ public class ProgramariConsultatie extends HttpServlet {
     				DbOperations.insertPacient(pacientNou);
     				DbOperations.insertPacientUser(pacientNou.getEmail(), SMTPHelper.generatePassword(),DbOperations.getPacient(pacientNou.getEmail()).getId().intValue());
     				DbOperations.insertCodContIntoPacient(pacientNou.getEmail(), Long.valueOf(DbOperations.getCodCont(pacientNou.getEmail())));
-    				DbOperations.insertConsultatie(detalii, "in curs",serviciu, ora,new java.sql.Date(parsed.getTime()), medic, String.valueOf(DbOperations.getPacient(pacientNou.getEmail()).getId()));
+    				DbOperations.insertConsultatie(detalii, "in curs",serviciu, ora,DateUtil.getDateFromString(dataCons), medic, String.valueOf(DbOperations.getPacient(pacientNou.getEmail()).getId()));
     				request.setAttribute("msg", "Programarea a fost adaugata");
+    			
     			}else {
     				if(!DbOperations.checkIfConsultatieExists(medic, pacient)) {
-    					DbOperations.insertConsultatie(detalii, "in curs",serviciu, ora,new java.sql.Date(parsed.getTime()), medic, pacient);
+    					DbOperations.insertConsultatie(detalii, "in curs",serviciu, ora,DateUtil.getDateFromString(dataCons), medic, pacient);
     					request.setAttribute("msg", "Programarea a fost adaugata");
     				}
     				else {
@@ -149,8 +156,20 @@ public class ProgramariConsultatie extends HttpServlet {
     			request.setAttribute("msg", "Cnp deja existent");
     			e.printStackTrace();
     		}
-
-    		request.getRequestDispatcher("InformatiiConsultatie.jsp").forward(request,response);
+    		if(request.getParameter("pacientpag")!=null) {
+    			request.setAttribute("msg", "Programarea a fost adaugata cu succes!");
+    			String spec=null;
+				try {
+					spec = DbOperations.getSpecialitateMedic(medic);
+				} catch (SQLException e) {
+					System.out.println(e.getMessage());
+				}
+    		request.getRequestDispatcher("SpecialitateDetalii.jsp?spec="+spec).forward(request,response);
+    		
+    		}else
+    		{
+    			request.getRequestDispatcher("InformatiiConsultatie.jsp").forward(request,response);
+    		}
     	}
     }
 

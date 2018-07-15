@@ -28,7 +28,7 @@ if(session.getAttribute("tipUser")!="admin"){%>
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="navbar-nav mr-auto">      
    </ul>
-   <a class="navbar-nav ml-auto"><img src="resources/person.svg" width="25" height="25"> Admin</a>&nbsp;
+   <a class="navbar-nav ml-auto"><img src="resources/user-circle.svg" width="25" height="25"> Admin</a>&nbsp;
 				 <input type="button" class="btn btn-sm btn-outline-secondary" value="Delogare" onclick="reloadPage()">
 </div>
 </nav>
@@ -39,7 +39,7 @@ if(session.getAttribute("tipUser")!="admin"){%>
   <div class="card">
    
       <a class="list-group-item list-group-item-action" data-toggle="collapse" href="#collapse1">
-    <img src="resources/physician-512.png" width="25" height="25"> Medici
+    <img src="resources/user-md.svg" width="25" height="25"> Medici
       </a>
    
     <div id="collapse1" class="collapse" data-parent="#accordion">
@@ -52,7 +52,7 @@ if(session.getAttribute("tipUser")!="admin"){%>
   <div class="card">
    
       <a class="list-group-item list-group-item-action" data-toggle="collapse" href="#collapse2">
-   <img src="resources/pacient.png" width="25" height="25">Pacienti
+   <img src="resources/user.svg" width="25" height="25">Pacienti
       </a>
    
     <div id="collapse2" class="collapse" data-parent="#accordion">
@@ -65,14 +65,16 @@ if(session.getAttribute("tipUser")!="admin"){%>
   <div class="card">
    
       <a class="list-group-item list-group-item-action" data-toggle="collapse" href="#collapse3">
- Actualizare date
+ <img src="resources/edit.svg" width="25" height="25">Actualizare date
       </a>
    
     <div id="collapse3" class="collapse" data-parent="#accordion">
       <div class="card-body">
            <a class="list-group-item list-group-item-action"  href="InformatiiSpecialitati.jsp">Specialitati</a>
-  <a class="list-group-item list-group-item-action"  href="InformatiiAnalize.jsp"><img src="resources/analize.png" width="25" height="25">Analize</a>
+  <a class="list-group-item list-group-item-action"  href="AdaugaAnalize.jsp">Analize</a>
   <a class="list-group-item list-group-item-action"  href="RezultateAnalize.jsp"> Rezultate analize</a>
+  <a class="list-group-item list-group-item-action"  href="CategoriiAnalize.jsp"> Categorii analize</a>
+    <a class="list-group-item list-group-item-action"  href="AdaugaIndicator.jsp"> Indicator analize</a>
       </div>
     </div>
   </div>
@@ -82,7 +84,7 @@ if(session.getAttribute("tipUser")!="admin"){%>
   <div class="card">
    
       <a class="list-group-item list-group-item-action" data-toggle="collapse" href="#collapse4">
-Receptioneri
+<img src="resources/diagnoses.svg" width="25" height="25">Receptioneri
       </a>
    
     <div id="collapse4" class="collapse" data-parent="#accordion3">

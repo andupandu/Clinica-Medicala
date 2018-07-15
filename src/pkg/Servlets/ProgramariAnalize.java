@@ -91,7 +91,15 @@ public class ProgramariAnalize extends HttpServlet {
 			break;
 		}
 		}else {
-		List<String> analize=Arrays.asList(request.getParameterValues("analize"));
+			List<String> analize=new ArrayList<String>();
+			String verif=request.getParameter("analiza");
+			if(verif!=null) {
+			analize=Arrays.asList(request.getParameter("ListaAnalize").split("\\s*,\\s*"));
+			}
+			else {
+				analize=Arrays.asList(request.getParameterValues("analize"));
+			}
+		 
 		String nume=request.getParameter("nume");
 		String prenume=request.getParameter("prenume");
 		String telefon=request.getParameter("telefon");
@@ -101,54 +109,72 @@ public class ProgramariAnalize extends HttpServlet {
 		String data=request.getParameter("dataprog");
 		String dataNasterii=request.getParameter("data1");
 		System.out.println(request.getParameter("pacient"));
-		for(String codAnaliza:analize) {
-			try { 
-				if(request.getParameter("pacient")=="") {
-				Persoana pacientNou=new Persoana();
-				pacientNou.setCnp(cnpnou);
-				pacientNou.setEmail(email);
-				pacientNou.setNume(nume);
-				pacientNou.setPrenume(prenume);
-				pacientNou.setTelefon(telefon);
-				pacientNou.setData_nastere( DateUtil.getDateFromString(dataNasterii));
-				try {
-					DbOperations.insertPacient(pacientNou);
-					DbOperations.insertPacientUser(email, SMTPHelper.generatePassword(),DbOperations.getPacient(email).getId().intValue());
-					DbOperations.insertCodContIntoPacient(email, Long.valueOf(DbOperations.getCodCont(email)));
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				DbOperations.insertAnalize(ora, DateUtil.getDateFromString(data), "in curs", DbOperations.cautaPacientDupaCNP(cnpnou).getId(), Long.valueOf(codAnaliza));
-
-				request.setAttribute("msg", "Programarea a fost adaugata cu succes");
-			}else {	
-				Long codPacient=Long.valueOf(request.getParameter("pacientcod"));
-				List<Consultatie> consultatii=DbOperations.cautaProgramareAnaliza(codPacient, analize);
-				if(consultatii.isEmpty()) {
-				DbOperations.insertAnalize(ora, DateUtil.getDateFromString(data), "in curs", codPacient, Long.valueOf(codAnaliza));
-				request.setAttribute("msg", "Programarea a fost adaugata cu succes");
-				}
-				else {
-					String msg="Pacientul are deja o programare pentru analiza/analizele: \\n";
-					for(Consultatie cons:consultatii) {
-						msg+=cons.getTipConsutatie()+",la data:"+cons.getData()+",ora:"+cons.getOraInceput()+"\\n"+"";
-					}
-					msg+="Daca ati selectat mai multe analize,incercati din nou ,programandu-va doar pentru analizele unde nu aveti deja o programare!";
-					
-					request.setAttribute("msg", msg);
-				}
-			} 
-				
-				}catch (NumberFormatException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (ParseException e) {
+		Long codPacient=null;
+		List<Consultatie> consultatii=new ArrayList<Consultatie>();
+		if(verif==null && request.getParameter("pacient")=="") {
+			try {Persoana pacientNou=new Persoana();
+			pacientNou.setCnp(cnpnou);
+			pacientNou.setEmail(email);
+			pacientNou.setNume(nume);
+			pacientNou.setPrenume(prenume);
+			pacientNou.setTelefon(telefon);
+			pacientNou.setData_nastere( DateUtil.getDateFromString(dataNasterii));
+				DbOperations.insertPacient(pacientNou);
+				DbOperations.insertPacientUser(email, SMTPHelper.generatePassword(),DbOperations.getPacient(email).getId().intValue());
+				DbOperations.insertCodContIntoPacient(email, Long.valueOf(DbOperations.getCodCont(email)));
+			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+		}else {
+			
+			if(verif==null) {
+				codPacient=Long.valueOf(request.getParameter("pacientcod"));
+			}else {
+				codPacient=Long.valueOf(request.getSession().getValue("idPacient").toString());
+			}
+			consultatii=DbOperations.cautaProgramareAnaliza(codPacient, analize);
+			if(!consultatii.isEmpty()) {
+				String msg="Pacientul are deja o programare pentru analiza/analizele: \\n";
+				for(Consultatie cons:consultatii) {
+					msg+=cons.getTipConsutatie()+",la data:"+cons.getData()+",ora:"+cons.getOraInceput()+"\\n"+"";
+				}
+				msg+="Daca ati selectat mai multe analize,incercati din nou ,programandu-va doar pentru analizele unde nu aveti deja o programare!";
+				
+				request.setAttribute("msg", msg);
+				if(verif==null) {
+					request.getRequestDispatcher("InformatiiAnalize.jsp").forward(request,response);
+				}else {
+					request.getRequestDispatcher("AfiseazaAnalize.jsp").forward(request,response);
+				}
+			}else {
+				Long maxBuletin=DbOperations.getMaxBuletin();
+				for(String codAnaliza:analize) {
+					try { 
+						if(verif==null && request.getParameter("pacient")=="") {
+							DbOperations.insertAnalize(ora, DateUtil.getDateFromString(data), "in curs", DbOperations.cautaPacientDupaCNP(cnpnou).getId(), Long.valueOf(codAnaliza),maxBuletin);
+							request.setAttribute("msg", "Programarea a fost adaugata cu succes");
+						}else {
+
+							DbOperations.insertAnalize(ora, DateUtil.getDateFromString(data), "in curs", codPacient, Long.valueOf(codAnaliza),maxBuletin);
+							request.setAttribute("msg", "Programarea a fost adaugata cu succes");
+
+						} 
+					}catch (NumberFormatException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (ParseException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+				if(verif==null) {
+					request.getRequestDispatcher("InformatiiAnalize.jsp").forward(request,response);
+				}else {
+					request.getRequestDispatcher("AfiseazaAnalize.jsp").forward(request,response);
+				}
+			}
 		}
-		request.getRequestDispatcher("InformatiiAnalize.jsp").forward(request,response);
 		}
 		
 		//response.sendRedirect("InformatiiAnalize.jsp");

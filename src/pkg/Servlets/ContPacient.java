@@ -3,6 +3,7 @@ package pkg.Servlets;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.text.ParseException;
+import java.util.Arrays;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -63,8 +64,14 @@ public class ContPacient extends HttpServlet {
 				DbOperations.insertPacient(pacient);
 				DbOperations.insertPacientUser(email, parola,DbOperations.getPacient(email).getId().intValue());
 				DbOperations.insertCodContIntoPacient(email, Long.valueOf(DbOperations.getCodCont(email)));
+				String continut="Buna ziua,\n" + 
+						"Multumim ca v ati inregistrat pe site ul nostru.\n" + 
+						"Datele dumneavoastra de logare sunt urmatoarele:\n" + 
+						"Username: " + email+ "\n" + 
+						"Parola:"+parola;
+				SMTPHelper.SendEmail(Arrays.asList(email),continut,"Bun venit!");
 				request.setAttribute("msg", "Contul s a creat cu succes");
-			} catch (SQLException e) {
+			} catch (Exception e) {
 				System.out.println("Exceptie"+e.getMessage());
 				request.setAttribute("msg", "CNP-ul exista deja in baza de date");
 			}

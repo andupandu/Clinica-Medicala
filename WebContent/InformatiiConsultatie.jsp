@@ -27,6 +27,8 @@ window.location.href = "index.jsp?message=Nu aveti drept de intrare pe pagina so
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
 <script src="http://ajax.microsoft.com/ajax/jquery.validate/1.7/additional-methods.js"></script>
+<script src="https://momentjs.com/downloads/moment.js"></script>
+
 <%if(session.getAttribute("tipUser")=="admin"){%>
 <title>Pagina administrator</title>
 <%}else{
@@ -114,7 +116,7 @@ window.location.href = "index.jsp?message=Nu aveti drept de intrare pe pagina so
 </tr>
 
 <tr>
-<td><br><input type="submit" class="btn btn-secondary" id="continua" name="continua" value="Programeaza"></td>
+<td><br><input type="submit" class="btn btn-secondary" id="continua" name="continua" value="Programeaza" onclick="changeDateFormat()"></td>
 </tr>
 </table>
 </form>
@@ -141,6 +143,9 @@ function fillMedicSelect(){
 
 fillMedicSelect();
 
+function changeDateFormat(){
+	document.getElementById("data").value=moment(document.getElementById("data").value,"DD/MM/YYYY").format("YYYY-MM-DD");
+}
 function fillMotivCons(){
 	var medic=document.getElementById("medic").value;
 	var selectMotiv=document.getElementById("serviciu");
@@ -193,7 +198,7 @@ function searchPacient(){
 }
 function InitializeDatepicker(){
 $('.data').datepicker({
-	startDate: "today",
+	startDate: "+1d",
 	endDate: '+3m',
     changeyear:false,
 	daysOfWeekDisabled: "0,6",
@@ -208,7 +213,7 @@ $('.data').datepicker({
 		        url: "ProgramariConsultatie",
 		        data:{
 		        	metoda:"data",
-		        	data: date,
+		        	data: moment(date,"DD/MM/YYYY").format("YYYY-MM-DD"),
 		        	codMedic:medic,
 		        	serviciu:serviciu
 		        },
@@ -236,12 +241,13 @@ function getOreDisponibile(){
 	$.post("ProgramariConsultatie",
 	        {
 			  metoda:"ora",
-	          data:data,
+	          data:moment(data,"DD/MM/YYYY").format("YYYY-MM-DD"),
 	          codMedic:medic,
 	          serviciu:serviciu
 	        },
 	        function(data,status){
 	        	var response = JSON.parse(data);
+	        	response[0]=response[0].substring(0,5);
 	        	var selectOra=document.getElementById("ora");
 					selectOra.innerHTML="";
         	response.forEach(ora=>

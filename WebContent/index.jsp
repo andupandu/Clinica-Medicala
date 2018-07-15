@@ -19,32 +19,35 @@
   <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
-  <a class="navbar-brand" href="#">Clinica medicala</a>
+  <a class="navbar-brand" href="#"><img src="resources/clinica.png" width="30" height="30">Clinica medicala</a>
 
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="navbar-nav mr-auto">
  
       <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          Specializari
+        <a class="nav-link " href="AfiseazaSpecialitati.jsp" id="navbar"  aria-haspopup="true" aria-expanded="false">
+          Specialitati
         </a>
-        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-        
-            <%List<Specialitate> specializari=DbOperations.getSpecializari(); 
-    for(Specialitate spec:specializari){%>
-    
-      <a href="#" class="dropdown-item"><%=spec.getDenumire() %></a>
-<%} %>
-        </div>
+       
       </li>
-       <li class="nav-item dropdown">
+        <li class="nav-item dropdown">
+        <a class="nav-link" href="AfiseazaMedici.jsp" id="navbar" aria-haspopup="true" aria-expanded="false">
+        Medici
+        </a>
+      </li>
+         <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          Contul meu
+        Laborator
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">    
-      <a href="ContNou.jsp" class="dropdown-item">Cont nou</a>
-       <a href="Login.jsp" class="dropdown-item">Log in</a>
+      <a href="GenerareRezultatAnaliza.jsp" class="dropdown-item">Rezultate analize</a>
+       <a href="AfiseazaAnalize.jsp" class="dropdown-item">Gama de analize</a>
         </div>
+      </li>
+         <li class="nav-item dropdown">
+        <a class="nav-link" href="IstoricMedical.jsp" id="navbar" aria-haspopup="true" aria-expanded="false">
+        Istoric medical
+        </a>
       </li>
    </ul>
    
@@ -53,7 +56,7 @@
 				<li class="nav-item dropdown"><a
 					class="nav-link dropdown-toggle" href="#"
 					id="navbarDropdownMenuLink" data-toggle="dropdown"
-					aria-haspopup="true" aria-expanded="false"> Log in </a>
+					aria-haspopup="true" aria-expanded="false"> Autentificare</a>
 					<div class="dropdown-menu dropdown-menu-right">
 						<form class="px-4 py-3" action="Login" method="post">
 							<div class="form-group">
@@ -69,7 +72,7 @@
 							<button type="submit" class="btn btn-primary">Autentificare</button>
 						</form>
 						<div class="dropdown-divider"></div>
-						<a class="dropdown-item" href="ContNou.jsp">Nu ai cont?
+						<a class="dropdown-item" href="CreareCont.jsp">Nu ai cont?
 							Creeaza unul acum </a> <a class="dropdown-item" href="#">Mi-am uitat parola</a>
 					</div></li>
 			</ul>
@@ -115,9 +118,137 @@
   </a>
  
 </div>
+<div class="jumbotron">
+  <h1 class="display-4" align="center">Servicile noastre</h1>
+  <hr class="my-4">
+  <section class="container p-t-3">
+    <div class="row">
+        <div class="col-lg-12">
+        </div>
+    </div>
+</section>
+<section class="carousel slide" data-ride="carousel" id="postsCarousel">
+    <div class="container">
+        <div class="row">
+        </div>
+    </div>
+    <div class="container p-t-0 m-t-2 carousel-inner">
+        <div class="row row-equal carousel-item active m-t-0">
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-img-top card-img-top-250">
+                        <img class="img-fluid" src="resources/cardiologie.jpg" alt="Carousel 1">
+                    </div>
+                    <div class="card-block p-t-2">
+                        <h2>
+                           Cardiologie
+                        </h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-img-top card-img-top-250">
+                        <img class="img-fluid" src="resources/pediatrie.JPG" alt="Carousel 2">
+                    </div>
+                    <div class="card-block p-t-2">
+                       
+                        <h2>
+                           Pediatrie
+                        </h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-img-top card-img-top-250">
+                        <img class="img-fluid" src="resources/neurologie.jpg" alt="Carousel 3">
+                    </div>
+                    <div class="card-block p-t-2">
+                        
+                        <h2>
+                           Neurologie
+                        </h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row row-equal carousel-item m-t-0">
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-img-top card-img-top-250">
+                        <img class="img-fluid" src="resources/oftalmologie.jpg" alt="Carousel 4">
+                    </div>
+                    <div class="card-block p-t-2">
+                        <h2>
+                           Oftalmologie
+                        </h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-img-top card-img-top-250">
+                        <img class="img-fluid" src="resources/stomatologie.jpg" alt="Carousel 5">
+                    </div>
+                    <div class="card-block p-t-2">
+                        <h2>
+                            Stomatologie
+                        </h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 fadeIn wow">
+                <div class="card">
+                    <div class="card-img-top card-img-top-250">
+                        <img class="img-fluid" src="resources/dermatologie.jpg" alt="Carousel 6">
+                    </div>
+                    <div class="card-block p-t-2">
+                      
+                        <h2>
+                           Dermatologie
+                        </h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</div>
+<section style="background-color:lightblue">
+<div style="display:inline-block;width:48%" >
+<iframe width="100%" height="400" src="https://maps.google.com/maps?width=100%&amp;height=600&amp;hl=en&amp;q=Galati+(My%20Business%20Name)&amp;ie=UTF8&amp;t=&amp;z=13&amp;iwloc=B&amp;output=embed" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"><a href="https://www.maps.ie/create-google-map/">Add map to website</a></iframe><br />
+</div>
+<div style="display:inline-block;width:48%;vertical-align:top">
+<h3> &nbsp Program de lucru:</h3>
+<hr></hr>
+  &nbsp Luni-Vineri: 08:00-20:00
+<hr></hr>
+  &nbsp Sambata:09:00-13:00
+<hr></hr>
+  &nbsp Duminica: inchis
+<hr></hr>
+<h3> &nbsp Contact:</h3>
+Str. Nicolae Mantu Nr. 15, Cladirea Charles de Gaulle Plaza, et. 4, Galati
+<hr></hr>
+Tel.: 021.9886
+<hr></hr>
+
+</div>
+</section>
+<div>
+</div>
+<div style="background-color:#eaeaea;height:70;text-align: center" >
+<span>©2018 Limba Andreea All Rights Reserved</span><br />
+</div >
+
+<form id="back" action="Delogare" method="post"></form>
 </body>
 <script>
-
+function reloadPage(){
+	document.getElementById("back").submit();
+}
+<%String msg = (String) request.getAttribute("msg");%>
 if(window.location.href.indexOf("message=") > 0)
 {	
 	var message = window.location.href.split("message=")[1].replace(/%20/g," ");

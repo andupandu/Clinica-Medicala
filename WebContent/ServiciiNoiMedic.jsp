@@ -82,6 +82,13 @@ function Verif(){
 	
 }
 
+
+
+$( document ).ready(function() {
+	document.getElementById("timp").defaultValue = "00:10";
+
+})
+
 $.validator.addMethod("verifDenumire", function (value, element) {
     return this.optional(element) || /(02|07)\d{8}$/.test(value);
 }, 'Telefon invalid');

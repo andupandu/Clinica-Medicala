@@ -48,8 +48,17 @@ else{
 
 </head>
 
-	
+<% 	Map<Long,String> zile = (Map<Long,String>)request.getAttribute("zile");%>
 <div id="right">
+<%if(zile.isEmpty()){%>
+<div class="alert alert-info alert-dismissible fade show" role="alert" id="mesaj">
+				<center>Aveti deja programul de lucru stabilit pentru toate zilele saptamanii!Daca doriti sa il modificati click <a href="ModificaProgramMedic.jsp">aici</a></center>
+				<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<%}else{ %>
+
 <div class="alert alert-info alert-dismissible fade show" role="alert" style="display:none" id="mesaj">
 </div>
 <form method="post" action="AdaugaProgramMedic"  accept-charset="UTF-8" id="adaugaprogrammedic">
@@ -61,7 +70,7 @@ else{
 <td>
 Ziua:<br><select id="zi" name="zi" class="custom-select">
 <%
-	Map<Long,String> zile = (Map<Long,String>)request.getAttribute("zile");
+	
 	for (Long zi: zile.keySet()) {
 	%>
 				<option value="<%=zi%>"><%=zile.get(zi)%></option>
@@ -82,6 +91,7 @@ Ora sfarsit:<input type="time" name="orasfarsit" id="orasfarsit" class="datepick
 </fieldset>
 </center>
 </form>
+<%} %>
 </div>
 
 </body>
@@ -93,7 +103,11 @@ if(msjInsert!="null"){
  document.getElementById("mesaj").style.display="block";
 }
 	
+$( document ).ready(function() {
+	document.getElementById("orainceput").defaultValue = "08:00";
+	document.getElementById("orasfarsit").defaultValue = "16:00";
 
+})
 
   </script>
 </html>

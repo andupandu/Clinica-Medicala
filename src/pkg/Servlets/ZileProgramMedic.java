@@ -27,10 +27,8 @@ public class ZileProgramMedic extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		Persoana user=(Persoana) request.getSession().getValue("persoanaLogata");
-		String tipUser=(String)request.getSession().getValue("tipUser");
-		 String idMedic=DbOperations.getUserCodFromPassword(user,tipUser).toString();
-		 Map<Long,String> zile =  DbOperations.getZileProgramLucruMedic(idMedic);
+		 String idMedic=(String)request.getSession().getValue("idMedic");
+		 Map<Long,String> zile =  DbOperations.getZileNelucrateMedic(idMedic);
 		 request.setAttribute("zile", zile);
 		 request.setAttribute("msg", request.getAttribute("msg"));
 		 request.getRequestDispatcher("AdaugaProgramMedic.jsp").forward(request,response);

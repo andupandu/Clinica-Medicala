@@ -145,7 +145,7 @@ function readyToModify(i, verify){
 		} 
 	
 		if(telefon.disabled){
-			if (confirm('Sunteti sigur ca doriti sa modificati medicul?')){
+			if (confirm('Sunteti sigur ca doriti sa modificati datele medicului?')){
 				accept = true;
 			}
 			else{

@@ -1,6 +1,8 @@
 package pkg.Servlets;
 
 import java.io.IOException;
+import java.sql.SQLException;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -31,8 +33,20 @@ public class EditeazaSpecialitati extends HttpServlet {
 		System.out.println(operation);
 		String msg=null;
 		if(operation.equals("add")) {
-			DbOperations.insertNewSpecializare(request.getParameter("specNoua"));
-			msg="Specialitatea s-a adaugat cu succes!";
+			try {
+				if(DbOperations.getCodSpecFromDenSpec(request.getParameter("specNoua"))!=null) {
+				DbOperations.insertNewSpecializare(request.getParameter("specNoua"));
+				msg="Specialitatea s-a adaugat cu succes!";
+				}
+				else {
+					msg="Specialitatea introdusa exista deja in baza de date!";
+
+				}
+			} catch (SQLException e) {
+				System.out.println(e.getMessage());
+				
+			}
+		
 		}else if(operation.equals("delete")) {
 			DbOperations.deleteSpecialitate(request.getParameter("specId"));
 			msg="Specialitatea s-a sters cu succes!";

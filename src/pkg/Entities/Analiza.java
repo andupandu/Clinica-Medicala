@@ -6,6 +6,7 @@ String denumire;
 Long pret;
 String durata;
 String tip;
+String categorie;
 public Long getCod() {
 	return cod;
 }
@@ -35,6 +36,12 @@ public String getTip() {
 }
 public void setTip(String tip) {
 	this.tip = tip;
+}
+public String getCategorie() {
+	return categorie;
+}
+public void setCategorie(String categorie) {
+	this.categorie = categorie;
 }
 
 }

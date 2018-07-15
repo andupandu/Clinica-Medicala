@@ -10,6 +10,8 @@ public class Persoana {
 	String email;
 	String cnp;
 	String telefon;
+	Long varsta;
+	String sex;
 	public String getCnp() {
 		return cnp;
 	}
@@ -52,4 +54,17 @@ public class Persoana {
 	public void setEmail(String email) {
 		this.email = email;
 	}
+	public Long getVarsta() {
+		return varsta;
+	}
+	public void setVarsta(Long varsta) {
+		this.varsta = varsta;
+	}
+	public String getSex() {
+		return sex;
+	}
+	public void setSex(String sex) {
+		this.sex = sex;
+	}
+	
 }

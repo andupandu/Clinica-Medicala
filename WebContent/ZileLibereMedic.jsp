@@ -96,7 +96,8 @@ $( function() {
     $( "#data" ).datepicker();})
    $('#data').datepicker({ format:"dd/mm/yyyy",
 	   						language:"ro",
-	   						startDate: '+3m'})   
+	   						startDate: '+1d',
+	   						endDate:'+3m'})   
    
 	   $('#adauga').click(function(){
 		   $('#data1').val(moment($('#data').datepicker("getDate")).format("YYYY-MM-DD"));

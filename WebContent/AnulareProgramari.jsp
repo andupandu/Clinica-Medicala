@@ -125,7 +125,8 @@ if(!consultatii.isEmpty()){%>
 $( function() {
     $( "#data" ).datepicker();})
    $('#data').datepicker({ format:"dd/mm/yyyy",
-	   						language:"ro"})   
+	   						language:"ro",
+	   						startDate:"today"})   
    
 	   $('#cauta').click(function(){
     $('#data1').val(moment($('#data').datepicker("getDate")).format("YYYY-MM-DD"));
@@ -136,6 +137,7 @@ $( function() {
 	var medic=element.querySelector("#medic");
 	var data=element.querySelector("#data");
 	var status=element.querySelector("#status");
+	var serviciu=element.querySelector("#tipCons");
 	if(verify=="anulare"){
 	if(status.value=="anulat"){
 		alert("Programarea este deja anulata");
@@ -150,7 +152,8 @@ $( function() {
 		          pacient:pacient.value,
  		          verif:verify,
  		          medic:medic.value,
- 		          data:data.value
+ 		          data:data.value,
+ 		          serviciu:serviciu.value
  		          
  		        },
  		        function(data,status){

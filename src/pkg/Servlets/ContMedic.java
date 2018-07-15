@@ -2,11 +2,13 @@ package pkg.Servlets;
 
 import java.io.IOException;
 import java.text.ParseException;
+import java.util.Arrays;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.bind.JAXBException;
 
 import pkg.Entities.Medic;
 import pkg.Entities.Persoana;
@@ -60,6 +62,17 @@ public class ContMedic extends HttpServlet {
 			DbOperations.insertMedicNou(medic);
 			DbOperations.insertMedicUser(email, parola,DbOperations.getMedic(email).getId().intValue());
 			DbOperations.insertCodContIntoMedic(email, Long.valueOf(DbOperations.getCodCont(email)));
+			String continut="Buna ziua,\n" + 
+					"Multumim ca v ati inregistrat pe site ul nostru.\n" + 
+					"Datele dumneavoastra de logare sunt urmatoarele:\n" + 
+					"Username: " + email+ "\n" + 
+					"Parola:"+parola;
+			try {
+				SMTPHelper.SendEmail(Arrays.asList(email),continut,"Bun venit!");
+			} catch (JAXBException e) {
+				System.out.println(e.getMessage());
+				e.printStackTrace();
+			}
 			request.setAttribute("msg", "Contul s-a creat cu succes");
 		}
 		}

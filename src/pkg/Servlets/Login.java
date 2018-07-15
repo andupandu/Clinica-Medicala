@@ -1,5 +1,6 @@
 package pkg.Servlets;
 
+import pkg.Entities.Persoana;
 import pkg.Utils.*;
 import java.io.IOException;
 
@@ -37,17 +38,21 @@ public class Login extends HttpServlet {
 		if(user!=null) {
 			switch(user) {
 			case "pacient":{
-
-				request.getSession().putValue("persoanaLogata",DbOperations.getPacient(email));
-				request.getSession().putValue("tipUser","pacient");	
+				 Persoana persoanaLogata=DbOperations.getPacient(email);
+				 String tipUser="pacient";
+				request.getSession().putValue("persoanaLogata",persoanaLogata);
+				request.getSession().putValue("tipUser",tipUser);	
+				request.getSession().putValue("idPacient",persoanaLogata.getId().toString());
 				request.getRequestDispatcher("index.jsp").forward(request,response);
 				break;
 
 			}
 			case "medic":{
-
-				request.getSession().putValue("persoanaLogata",DbOperations.getMedic(email));
-				request.getSession().putValue("tipUser","medic");
+				Persoana persoanaLogata=DbOperations.getMedic(email);
+				String tipUser="medic";
+				request.getSession().putValue("persoanaLogata",persoanaLogata);
+				request.getSession().putValue("tipUser",tipUser);
+				 request.getSession().putValue("idMedic",persoanaLogata.getId().toString());
 				request.getRequestDispatcher("indexMedic.jsp").forward(request,response);
 				break;
 			}

@@ -196,7 +196,7 @@ window.location.href = "index.jsp?message=Nu aveti drept de intrare pe pagina so
 						$.post("ProgramariAnalize",
 							{
 								metoda: "ore",
-								dataAnalize: moment(data).format("YYYY-MM-DD")
+								dataAnalize: moment(data,"dd/MM/yyyy").format("YYYY-MM-DD")
 							},
 							function (data, status) {
 
@@ -221,8 +221,8 @@ window.location.href = "index.jsp?message=Nu aveti drept de intrare pe pagina so
 					}
 						
 				    $('#continua').click(function(){
-				        $('#data1').val(moment($('#dataNasterii').datepicker("getDate")).format("YYYY-MM-DD"));
-				        $('#dataprog').val(moment($('#data').datepicker("getDate")).format("YYYY-MM-DD"));
+				        $('#data1').val(moment($('#dataNasterii').datepicker("getDate"),"dd/MM/YYYY").format("YYYY-MM-DD"));
+				        $('#dataprog').val(moment($('#data').datepicker("getDate"),"dd/MM/YYYY").format("YYYY-MM-DD"));
 
 				    }); 
 				    var disableddates = ["01-01-2018", "30-11-2018", "01-12-2018", "25-12-2018","26-12-2018","02-01-2018","24-01-2018","09-04-2018",
